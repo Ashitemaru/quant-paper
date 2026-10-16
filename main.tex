@@ -1,0 +1,133 @@
+\PassOptionsToPackage{round,authoryear}{natbib}
+\PassOptionsToPackage{table,dvipsnames}{xcolor}
+\documentclass[]{style/company_light} % switch to style/company_border for border variant
+% Compile: bash build.sh, or use pdfLaTeX with BibTeX on Overleaf.
+
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{amssymb}
+\usepackage{float}
+% Keep pdfLaTeX builds portable across TeX distributions whose sans-serif
+% fonts do not expose expansion metrics to microtype.
+\microtypesetup{expansion=false}
+\setlength{\emergencystretch}{1.5em}
+
+\newcommand{\yes}{\textcolor{ForestGreen}{$\checkmark$}}
+\newcommand{\no}{\textcolor{red}{$\times$}}
+\newcommand{\partialyes}{\textcolor{orange}{$\checkmark$}}
+\NewDocumentCommand{\todo}
+{ mO{} }{\textcolor{magenta}{\textsuperscript{\textit{TODO}}\textsf{\textbf{\small[#1]}}}}
+
+% ── Placeholder marker ────────────────────────────────────────────────────────
+% \ph{...} marks a value that is NOT measured. Rendered in magenta and
+% underlined so it cannot be mistaken for a real result, on screen or in print.
+% Every occurrence must be replaced or removed before submission.
+\newcommand{\ph}[1]{\textcolor{magenta}{\underline{\textsf{#1}}}}
+
+% Custom commands from original paper
+\newcommand\mc[1]{\mathcal{#1}}
+\newcommand{\mbf}[1]{\mathbf{#1}}
+
+% ── Metadata ──────────────────────────────────────────────────────────────────
+
+% Global names for the paper's benchmark and method.  Change these two
+% definitions to rename the system consistently across the manuscript.
+\newcommand{\BenchmarkName}{Quant-Arena}
+\newcommand{\MethodName}{RSI-Quant}
+
+% Canonical display names for backbone models used in the experiments.
+\newcommand{\ModelClaudeOpus}{Claude~Opus~5}
+\newcommand{\ModelClaudeSonnet}{Claude~Sonnet~4.6}
+\newcommand{\ModelDeepSeek}{DeepSeek~V4~Flash}
+\newcommand{\ModelGemini}{Gemini~3.1~Pro}
+\newcommand{\ModelGPTSol}{GPT-5.6-Sol}
+\newcommand{\ModelGrok}{Grok~4.6}
+\newcommand{\ModelKimi}{Kimi~K3}
+
+
+\title{Quant-Arena: Benchmarking LLM Agents for Budgeted Quantitative Research}
+
+\author{Navers Lab, Einsia.AI}
+% TODO: replace with the real author list, e.g.
+% \author[1,\dag]{Given Family}
+% \affiliation[1]{Navers Lab, Einsia.AI}
+% \contribution[\dag]{Equal contribution.}
+
+\input{Sections/0_abstract}
+
+\date{\today}
+\metadata[HomePage]{\url{https://lab.einsia.ai/naversquant}}
+
+% ── Document ──────────────────────────────────────────────────────────────────
+
+\begin{document}
+
+\maketitle
+
+\input{Sections/1_introduction}
+\input{Sections/2_method}
+\input{Sections/2_arena}
+\input{Sections/2_rsi_harness}
+\input{Sections/3_experiments}
+\input{Sections/4_relatedworks}
+\input{Sections/5_conclusion}
+
+% ── Contributions ────────────────────────────────────────────────────────────
+
+\clearpage
+\newpage
+
+\definecolor{brandcolor}{RGB}{227, 170, 121}
+\section{Contributions and Acknowledgements} The contributors' names are sorted in alphabetical order of the last name.
+
+\textbf{Project Lead}
+
+% TODO
+
+\textbf{Core Contributors}
+
+% TODO
+
+\textbf{Contributors}
+
+% TODO
+
+\textbf{Team Management}
+
+% TODO
+
+\textbf{Corresponding to} % TODO
+
+\textbf{Acknowledgements.} This project is founded and supported by Navers Lab, Einsia.AI.
+
+% ── References ──────────────────────────────────────────────────────────────
+
+\clearpage
+\newpage
+\bibliographystyle{assets/plainnat}
+\bibliography{ref}
+
+% ── Appendix ─────────────────────────────────────────────────────────────────
+
+\clearpage
+\newpage
+\appendix
+
+\input{Sections/6_appendix_registry}
+\input{Sections/7_appendix_boundary}
+
+\end{document}

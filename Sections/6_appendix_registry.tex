@@ -1,0 +1,39 @@
+\section{Suite Registry and Reproducibility}
+\label{app:registry}
+
+A suite supplies the concrete values underlying Equation~\eqref{eq:arena_task}. This revision describes the current daily research protocol, identified as \texttt{sandbox\_daily\_research\_v2}, from implementation revision \texttt{7889d4f}. These identifiers locate the implementation basis of the description; the deployed campaign revision and its actual data releases must be registered independently. Historical suites retain their original result, runtime, and budget conventions.
+
+Table~\ref{tab:suite_registry} lists the campaign-specific fields to complete before reporting results. The financial conventions in Table~\ref{tab:daily_protocol} do not determine data size, sample dates, model identity, or resource ceilings. No values for those fields are inferred from implementation defaults.
+
+\begin{table}[ht]
+    \centering
+    \small
+    \caption{Campaign registration fields. Pending entries will be replaced with actual suite and run records before empirical claims are added.}
+    \label{tab:suite_registry}
+    \begin{tabular}{@{}p{0.23\linewidth}p{0.57\linewidth}p{0.12\linewidth}@{}}
+        \toprule
+        Field & Required specification & Status \\
+        \midrule
+        Data release & Provider, market, release identity, provenance, access and publication scope & \ph{Pending} \\
+        Data coverage & Dates, securities, event counts, fields, missingness and its denominator & \ph{Pending} \\
+        Population & Static column construction, inclusion rules, delistings, reference population & \ph{Pending} \\
+        Temporal windows & Training, research, final, warmup, cutoff, label realization & \ph{Pending} \\
+        Sealed history & Release identity, sealing time, prior availability and exposure policy & \ph{Pending} \\
+        Participants & Model/provider identity, parameters, harness source, prompts, prior memory & \ph{Pending} \\
+        Resources & Per-replicate token, evaluation and CPU ceilings; final reserve; usage definition & \ph{Pending} \\
+        Runtime & Selected image, execution protocol, data-service and evaluator revision & \ph{Pending} \\
+        Replicates & Prescribed identifiers, seed handling, statuses, frozen selection references & \ph{Pending} \\
+        Scores & Primary endpoints, targets, risk/coverage thresholds, reference bank and policy & \ph{Pending} \\
+        Reporting & Aggregation, uncertainty, failure policy, result release and retained artifacts & \ph{Pending} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\paragraph{Research and model records.}
+Each run retains its model interactions and observed usage, candidate registrations, admitted evaluations, feedback, operation outcomes, and final-selection record. A source snapshot identifies the harness that generated the sequence. External information and preinitialized memory are part of the participant declaration. Provider-returned model identities and usage counters supplement configured display names. Unknown counters and uncertain paid operations remain explicit.
+
+\paragraph{Financial and execution records.}
+The final commitment binds strategy source, runtime, fitted artifact, and feature configuration. The corresponding evaluation retains the frozen dates and data releases, accepted daily execution records, core metrics, coverage, and private detailed evidence. Optional artifact failures retain their own status. Public scorecards expose authorized summaries; private trading records and data-sensitive artifacts follow the registered access policy.
+
+\paragraph{Aggregation and release.}
+Each campaign lists every prescribed replicate, including incomplete and unsuccessful ones. Complete aggregates require all corresponding values, with metric sample counts preserved. Publication changes the authorized visibility of saved results; it does not redefine their financial convention. Imported or locally declared reference results retain their evidence status and are separated from evaluator-verified Arena results. Stored responses permit reconstruction of the observed research sequence, without assuming a future provider call is deterministic.
