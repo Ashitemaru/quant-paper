@@ -21,6 +21,8 @@
 \usepackage{array}
 \usepackage{amssymb}
 \usepackage{float}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 % Keep pdfLaTeX builds portable across TeX distributions whose sans-serif
 % fonts do not expose expansion metrics to microtype.
 \microtypesetup{expansion=false}
@@ -81,7 +83,6 @@
 \input{Sections/1_introduction}
 \input{Sections/2_method}
 \input{Sections/2_arena}
-\input{Sections/2_rsi_harness}
 \input{Sections/3_experiments}
 \input{Sections/4_relatedworks}
 \input{Sections/5_conclusion}
@@ -129,5 +130,9 @@
 
 \input{Sections/6_appendix_registry}
 \input{Sections/7_appendix_boundary}
+
+\section{E1 Run Registry}
+\label{app:runs}
+\input{Tables/generated/TabE1Runs}
 
 \end{document}

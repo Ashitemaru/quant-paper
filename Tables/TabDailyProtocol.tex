@@ -1,20 +1,23 @@
 \begin{table}[t]
     \centering
     \small
-    \caption{The current daily research profile. These values define an evaluation convention; campaign dates, dataset coverage, and resource ceilings are registered separately.}
+    \caption{Daily protocol of suite \texttt{sandbox\_2022\_2023\_research\_2024\_final\_v9}.}
     \label{tab:daily_protocol}
     \begin{tabular}{@{}p{0.27\linewidth}p{0.67\linewidth}@{}}
         \toprule
         Item & Convention \\
         \midrule
-        Input population & Registered static Shenzhen A-share factor columns; actual missingness retained \\
-        Signal and label & End-of-day $t-1$ information; entry $O_t$ and scheduled exit $C_{t+1}$ \\
-        Selection & Top75 primary; Top200/400 diagnostics; all boundary ties included \\
-        Research return & Observable equal-weight raw-price return $\times\,0.5-0.0011$ per cohort \\
-        Aggregation & Additive cumulative return; annualization factor 243; signed additive drawdown \\
-        Reference & Full-market Shenzhen A-share equal-weight cohorts under the same return convention \\
-        Account assumptions & CNY 1 million; half-equity allocation capped by cash; 100-share lots \\
-        Account costs & Commission 3 bps, minimum 0; stamp/transfer charges and slippage 0 \\
+        Universe & Static authorized Shenzhen A-share universe, 3{,}042 stocks; no daily membership mask \\
+        Input profile & Authorized historical L2 quotes, orders and trades, read by a Python strategy in a sandbox \\
+        Research window & 2022-01-04 to 2023-12-29, 484 sessions (warmup from 2021-12-06) \\
+        Sealed final window & 2024-01-02 to 2024-12-31, 242 sessions (warmup from 2023-12-04) \\
+        Signal & Each entry uses the previous trading day's signal; missing rows produce no signal \\
+        Trading & Bought on $T$, sold on $T+1$ with an algorithmic order; slippage computed from order-book limits and market impact, not a fixed value \\
+        Constraints & Limit-up stocks not bought; halted or limit-down positions sold once tradable; no replacement \\
+        Selection & Top75 primary; Top200/400 diagnostics; descending, boundary ties included \\
+        Aggregation & Equal-weight cohort returns net of trading costs, added across cohorts; annualization 243 \\
+        Budget & 500{,}000 model tokens per run; at most five research evaluations \\
+        Strategy & Python; 0--32 declared features with direction $\pm1$; no training window \\
         \bottomrule
     \end{tabular}
 \end{table}

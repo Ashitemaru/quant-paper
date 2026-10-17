@@ -9,31 +9,19 @@ A final commitment ends candidate selection for that replicate. The same frozen 
 
 This boundary addresses runtime access and evaluation ownership. It does not establish that historical information was absent from a model's training data or a participant's prior resources. Organizers must document population construction, earlier publication of data, development experiments, and the method freeze point. Public leaderboard feedback can also influence later submissions. Campaign registration therefore specifies the intended experiment set and disclosure policy, retaining all attempts used for the reported comparison. Periodically refreshed or separately retained final windows are possible governance extensions, rather than assumed properties of the current runtime.
 
-\subsection{Exact Diversity Construction}
+\subsection{Diversity Construction}
 \label{app:diversity}
+% DRAFT (Claude): parameters from the v9 suite; prose to be polished by Gemini.
 
-Diversity is computed only when actual feature use can be verified. Feature directions and the reference bank are frozen with the strategy and suite. A feature must satisfy registered observation and coverage requirements, exceed its predictive-quality threshold, and have a positive one-sided lower confidence bound under the registered moving-block bootstrap. The confidence calculation adjusts for the number of declared feature comparisons. Bootstrap block length, resamples, seed, quality basis, and thresholds are suite parameters. This gate provides statistical qualification under those parameters; it does not establish a distinct economic mechanism.
-
-For two features $f$ and $g$, let $\mathcal{T}_{fg}$ be dates with sufficient paired observations and nonconstant ranks. Subject to the registered overlap and sample conditions, their similarity is
+A strategy declares between 0 and 32 features, each with a unique name and a direction of $+1$ or $-1$, and returns their daily values alongside its scores. Diversity counts only features that are \emph{qualified}, \emph{used}, and \emph{mutually independent}. A feature is qualified when its mean daily RankIC, signed by its declared direction, is above zero. It is used when its daily ranks explain part of the strategy's daily score ranks under a score-rank regression, with a unique contribution of at least $0.01$; declaring an unused feature earns nothing. For two features $f$ and $g$, similarity $\sigma(f,g)$ is the mean absolute daily rank correlation over dates with sufficient paired observations,
 \begin{equation}
     \sigma(f,g)=\frac{1}{|\mathcal{T}_{fg}|}
        \sum_{t\in\mathcal{T}_{fg}}
        \left|\operatorname{Corr}\!\left(
-          \operatorname{rank}(f_t),\operatorname{rank}(g_t)\right)\right|.
+          \operatorname{rank}(f_t),\operatorname{rank}(g_t)\right)\right|,
     \label{eq:feature_similarity}
 \end{equation}
-Ranks are computed on each date's paired observations with average ranks for ties. For the current daily profile, overlap coverage compares paired finite coordinates with the finite union inside the authorized universe; coordinates absent from both features do not count as disagreement. An insufficient comparison is unavailable, rather than zero similarity.
-
-Let $\mathcal{G}$ be the qualified, consumed feature set. Form an undirected graph with one vertex per feature and an edge when $\sigma(f,g)\ge\tau$, where $\tau$ is registered in advance. Let $C(\mathcal{G})$ be its number of connected components. For feature $f$, let $\mathcal{R}_f$ be the comparable members of the frozen reference bank. When the required pairwise and reference comparisons are available, define
-\begin{equation}
-    \nu_f=1-\max_{r\in\mathcal{R}_f}\sigma(f,r),\qquad
-    D=\frac{\min\{C(\mathcal{G}),C_{\max}\}}{C_{\max}}
-       \frac{1}{|\mathcal{G}|}\sum_{f\in\mathcal{G}}\nu_f.
-    \label{eq:diversity}
-\end{equation}
-Thus, diversity rewards qualified groups and novelty relative to the declared bank. Graph components are correlation-based groups, without a claim of probabilistic independence.
-
-The reference-comparison policy is frozen. The available-reference policy uses only comparisons that pass the unchanged sample conditions and reports the total reference count, comparable counts, and coverage. The historical all-required policy requires every registered reference to be comparable. Missing within-set comparisons or an empty required reference set leave $D$ unavailable. If the completed quality assessment finds no qualified feature, $D=0$; if quality cannot be assessed because the required evidence is missing, the result remains unavailable. Unverified feature use also leaves $D$ unavailable.
+computed only when their overlap coverage reaches $0.9$. Qualified, used features form a graph with an edge whenever $\sigma(f,g)\ge0.8$, and $K$ is the number of connected components. The diversity component is $D=Q\min(K,32)/32$ (Equation~\eqref{eq:efficiency}). No reference factor bank or novelty term enters $D$. Graph components are correlation-based groups and carry no claim of statistical independence or distinct economic mechanism. Unverified feature use leaves $D$ unavailable rather than zero.
 
 \subsection{Metric Availability and Ranking Eligibility}
 

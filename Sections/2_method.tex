@@ -33,12 +33,12 @@ These sums apply when the required usage records are known; unresolved usage ret
 
 A malformed model reply consumes its observed tokens. A strategy rejected before evaluation admission does not consume an admitted evaluation; an accepted evaluation retains its evaluation charge if execution subsequently fails. Data requests and bytes remain metered under the current service-limit profile, with access and concurrency controls; historical profiles retain their own cumulative resource definitions.
 
-Three participation modes establish different research conditions. \emph{One-shot} permits one model operation and directly freezes a valid strategy, without research feedback, model-assisted repair, or additional training. \emph{Vanilla} uses a model--feedback conversation: the model may finish with a completed candidate, and the last completed candidate with feedback is the declared fallback when the budget ends. \emph{External harnesses} implement their own search and selection rules through the same authorized services. Their external knowledge, memory initialization, repair policy, and selection rule form part of the participant specification.
+Three participation modes establish different research conditions. \emph{One-shot} returns one complete strategy and freezes it, without research feedback, model-assisted repair, or additional training; platform documents may be read on request, and those reads are charged as ordinary model calls. \emph{Vanilla} uses a model--feedback conversation: the model may finish with a completed candidate, and the last completed candidate with feedback is the declared fallback when the budget ends. \emph{External harnesses} implement their own search and selection rules through the same authorized services. Their external knowledge, memory initialization, repair policy, and selection rule form part of the participant specification.
 
 \subsection{Temporal Access and Final Commitment}
 \label{sec:arena_contract}
 
-Training, research, and final accounting windows are registered chronologically. Authorized warmup supplies historical context without extending the accounting interval. For a signal date $d$, the executable strategy receives only observations in the authorized data release, instrument and field scope, and availability interval ending at $\kappa(d)$. In the current daily protocol, $\kappa(d)$ is the end of that trading day in exchange-local time, including its closing information. Data permissions are enforced by the execution service rather than inferred from dates supplied by participant code.
+Training, research, and final accounting windows are registered chronologically. Authorized warmup supplies historical context without extending the accounting interval. For a signal date $d$, the executable strategy receives only observations in the authorized data release, instrument and field scope, and availability interval ending at $\kappa(d)$. The cutoff $\kappa(d)$ is registered with the suite and is not disclosed in the public contract. Data permissions are enforced by the execution service rather than inferred from dates supplied by participant code.
 
 After research, each replicate commits one strategy. Its source, runtime, fitted artifact when present, and declared feature configuration are fixed before sealed assessment. The harness controls the selection; the platform validates and freezes the commitment and runs the final evaluator. Final-window outcomes are excluded from candidate revision within that replicate. Further evaluation under another contract produces a separate record and preserves the original result.
 
@@ -46,75 +46,70 @@ The daily protocol uses registered static Shenzhen A-share factor columns. Missi
 
 \subsection{Daily Financial Evaluation}
 \label{sec:arena_returns}
+% DRAFT (Claude, factual skeleton): prose to be rewritten by Gemini; keep the
+% wording rules: "bought on T, sold on T+1 with an algorithmic order"; slippage
+% "computed from order-book limits and market impact, not a fixed value".
 
-Index consecutive trading sessions by $t$. Scores $s_{i,t-1}$ are formed using information authorized through session $t-1$; a selected cohort enters at session $t$'s opening price and is scheduled to exit at session $t+1$'s closing price. Both entry and exit belong to the accounting window. An authorized predecessor signal can support the first entry day; an absent predecessor is not reconstructed from later data. The last accounting session introduces no new cohort.
+Index consecutive trading sessions by $t$. Scores $s_{i,t-1}$ are formed using information authorized through session $t-1$. A selected cohort is bought on trading day $t$ and sold on day $t+1$ with an algorithmic order. Slippage is computed from order-book limits and market impact; it is not a fixed value. Limit-up stocks are not bought, halted or limit-down positions are sold once they become tradable, and no replacement stocks are selected. An authorized predecessor signal can support the first entry day; an absent predecessor is not reconstructed from later data, and missing source rows produce no signal.
 
-\paragraph{Selection and observable labels.}
-Let $\mathcal{I}_t$ contain the registered instruments with finite scores for entry $t$, with score direction fixed so that larger values rank first. For a valid signal row, let $s_{[k],t-1}$ be its $k$-th largest score and define
+\paragraph{Selection.}
+Let $\mathcal{I}_t$ contain the registered instruments with finite scores for entry $t$, ranked in descending order. For a valid signal row, let $s_{[k],t-1}$ be its $k$-th largest score and define
 \begin{equation}
     k_t=\min(K,|\mathcal{I}_t|),\qquad
     \mathcal{S}^{K}_t=\{i\in\mathcal{I}_t:s_{i,t-1}\ge s_{[k_t],t-1}\}.
     \label{eq:topk}
 \end{equation}
-This definition includes every boundary tie, so the selected count may exceed $K$. Empty or invalid signal rows have no evaluable cohort. The current validity check requires observed entry-universe scores with at least two distinct finite values. Selection precedes forward-price observation and does not replace securities whose labels later prove unavailable.
+This definition includes every boundary tie, so the selected count may exceed $K$. Selection precedes the observation of forward prices and does not replace securities whose returns later prove unavailable. The primary basket uses $K=75$; $K\in\{200,400\}$ are retained as diagnostics.
 
-For raw opening and closing prices $O$ and $C$, the forward label is
-\begin{equation}
-    y_{i,t}=\frac{C_{i,t+1}}{O_{i,t}}-1,\qquad
-    \mathcal{L}_t=\{i:\text{the registered label-validity rules are satisfied}\}.
-    \label{eq:label}
-\end{equation}
-Label validity requires the relevant daily records, non-suspended observations, and finite positive prices; the implementation checks both open and close fields of each relevant bar. Let $\mathcal{A}^{K}_t=\mathcal{S}^{K}_t\cap\mathcal{L}_t$. For a valid nonempty observable cohort, the research return and label coverage are
-\begin{equation}
-    r^{K}_t=\frac{\eta}{|\mathcal{A}^{K}_t|}\sum_{i\in\mathcal{A}^{K}_t}y_{i,t}-c,
-    \qquad
-    \gamma^{K}_t=\frac{|\mathcal{A}^{K}_t|}{|\mathcal{S}^{K}_t|},
-    \quad \eta=\tfrac12,\quad c=0.0011.
-    \label{eq:cohort_return}
-\end{equation}
-An empty observable set yields an unavailable return. Partially observed cohorts retain their observed-only mean and coverage. The fixed cost is deducted once after the half-exposure scaling. The primary basket uses $K=75$, with $K\in\{200,400\}$ retained for diagnostics.
-
-\paragraph{Aggregation and reference series.}
-Let $\mathcal{J}_K$ denote the entry sessions with available $r^K_t$. Research returns accumulate additively. The full-market reference $r^{\mathrm{mkt}}_t$ applies the same label, exposure, and cost convention to the Shenzhen A-share daily population available to the evaluator, independently of the submitted score coverage. With $\mathcal{J}^{\cap}_K$ denoting paired strategy--reference sessions,
+\paragraph{Research returns.}
+Let $y_{i,t}$ be the realized raw-price return of stock $i$ over the cohort's holding period and $\mathcal{A}^{K}_t\subseteq\mathcal{S}^{K}_t$ the selected stocks with a valid return. The cohort research return $r^K_t$ is the equal-weight mean of $y_{i,t}$ over $\mathcal{A}^K_t$, net of trading costs. Cohorts overlap and returns accumulate additively:
 \begin{align}
     R^K &= \sum_{t\in\mathcal{J}_K}r^K_t,
     &\operatorname{ARR}^{K} &= \frac{243}{|\mathcal{J}_K|}\sum_{t\in\mathcal{J}_K}r^K_t,\label{eq:research_arr}\\
     \Delta\operatorname{ARR}^{K} &= \frac{243}{|\mathcal{J}^{\cap}_K|}
-       \sum_{t\in\mathcal{J}^{\cap}_K}(r^K_t-r^{\mathrm{mkt}}_t).
+       \sum_{t\in\mathcal{J}^{\cap}_K}(r^K_t-r^{\mathrm{mkt}}_t),
        \label{eq:excess_arr}
 \end{align}
-An empty required set leaves the corresponding statistic unavailable. In particular, paired excess ARR need not equal the difference of separately averaged strategy and reference ARRs when their available dates differ. An unavailable reference preserves valid strategy-only results.
-
-Let $P^K_j$ be the cumulative sum through the $j$-th available cohort, with $P^K_0=0$. Signed additive drawdown is
+where $\mathcal{J}_K$ are entry sessions with an available return, $r^{\mathrm{mkt}}_t$ is the full-market Shenzhen A-share reference under the same convention, and $\mathcal{J}^{\cap}_K$ are paired sessions. An empty observable set yields an unavailable return rather than zero. Signed additive drawdown is
 \begin{equation}
     \operatorname{DD}^{K}
     =\min_{0\le j\le |\mathcal{J}_K|}
-       \left(P^K_j-\max_{0\le h\le j}P^K_h\right)\le0.
+       \left(P^K_j-\max_{0\le h\le j}P^K_h\right)\le0,
     \label{eq:drawdown}
 \end{equation}
-It is measured in return points; $100|\operatorname{DD}^{K}|$ gives its magnitude in percentage points. Cohort Sharpe is $\sqrt{243}\,\overline{r^K}/\operatorname{sd}(r^K)$ when the sample standard deviation is positive. Because adjacent cohorts overlap, this ratio is descriptive. The current primary projection does not report a portfolio information ratio.
+with $P^K_j$ the cumulative sum through the $j$-th available cohort. The long-only Sharpe ratio is $\mathrm{SR}_L=\sqrt{243}\,\overline{r^{75}}/\operatorname{sd}(r^{75})$. The long--short Sharpe ratio $\mathrm{SR}_{LS}$ applies the same annualization to the daily raw return of the top score decile minus the bottom decile; it measures the signal's discriminative power, not a tradable return. Because adjacent cohorts overlap, both ratios are descriptive. A funded cash account is simulated and reported separately from research returns.
 
-\paragraph{Separate cash-account evidence.}
-The evaluator also maintains a funded account with an initial value of CNY~1,000,000. The default entry allocation is the smaller of available cash and half the previous session's equity, subject to 100-share lots. Commission is three basis points with no minimum; stamp charges, transfer charges, and slippage are set to zero in this experimental profile. Morning entries cannot spend proceeds from evening exits. Missing prices, suspensions, and price-limit conditions may prevent purchases or defer sales; stale valuations and residual holdings remain recorded. These account outcomes are reported separately from Equation~\eqref{eq:cohort_return}, whose observable cohort does not require every selected security to have been funded or filled. Raw-price accounting does not incorporate corporate-action total-return adjustment, and reference-price replay does not measure live fills or market-impact capacity.
-
-\subsection{Predictive, Efficiency, and Diversity Criteria}
+\subsection{Scoring}
+\label{sec:scoring}
 \label{sec:arena_scoring}
+% DRAFT (Claude): formulas are final; prose to be rewritten by Gemini.
 
-On each valid entry date, IC is the cross-sectional Pearson correlation between $s_{i,t-1}$ and $y_{i,t}$, and RankIC is the Pearson correlation of their average ranks. Both use paired finite observations with the registered sample requirements; the current daily calculation requires at least five pairs and nonconstant inputs. Reported IC and RankIC average their valid daily values. ICIR and RankICIR divide these means by the corresponding sample standard deviations, without an additional annualization factor.
-
-The benchmark reports financial outcomes and resource usage directly. When positive calibration targets $a_0$ and $\rho_0$ are registered, the default quality and efficiency components are
-\begin{align}
-    Q &= 0.7\,\operatorname{clip}_{[0,1]}\!\left(\frac{\Delta\operatorname{ARR}^{75}}{a_0}\right)
-       +0.3\,\operatorname{clip}_{[0,1]}\!\left(\frac{\overline{\operatorname{RankIC}}}{\rho_0}\right),
-       \label{eq:quality}\\
-    E &= Q\max\!\left(0,1-\frac{U_{\mathrm{tok}}}{B_{\mathrm{tok}}}\right),
-       \label{eq:efficiency}
-\end{align}
-where $U_{\mathrm{tok}}$ is observed total model usage. Diversity $D\in[0,1]$ measures qualified feature groups and their novelty relative to a frozen reference bank; its exact construction appears in Appendix~\ref{app:diversity}. For eligible runs with all required components available, the default composite is
+On each valid entry date, RankIC is the cross-sectional rank correlation between $s_{i,t-1}$ and $y_{i,t}$; $\overline{\mathrm{RankIC}}$ is its daily mean and RankICIR the mean divided by the sample standard deviation. Turnover $\mathrm{TO}\in[0,1]$ is the mean daily fraction of the Top75 basket that is replaced. With $x^+=\max(0,x)$, the in-sample (2022--2023) quality score is the weighted geometric mean
 \begin{equation}
-    S=70Q+20E+10QD.
+    Q=\Big(\sqrt{\overline{\mathrm{RankIC}}^{+}}\Big)^{w_1}
+      \Big(\tfrac{A^+}{1+A^+}\Big)^{w_2}
+      \Big(\tfrac{\mathrm{SR}_L^+}{1+\mathrm{SR}_L^+}\Big)^{w_3}
+      \Big(\tfrac{\mathrm{SR}_{LS}^+}{1+\mathrm{SR}_{LS}^+}\Big)^{w_4}
+      \Big(\tfrac{1}{1+\mathrm{TO}}\Big)^{w_5},
+    \qquad A=\mathrm{RankICIR}\cdot\sqrt{243},
+    \label{eq:quality}
+\end{equation}
+with $(w_1,\dots,w_5)=(0.225,0.225,0.225,0.225,0.1)$. Each term lies in $[0,1]$ with diminishing returns. Turnover enters as $1/(1+\mathrm{TO})$ so that a fully rotating basket halves this term instead of zeroing $Q$. Efficiency and diversity are
+\begin{equation}
+    E=Q\left(1-\frac{T}{B}\right),\qquad
+    D=Q\,\frac{\min(K,32)}{32},
+    \label{eq:efficiency}
+\end{equation}
+where $T$ is the provider-reported token usage, $B=500{,}000$ the token budget, and $K$ the number of qualified, used, and mutually independent feature clusters (Appendix~\ref{app:diversity}). The window score is
+\begin{equation}
+    S=\begin{cases}70Q+20E+10D & \text{one-shot and vanilla tracks},\\ 80Q+20D & \text{system and custom tracks,}\end{cases}
     \label{eq:overall}
 \end{equation}
-The efficiency component already contains $Q$. Calibration targets, component weights, reference policies, and qualification thresholds are frozen with the suite.
+on a 0--100 scale, and the leaderboard total is
+\begin{equation}
+    \mathrm{Total}=0.3\,S_{\mathrm{in}}+0.7\,S_{\mathrm{out}}.
+    \label{eq:total}
+\end{equation}
+The in-sample formula, its parameters, and all component scores are published. The out-of-sample (2024) score $S_{\mathrm{out}}$ takes into account RankIC, IC stability, long-only and long--short Sharpe ratios, turnover, factor diversity, and token usage; its combination is not disclosed and may be revised independently. Raw metrics of both windows are published.
 
-Financial eligibility and composite-score eligibility are assessed separately. Arbitrary scoring programs may have valid financial results while their declared feature use remains unverified, leaving diversity and a diversity-weighted composite unavailable. Comparisons across all valid strategy programs therefore use common financial endpoints; composite comparisons state the additional eligibility conditions. Unavailable metrics retain reason codes and sample counts. A complete replicate aggregate requires all prescribed values; averaging only successful runs is reported explicitly as a conditional statistic. These rules preserve failures and missing evidence in the benchmark record.
+Unavailable metrics retain reason codes and sample counts and are never replaced by zero. Failed runs remain in every denominator; averages over completed runs only are labelled as conditional statistics.

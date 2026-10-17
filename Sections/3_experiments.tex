@@ -1,41 +1,125 @@
-\section{Evaluation Design and Leaderboard}
+\section{Experiments}
 \label{sec:experiments}
+% DRAFT (Claude, factual skeleton). Prose to be rewritten by Gemini through the
+% relay; every number below comes from Tables/generated/* or the v9 suite record.
+\input{Tables/generated/e1_macros}
 
-The evaluation will study how model choice, research procedure, resource budget, and input profile affect sealed-window performance under \BenchmarkName. This section specifies the comparison and reporting structure. Leaderboard values and RSI Harness findings will be inserted from registered campaign records; the current draft makes no empirical ranking claim.
-
-\subsection{Experimental Registration}
+\subsection{Setup}
 \label{sec:exp_setup}
 
-Each comparison binds a data release and its provenance, an instrument population, training and research windows, a sealed final interval, a runtime, a budget profile, a feedback policy, and an evaluator version. Input-profile comparisons use separately identified suites with matched dates and financial rules where feasible. Calendar boundaries include the predecessor signal and final label realization required by Section~\ref{sec:arena_returns}. The actual model/provider identities, prompts, harness versions, model parameters, repeated-run identifiers, and prior resources are recorded before the campaign.
-
-The daily profile uses the financial conventions in Table~\ref{tab:daily_protocol}. Data size, date ranges, budgets, calibration targets, and repeat counts require campaign-specific values and remain open in the registration table of Appendix~\ref{app:registry}. Fixed published factors may serve as financial references after reevaluation on the same target window and protocol. Their original historical returns are not substituted for those observations, and they do not enter model-token efficiency comparisons.
+All experiments use suite \texttt{sandbox\_2022\_2023\_research\_2024\_final\_v9} (Table~\ref{tab:daily_protocol}). The research (in-sample) window is 2022--2023 and the sealed final (out-of-sample) window is calendar 2024; no cross-year experiment is run. Each run has a total budget of 500{,}000 model tokens and at most five research evaluations. No separate per-call output limit or platform-imposed reasoning effort is set. Models may read platform documents on request; document reads are ordinary model calls and count against the same budget. Research feedback is monthly, and strategy failures are reported with error type and location.
 
 \input{Tables/TabDailyProtocol}
 
-\subsection{Leaderboard and Reporting Policy}
-\label{sec:leaderboard}
+\paragraph{Models.}
+We evaluate six models: GPT-6 Astra, Claude Opus 5.5, Gemini 3.8 Flash, DeepSeek V4.1 Flash, GLM-5.3, and Kimi K3. Table~\ref{tab:models} lists the registered provider model identifiers. All model calls reach the provider through relay endpoints rather than the providers' official APIs; Section~\ref{sec:limitations} discusses this limitation.
 
-The primary leaderboard compares financial endpoints available across valid scoring programs: Top75 research ARR, paired excess ARR, RankIC, and additive drawdown, together with completion and actual resource usage. Composite scores are reported only for matched settings with the required calibration, usage, and verified feature evidence. Research-period best scores remain distinct from the frozen strategy's final-window scorecard. Cash-account outcomes, label coverage, and the Top200 and Top400 diagnostics accompany the main table.
+\begin{table}[t]
+    \centering
+    \footnotesize
+    \caption{Registered models in the v9 suite. Because calls pass through relay endpoints, identifiers are configured aliases rather than verified official revisions.}
+    \label{tab:models}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        Model & Provider model identifier & Adapter \\
+        \midrule
+        GPT-6 Astra & \texttt{gpt-6-astra} & Responses \\
+        Claude Opus 5.5 & \texttt{claude-opus-5-5} & Anthropic Messages \\
+        Gemini 3.8 Flash & \texttt{gemini-3.8-flash} & Chat Completions \\
+        DeepSeek V4.1 Flash & \texttt{deepseek-v4.1-flash} & Chat Completions \\
+        GLM-5.3 & \texttt{glm-5.3} & Chat Completions \\
+        Kimi K3 & \texttt{kimi-k3} & Chat Completions \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\input{Tables/TabLeaderboard}
+\paragraph{Harnesses.}
+\emph{One-shot} returns one complete strategy without research feedback or model-assisted repair; the platform then replays it on the research window without returning the result to the model or charging the budget. \emph{Vanilla} is a model--feedback conversation: the model may use permitted research feedback over up to five evaluations and freezes one completed trial. Platform failures and cancellations do not consume evaluations.
 
-For every row, the report will retain the number of prescribed and completed replicates, all failures and unavailable fields, metric sample counts, and dispersion across replicates. Complete aggregate statistics require the prescribed observations; any success-conditioned summary will be explicitly identified and accompanied by completion rates. Time-series uncertainty estimates must respect dependence between adjacent holding cohorts. A missing value will carry its reason, rather than a zero or an inferred result.
+\paragraph{Replicates.}
+E1 crosses the six models with the two harnesses and runs three independent replicates per cell, for \EOnePrescribed\ prescribed runs. Replicates share no conversation, candidate, or final result. In each cell the first run was designated as the leaderboard entry before any result was observed; the remaining replicates are used only for this paper. Failed runs stay in the registry and in every denominator; a replacement run is added alongside a failed one rather than substituted for it.
 
-% INSERTION POINT: Populate TabLeaderboard from evaluator-owned final scorecards.
-% INSERTION POINT: Summarize observed rankings only after registry and scorecards agree.
+\paragraph{Reference line.}
+Navers is a fixed reference strategy evaluated once per window with the same replay engine and the platform's scoring. It was not selected using 2024 data. It makes no model calls, so token efficiency is not applicable, and it is scored with the system-track weights ($S=80Q+20D$).
 
-\subsection{Benchmark Analyses}
-\label{sec:exp_analysis}
+\subsection{Run Status}
+\label{sec:exp_status}
 
-\paragraph{Model and harness effects.}
-Matched model-by-harness comparisons will include one-shot generation, vanilla feedback iteration, and the registered RSI Harness. These conditions share the applicable data, execution, and financial contract. Their distinct feedback opportunities and final-selection policies are explicit experimental factors. Harness-specific component studies will be added after its implementation and frozen evaluation variant are specified.
+Results in this version are a snapshot taken at \EOneSnapshot, while E1 is still running. Table~\ref{tab:e1_status} gives the registry: \EOneSubmitted\ runs had been submitted, \EOneCompleted\ had completed, \EOneScored\ had an available total score, \EOneFailed\ had failed, and \EOneLive\ were still in progress.
 
-\paragraph{Budget and information effects.}
-Preregistered budget settings will measure how final-window outcomes change with token and evaluation limits, alongside actual usage. Research tokens required to reach a fixed target may be reported as a secondary diagnostic, with non-attainment and incomplete execution distinguished. Input-profile comparisons will report both information availability and preprocessing differences, so a change in outcome is interpreted under its actual observation contract.
+\input{Tables/generated/TabE1Status}
 
-\paragraph{Financial reference and operational checks.}
-Fixed-factor references will be reevaluated on the target suite, retaining their genuine missingness and disclosing instrument-scope differences. Platform checks will exercise future-data rejection, sealed-release access, final commitment, recovery of model operations, and preservation of core results when optional publication fails. Matched real-data runs through the research and Arena entry points will test financial agreement. Synthetic contract checks, deployed boundary checks, and measured campaign performance will be reported as separate evidence.
+\paragraph{Observed failures.}
+One Claude Opus 5.5 one-shot run failed with a protocol violation (\texttt{INVALID\_PROPOSAL}: the replicate did not complete the required protocol) after one model call of 3{,}653 tokens. It is kept in the registry, and a replacement run was submitted for the same cell. At the snapshot, three further runs were blocked: two Opus runs on an unresolved model call (\texttt{MODEL\_CALL\_UNCERTAIN}), which the platform holds for reconciliation instead of issuing a new paid call, and one Astra one-shot run on an unavailable dependency. Both completed Astra one-shot runs finished their sealed final evaluation, but the platform's research-window replay failed for them (\texttt{RESEARCH\_EVALUATION\_FAILED}), so $S_{\mathrm{in}}$ and hence the total score are unavailable; their 2024 financial metrics appear in Table~\ref{tab:e1_main}.
 
-\begin{tcolorbox}[title={Reserved: empirical findings},colback=brandbg,colframe=brandprimary,breakable]
-Insert the finalized leaderboard, budget analyses, completion and recovery statistics, and RSI Harness comparisons here. Each result must identify its suite and run records. The available implementation defines the measurement procedure; campaign data will establish the observed rankings and effect sizes.
+\subsection{Main Results}
+\label{sec:exp_main}
+
+\input{Tables/generated/TabE1Main}
+
+\begin{tcolorbox}[title={Pending: E1 findings},colback=brandbg,colframe=brandprimary,breakable]
+Analysis of model and harness effects will be written once every cell has three completed replicates. Planned content: per-dimension findings for backtest performance, token efficiency, and diversity; one-shot versus vanilla per model; correlation between research-window and sealed-window scores; dispersion across replicates. No ranking claim is made in this version.
 \end{tcolorbox}
+
+Table~\ref{tab:navers} reports the Navers reference line.
+
+\begin{table}[t]
+    \centering
+    \footnotesize
+    \caption{Navers reference line, Top75. Values come from an offline operator evaluation with the same replay engine and windows under the predecessor suite; re-evaluation on v9 is \ph{pending}. Token efficiency is not applicable.}
+    \label{tab:navers}
+    \begin{tabular}{@{}lrr@{}}
+        \toprule
+        Metric & 2022--2023 & 2024 \\
+        \midrule
+        ARR (\%) & 5.2 & 23.4 \\
+        $\Delta$ARR vs.\ full market (\%) & 26.5 & 29.2 \\
+        Long-only Sharpe & 0.33 & 0.74 \\
+        Long--short Sharpe & 6.51 & 4.38 \\
+        RankIC & 0.007 & 0.017 \\
+        Turnover & 0.87 & 0.86 \\
+        Max.\ drawdown (\%) & 27.6 & 43.9 \\
+        \midrule
+        Window score $S$ & 28.59 & 35.71 \\
+        Total $0.3S_{\mathrm{in}}+0.7S_{\mathrm{out}}$ & \multicolumn{2}{c}{33.57} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{In-Sample Score Decomposition}
+\label{sec:exp_insample}
+
+Because the in-sample formula is public, Table~\ref{tab:e1_insample} decomposes $S_{\mathrm{in}}$ into its components and inputs. Out-of-sample components are not reported.
+
+\input{Tables/generated/TabE1InSample}
+
+\subsection{Token Usage}
+\label{sec:exp_tokens}
+
+Figure~\ref{fig:token_score} relates provider-reported token usage to the total score for every completed and scored run.
+
+\begin{figure}[t]
+    \centering
+    \input{Figures/generated/FigTokenScore}
+    \caption{Provider-reported tokens per run versus total score, by harness. Only completed runs with an available total score are plotted.}
+    \label{fig:token_score}
+\end{figure}
+
+\subsection{Planned: Errors-Only Feedback Control}
+\label{sec:exp_feedback}
+
+\begin{tcolorbox}[title={Planned, not run},colback=brandbg,colframe=brandprimary,breakable]
+E2 will compare the full-feedback vanilla runs of GPT-6 Astra and DeepSeek V4.1 Flash from E1 with vanilla runs that see only execution errors. The control keeps trial identifiers, completion or failure status, the minimum state needed to select a strategy, remaining budget, and strategy-execution and proposal errors; it returns no return, IC, rank, or diversity values and no labels derived from them. The platform still evaluates and stores every trial under the same scoring. The two models were fixed before any sealed result was observed. This experiment has not been run, and no result is reported.
+\end{tcolorbox}
+
+\subsection{Limitations}
+\label{sec:limitations}
+% DRAFT (Claude): to be polished by Gemini.
+
+\paragraph{Temporal contamination.} The sealed window is calendar 2024, which likely precedes the training cutoffs of all evaluated models. Runtime authorization prevents strategies from reading 2024 data during research, but it cannot rule out that a model memorized 2024 market behavior during pretraining. No contamination audit was run for this version, so sealed-window results should be read as historical out-of-sample performance rather than as forward-looking evidence. A forward-looking final window that opens after strategies are frozen is the planned remedy.
+
+\paragraph{Relay endpoints.} All model calls in this paper pass through relay endpoints rather than the providers' official APIs. We therefore cannot verify that a relay served the stated model revision, and token counts are those reported through the relay.
+
+\paragraph{Scale.} Three replicates per cell describe run-to-run variability but do not establish statistical significance, and repeated runs on one market window measure model randomness rather than generalization across markets or periods. The universe covers Shenzhen A-shares only.
+
+\paragraph{Scoring.} The out-of-sample combination is not disclosed and may change; the published in-sample formula and weights were chosen by the organizers, and weight sensitivity is not yet analyzed.
