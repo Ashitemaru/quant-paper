@@ -7,12 +7,12 @@
 \subsection{Setup}
 \label{sec:exp_setup}
 
-All experiments use suite \texttt{sandbox\_2022\_2023\_research\_2024\_final\_v9} (Table~\ref{tab:daily_protocol}). The research (in-sample) window is 2022--2023 and the sealed final (out-of-sample) window is calendar 2024; no cross-year experiment is run. Each run has a total budget of 500{,}000 model tokens and at most five research evaluations. No separate per-call output limit or platform-imposed reasoning effort is set. Models may read platform documents on request; document reads are ordinary model calls and count against the same budget. Research feedback is monthly, and strategy failures are reported with error type and location.
+All experiments are conducted using the \texttt{sandbox\_2022\_2023\_research\_2024\_final\_v9} suite (Table~\ref{tab:daily_protocol}). The research (in-sample) window spans 2022--2023, while the sealed final (out-of-sample) window corresponds to calendar year 2024; no cross-year experiments are executed. Each run is allocated a cumulative budget of 500{,}000 model tokens and a maximum of five research evaluations. No independent per-call output limit or platform-imposed reasoning effort constraint is applied. Models may access platform documentation on demand; such requests are treated as standard model calls and accrue against the shared budget. Research feedback is provided at a monthly cadence, and any strategy execution failures are reported along with their error type and location.
 
 \input{Tables/TabDailyProtocol}
 
 \paragraph{Models.}
-We evaluate six models: GPT-6 Astra, Claude Opus 5.5, Gemini 3.8 Flash, DeepSeek V4.1 Flash, GLM-5.3, and Kimi K3. Table~\ref{tab:models} lists the registered provider model identifiers. All model calls reach the provider through relay endpoints rather than the providers' official APIs; Section~\ref{sec:limitations} discusses this limitation.
+We evaluate six models: GPT-6 Astra, Claude Opus 5.5, Gemini 3.8 Flash, DeepSeek V4.1 Flash, GLM-5.3, and Kimi K3. Their registered provider model identifiers are detailed in Table~\ref{tab:models}. All model requests are routed through relay endpoints rather than the providers' official APIs; we discuss this limitation in Section~\ref{sec:limitations}.
 
 \begin{table}[t]
     \centering
@@ -34,23 +34,23 @@ We evaluate six models: GPT-6 Astra, Claude Opus 5.5, Gemini 3.8 Flash, DeepSeek
 \end{table}
 
 \paragraph{Harnesses.}
-\emph{One-shot} returns one complete strategy without research feedback or model-assisted repair; the platform then replays it on the research window without returning the result to the model or charging the budget. \emph{Vanilla} is a model--feedback conversation: the model may use permitted research feedback over up to five evaluations and freezes one completed trial. Platform failures and cancellations do not consume evaluations.
+\emph{One-shot} generates one complete strategy without research feedback or model-assisted repair; the platform then replays it on the research window without returning results to the model or charging the budget. \emph{Vanilla} implements an interactive model--feedback dialogue in which the model may leverage permitted research feedback across up to five evaluations before freezing one completed trial. Platform failures and cancellations do not consume evaluations.
 
 \paragraph{Replicates.}
-E1 crosses the six models with the two harnesses and runs three independent replicates per cell, for \EOnePrescribed\ prescribed runs. Replicates share no conversation, candidate, or final result. In each cell the first run was designated as the leaderboard entry before any result was observed; the remaining replicates are used only for this paper. Failed runs stay in the registry and in every denominator; a replacement run is added alongside a failed one rather than substituted for it.
+E1 crosses the six models with the two harnesses and executes three independent replicates per cell, yielding \EOnePrescribed\ prescribed runs. Replicates share no conversation history, candidates, or final results. Within each cell, the first run was designated as the leaderboard entry prior to observing any outcomes; the remaining replicates are analyzed solely for this paper. Failed runs remain in the registry and in every denominator; a replacement run is appended alongside a failed attempt rather than substituted for it.
 
 \paragraph{Reference line.}
-Navers is a fixed reference strategy evaluated once per window with the same replay engine and the platform's scoring. It was not selected using 2024 data. It makes no model calls, so token efficiency is not applicable, and it is scored with the system-track weights ($S=80Q+20D$).
+Navers serves as a fixed reference strategy evaluated once per window using the identical replay engine and platform scoring framework. It was not selected using 2024 data. As it requires no model calls, token efficiency is not applicable, and it is scored using the system-track weights ($S=80Q+20D$).
 
 \subsection{Run Status}
 \label{sec:exp_status}
 
-Results in this version are a snapshot taken at \EOneSnapshot, while E1 is still running. Table~\ref{tab:e1_status} gives the registry: \EOneSubmitted\ runs had been submitted, \EOneCompleted\ had completed, \EOneScored\ had an available total score, \EOneFailed\ had failed, and \EOneLive\ were still in progress.
+The results in this version reflect a snapshot taken at \EOneSnapshot, while E1 remains ongoing. Table~\ref{tab:e1_status} summarizes the registry status: \EOneSubmitted\ runs had been submitted, \EOneCompleted\ had completed, \EOneScored\ had an available total score, \EOneFailed\ had failed, and \EOneLive\ were still in progress.
 
 \input{Tables/generated/TabE1Status}
 
 \paragraph{Observed failures.}
-One Claude Opus 5.5 one-shot run failed with a protocol violation (\texttt{INVALID\_PROPOSAL}: the replicate did not complete the required protocol) after one model call of 3{,}653 tokens. It is kept in the registry, and a replacement run was submitted for the same cell. At the snapshot, three further runs were blocked: two Opus runs on an unresolved model call (\texttt{MODEL\_CALL\_UNCERTAIN}), which the platform holds for reconciliation instead of issuing a new paid call, and one Astra one-shot run on an unavailable dependency. Both completed Astra one-shot runs finished their sealed final evaluation, but the platform's research-window replay failed for them (\texttt{RESEARCH\_EVALUATION\_FAILED}), so $S_{\mathrm{in}}$ and hence the total score are unavailable; their 2024 financial metrics appear in Table~\ref{tab:e1_main}.
+One Claude Opus 5.5 one-shot run failed due to a protocol violation (\texttt{INVALID\_PROPOSAL}: the replicate did not complete the required protocol) after one model call of 3{,}653 tokens. This run is retained in the registry, and a replacement run was submitted for the same cell. At the time of the snapshot, three further runs were blocked: two Opus runs stalled on an unresolved model call (\texttt{MODEL\_CALL\_UNCERTAIN}), which the platform holds for reconciliation rather than issuing a new paid call, and one Astra one-shot run was blocked by an unavailable dependency. Although both completed Astra one-shot runs finished their sealed final evaluation, the platform's research-window replay failed (\texttt{RESEARCH\_EVALUATION\_FAILED}), rendering $S_{\mathrm{in}}$ and the overall score unavailable; their 2024 financial metrics are presented in Table~\ref{tab:e1_main}.
 
 \subsection{Main Results}
 \label{sec:exp_main}
@@ -58,7 +58,7 @@ One Claude Opus 5.5 one-shot run failed with a protocol violation (\texttt{INVAL
 \input{Tables/generated/TabE1Main}
 
 \begin{tcolorbox}[title={Pending: E1 findings},colback=brandbg,colframe=brandprimary,breakable]
-Analysis of model and harness effects will be written once every cell has three completed replicates. Planned content: per-dimension findings for backtest performance, token efficiency, and diversity; one-shot versus vanilla per model; correlation between research-window and sealed-window scores; dispersion across replicates. No ranking claim is made in this version.
+A formal analysis of model and harness effects will be incorporated once three replicates have been completed for each experimental cell. Planned reporting encompasses: dimension-specific assessments of backtest performance, token efficiency, and diversity; comparisons of one-shot versus vanilla configurations across models; the correlation between research-window and sealed-window scores; and dispersion across replicates. No ranking claims are asserted in this version.
 \end{tcolorbox}
 
 Table~\ref{tab:navers} reports the Navers reference line.
@@ -109,17 +109,17 @@ Figure~\ref{fig:token_score} relates provider-reported token usage to the total 
 \label{sec:exp_feedback}
 
 \begin{tcolorbox}[title={Planned, not run},colback=brandbg,colframe=brandprimary,breakable]
-E2 will compare the full-feedback vanilla runs of GPT-6 Astra and DeepSeek V4.1 Flash from E1 with vanilla runs that see only execution errors. The control keeps trial identifiers, completion or failure status, the minimum state needed to select a strategy, remaining budget, and strategy-execution and proposal errors; it returns no return, IC, rank, or diversity values and no labels derived from them. The platform still evaluates and stores every trial under the same scoring. The two models were fixed before any sealed result was observed. This experiment has not been run, and no result is reported.
+E2 will compare the full-feedback vanilla runs of GPT-6 Astra and DeepSeek V4.1 Flash from E1 against vanilla runs that observe only execution errors. The control setting retains trial identifiers, completion or failure statuses, the minimal state required for strategy selection, the remaining budget, and strategy-execution and proposal errors; it withholds all return, IC, rank, and diversity values, as well as any labels derived from them. The platform nevertheless evaluates and logs every trial under the same scoring scheme. Both models were fixed prior to observing any sealed results. This experiment has not been executed, and no results are reported.
 \end{tcolorbox}
 
 \subsection{Limitations}
 \label{sec:limitations}
 % DRAFT (Claude): to be polished by Gemini.
 
-\paragraph{Temporal contamination.} The sealed window is calendar 2024, which likely precedes the training cutoffs of all evaluated models. Runtime authorization prevents strategies from reading 2024 data during research, but it cannot rule out that a model memorized 2024 market behavior during pretraining. No contamination audit was run for this version, so sealed-window results should be read as historical out-of-sample performance rather than as forward-looking evidence. A forward-looking final window that opens after strategies are frozen is the planned remedy.
+\paragraph{Temporal contamination.} The sealed window spans calendar 2024, which likely precedes the pretraining data horizons of all evaluated models. Although runtime authorization prevents strategies from accessing 2024 data during development, it cannot eliminate the possibility that an underlying model memorized 2024 market dynamics during pretraining. Because a formal contamination audit was not conducted for this version, sealed-window results should be interpreted as historical out-of-sample performance rather than definitive forward-looking evidence. A prospective evaluation window initiated strictly after strategies are frozen represents the planned remedy.
 
-\paragraph{Relay endpoints.} All model calls in this paper pass through relay endpoints rather than the providers' official APIs. We therefore cannot verify that a relay served the stated model revision, and token counts are those reported through the relay.
+\paragraph{Relay endpoints.} All model queries in this paper are routed through relay endpoints rather than direct provider APIs. Consequently, we cannot independently verify that a relay served the stated model revision, and token metrics reflect the counts reported directly by the relay.
 
-\paragraph{Scale.} Three replicates per cell describe run-to-run variability but do not establish statistical significance, and repeated runs on one market window measure model randomness rather than generalization across markets or periods. The universe covers Shenzhen A-shares only.
+\paragraph{Scale.} While three replicates per cell capture run-to-run variability, they do not establish formal statistical significance. Furthermore, repeated evaluations on a single market window reflect intrinsic model stochasticity rather than generalization across distinct markets or temporal periods. In addition, the asset universe is restricted exclusively to Shenzhen A-shares.
 
-\paragraph{Scoring.} The out-of-sample combination is not disclosed and may change; the published in-sample formula and weights were chosen by the organizers, and weight sensitivity is not yet analyzed.
+\paragraph{Scoring.} The out-of-sample aggregation scheme remains undisclosed and subject to change. The published in-sample formula and corresponding weights were established by the organizers, and a formal sensitivity analysis of these weights has not yet been conducted.
