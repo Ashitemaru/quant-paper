@@ -1,0 +1,964 @@
+{
+ "fetched_at": "2026-10-17T13:30:18+00:00",
+ "runs": [
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:52:35.158543+00:00",
+   "diversity": {
+    "comparable_reference_count": null,
+    "diversity_score": 0.0,
+    "independent_cluster_count": 0.0,
+    "novelty": null,
+    "qualified_feature_count": 0.0,
+    "reference_count": 0.0,
+    "reference_coverage": null,
+    "usage_evidence_status": "verified"
+   },
+   "efficiency": {
+    "completion_rate": 1.0,
+    "compute_summary": {
+     "cpu_seconds": 1668.1556270000008,
+     "evaluation": 0.0,
+     "feature_bytes": 55318899.0,
+     "raw_bytes": 6309981322.0,
+     "request": 964.0,
+     "token": 20262.0
+    },
+    "evaluation_count": 0,
+    "model_call_count": 2,
+    "novel_factor_yield_at_budget": null,
+    "novel_factor_yield_reason": "REPLICATE_INCOMPLETE",
+    "pareto_efficient": null,
+    "quality_at_budget": null,
+    "research_target_observations": [
+     {
+      "basis": "research",
+      "reason_code": "TARGET_NOT_REGISTERED",
+      "replicate_id": "rep_f0714a8569ed4086a0fb03a2f3889f63",
+      "right_censored": false,
+      "target_quality": null,
+      "token_budget": 500000,
+      "tokens_to_target": null,
+      "trial_ref": null
+     }
+    ],
+    "tokens_charged": 20262,
+    "tokens_to_target": null,
+    "tokens_to_target_reason": "TARGET_NOT_REGISTERED",
+    "usage_complete": true,
+    "valid_trial_rate": 0.0
+   },
+   "eligibility": {
+    "reason_codes": [
+     "WINDOW_SCORE_UNAVAILABLE"
+    ],
+    "status": "ineligible"
+   },
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_c963ef3d5c144593930ba49141a68d85",
+   "episode_status": "completed",
+   "error": null,
+   "final_finance": {
+    "arr": {
+     "mean": -0.30185912753306077,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "benchmark_arr": {
+     "mean": -0.05866657273293601,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "delta_arr": {
+     "mean": -0.24319255480012475,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "ic": {
+     "mean": -0.015516502157036734,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "icir": {
+     "mean": -0.10549263893420488,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "long_short_sharpe": {
+     "mean": -1.2008569182314381,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "mdd": {
+     "mean": -0.5202799072433402,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": -0.5202799072433402
+    },
+    "net_return": {
+     "mean": -0.29937469026941416,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "rank_ic": {
+     "mean": -0.009655710398656626,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "rank_icir": {
+     "mean": -0.05394092608749932,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "selection_turnover": {
+     "mean": 0.9056147660818713,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "sharpe": {
+     "mean": -1.1368531862656812,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    }
+   },
+   "final_score": null,
+   "finished_at": "2026-10-17T13:27:23.467045+00:00",
+   "model": {
+    "context_limit": null,
+    "limits_source": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+    "model_ref": "astra6_v3_total_budget_r3",
+    "output_limit": 128000,
+    "provider": "sbtunnel",
+    "revision": "gpt-6-astra (provider alias)",
+    "tokenizer": "provider-reported"
+   },
+   "model_ref": "astra6_v3_total_budget_r3",
+   "phase": "finished",
+   "publication_status": "public",
+   "replicate_id": "rep_f0714a8569ed4086a0fb03a2f3889f63",
+   "replicate_status": "completed",
+   "research_finance": {
+    "arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "benchmark_arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "delta_arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "ic": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "icir": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "long_short_sharpe": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "mdd": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "net_return": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "rank_ic": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "rank_icir": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "selection_turnover": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "sharpe": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    }
+   },
+   "research_mode": "one_shot",
+   "research_score": {
+    "Q": null,
+    "diversity_component": null,
+    "efficiency_component": null,
+    "reason_codes": [
+     "RESEARCH_EVALUATION_FAILED"
+    ],
+    "score": null
+   },
+   "started_at": "2026-10-17T12:52:35.678298+00:00",
+   "total_score": null,
+   "track": "oneshot",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:52:35.229583+00:00",
+   "diversity": {
+    "comparable_reference_count": null,
+    "diversity_score": 0.0,
+    "independent_cluster_count": 0.0,
+    "novelty": null,
+    "qualified_feature_count": 0.0,
+    "reference_count": 0.0,
+    "reference_coverage": null,
+    "usage_evidence_status": "verified"
+   },
+   "efficiency": {
+    "completion_rate": 1.0,
+    "compute_summary": {
+     "cpu_seconds": 1732.1494369999987,
+     "evaluation": 0.0,
+     "feature_bytes": 49334387.0,
+     "raw_bytes": 6491245859.0,
+     "request": 964.0,
+     "token": 20089.0
+    },
+    "evaluation_count": 0,
+    "model_call_count": 2,
+    "novel_factor_yield_at_budget": null,
+    "novel_factor_yield_reason": "REPLICATE_INCOMPLETE",
+    "pareto_efficient": null,
+    "quality_at_budget": null,
+    "research_target_observations": [
+     {
+      "basis": "research",
+      "reason_code": "TARGET_NOT_REGISTERED",
+      "replicate_id": "rep_9f2e108f59da49ba9647ae7bac14f332",
+      "right_censored": false,
+      "target_quality": null,
+      "token_budget": 500000,
+      "tokens_to_target": null,
+      "trial_ref": null
+     }
+    ],
+    "tokens_charged": 20089,
+    "tokens_to_target": null,
+    "tokens_to_target_reason": "TARGET_NOT_REGISTERED",
+    "usage_complete": true,
+    "valid_trial_rate": 0.0
+   },
+   "eligibility": {
+    "reason_codes": [
+     "WINDOW_SCORE_UNAVAILABLE"
+    ],
+    "status": "ineligible"
+   },
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_1758ad06dcfe408191d54f8c4a06dd17",
+   "episode_status": "completed",
+   "error": null,
+   "final_finance": {
+    "arr": {
+     "mean": -0.3022731253417129,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "benchmark_arr": {
+     "mean": -0.05866657273293601,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "delta_arr": {
+     "mean": -0.2436065526087769,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "ic": {
+     "mean": -0.017817537551556246,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "icir": {
+     "mean": -0.11779868410138529,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "long_short_sharpe": {
+     "mean": -1.515507841320258,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "mdd": {
+     "mean": -0.5423314882591098,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": -0.5423314882591098
+    },
+    "net_return": {
+     "mean": -0.2997852806886947,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "rank_ic": {
+     "mean": -0.017365805901038974,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "rank_icir": {
+     "mean": -0.09458920324454673,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "selection_turnover": {
+     "mean": 0.9176666666666666,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    },
+    "sharpe": {
+     "mean": -1.0905940015279083,
+     "sample_count": 1,
+     "std": 0.0,
+     "worst": null
+    }
+   },
+   "final_score": null,
+   "finished_at": "2026-10-17T13:26:26.46297+00:00",
+   "model": {
+    "context_limit": null,
+    "limits_source": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+    "model_ref": "astra6_v3_total_budget_r3",
+    "output_limit": 128000,
+    "provider": "sbtunnel",
+    "revision": "gpt-6-astra (provider alias)",
+    "tokenizer": "provider-reported"
+   },
+   "model_ref": "astra6_v3_total_budget_r3",
+   "phase": "finished",
+   "publication_status": "public",
+   "replicate_id": "rep_9f2e108f59da49ba9647ae7bac14f332",
+   "replicate_status": "completed",
+   "research_finance": {
+    "arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "benchmark_arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "delta_arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "ic": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "icir": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "long_short_sharpe": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "mdd": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "net_return": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "rank_ic": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "rank_icir": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "selection_turnover": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "sharpe": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    }
+   },
+   "research_mode": "one_shot",
+   "research_score": {
+    "Q": null,
+    "diversity_component": null,
+    "efficiency_component": null,
+    "reason_codes": [
+     "RESEARCH_EVALUATION_FAILED"
+    ],
+    "score": null
+   },
+   "started_at": "2026-10-17T12:52:36.017209+00:00",
+   "total_score": null,
+   "track": "oneshot",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:52:36.097985+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_5b9c6ea75c5f4265b9fe7cb506df9a8b",
+   "episode_status": "running",
+   "error": {
+    "code": "DEPENDENCY_UNAVAILABLE",
+    "detail": "platform execution is waiting for recovery; submitted work is preserved",
+    "retryable": true
+   },
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "astra6_v3_total_budget_r3",
+   "phase": "research",
+   "publication_status": "private",
+   "replicate_id": "rep_92c5b7082d5140e7b76e4b559347764e",
+   "replicate_status": "blocked",
+   "research_finance": null,
+   "research_mode": "one_shot",
+   "research_score": null,
+   "started_at": "2026-10-17T12:52:36.591193+00:00",
+   "total_score": null,
+   "track": "oneshot",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:52:36.211151+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_9453729190d4406282956cd51be0e44b",
+   "episode_status": "running",
+   "error": null,
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "astra6_v3_total_budget_r3",
+   "phase": "research",
+   "publication_status": "private",
+   "replicate_id": "rep_ca14c1841a2d4162ba74892abe8d7717",
+   "replicate_status": "running",
+   "research_finance": null,
+   "research_mode": "vanilla_iterative",
+   "research_score": null,
+   "started_at": "2026-10-17T12:52:37.014092+00:00",
+   "total_score": null,
+   "track": "vanilla",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:52:36.595302+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_b8b73ac420c1415485f6352c7f70e69d",
+   "episode_status": "running",
+   "error": null,
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "astra6_v3_total_budget_r3",
+   "phase": "research",
+   "publication_status": "private",
+   "replicate_id": "rep_d370dc41ddda4f00aa63d3c438041f0a",
+   "replicate_status": "running",
+   "research_finance": null,
+   "research_mode": "vanilla_iterative",
+   "research_score": null,
+   "started_at": "2026-10-17T12:52:37.657071+00:00",
+   "total_score": null,
+   "track": "vanilla",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:52:37.21536+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_77a56bd534d34d5c9c8aca6bec3574ae",
+   "episode_status": "running",
+   "error": null,
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "astra6_v3_total_budget_r3",
+   "phase": "research",
+   "publication_status": "private",
+   "replicate_id": "rep_f7e406821d5b4d209ad6e19bb43ee4ac",
+   "replicate_status": "running",
+   "research_finance": null,
+   "research_mode": "vanilla_iterative",
+   "research_score": null,
+   "started_at": "2026-10-17T12:52:38.066232+00:00",
+   "total_score": null,
+   "track": "vanilla",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:52:37.9888+00:00",
+   "diversity": null,
+   "efficiency": {
+    "completion_rate": 0.0,
+    "compute_summary": {
+     "cpu_seconds": 0.518869,
+     "evaluation": 0.0,
+     "feature_bytes": 0.0,
+     "raw_bytes": 0.0,
+     "request": 0.0,
+     "token": 3653.0
+    },
+    "evaluation_count": 0,
+    "model_call_count": 1,
+    "novel_factor_yield_at_budget": null,
+    "novel_factor_yield_reason": "REPLICATE_INCOMPLETE",
+    "pareto_efficient": null,
+    "quality_at_budget": null,
+    "research_target_observations": [
+     {
+      "basis": "research",
+      "reason_code": "TARGET_NOT_REGISTERED",
+      "replicate_id": "rep_9712c8aedae84b46a5c1ee721cd7b571",
+      "right_censored": false,
+      "target_quality": null,
+      "token_budget": 500000,
+      "tokens_to_target": null,
+      "trial_ref": null
+     }
+    ],
+    "tokens_charged": 3653,
+    "tokens_to_target": null,
+    "tokens_to_target_reason": "TARGET_NOT_REGISTERED",
+    "usage_complete": true,
+    "valid_trial_rate": 0.0
+   },
+   "eligibility": {
+    "reason_codes": [
+     "REPLICATE_INCOMPLETE"
+    ],
+    "status": "ineligible"
+   },
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_bc153af72b514084a4757264b6c04aac",
+   "episode_status": "failed",
+   "error": {
+    "code": "INVALID_PROPOSAL",
+    "detail": "replicate did not complete the required protocol",
+    "retryable": false
+   },
+   "final_finance": {
+    "arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "benchmark_arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "delta_arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "ic": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "icir": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "long_short_sharpe": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "mdd": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "net_return": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "rank_ic": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "rank_icir": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "selection_turnover": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "sharpe": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    }
+   },
+   "final_score": null,
+   "finished_at": "2026-10-17T12:53:41.323293+00:00",
+   "model": {
+    "context_limit": null,
+    "limits_source": "https://platform.claude.com/docs/en/models/opus-5-5/overview",
+    "model_ref": "opus55_v3_total_budget_r3",
+    "output_limit": 128000,
+    "provider": "xiaogou",
+    "revision": "claude-opus-5-5 (provider alias)",
+    "tokenizer": "provider-reported"
+   },
+   "model_ref": "opus55_v3_total_budget_r3",
+   "phase": "finished",
+   "publication_status": "public",
+   "replicate_id": "rep_9712c8aedae84b46a5c1ee721cd7b571",
+   "replicate_status": "failed",
+   "research_finance": {
+    "arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "benchmark_arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "delta_arr": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "ic": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "icir": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "long_short_sharpe": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "mdd": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "net_return": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "rank_ic": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "rank_icir": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "selection_turnover": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    },
+    "sharpe": {
+     "mean": null,
+     "sample_count": 0,
+     "std": null,
+     "worst": null
+    }
+   },
+   "research_mode": "one_shot",
+   "research_score": {
+    "Q": null,
+    "diversity_component": null,
+    "efficiency_component": null,
+    "reason_codes": [
+     "RESEARCH_EVALUATION_UNAVAILABLE"
+    ],
+    "score": null
+   },
+   "started_at": "2026-10-17T12:52:38.563416+00:00",
+   "total_score": null,
+   "track": "oneshot",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:52:38.373269+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_4c707222f50f4935989c061f101f5cbf",
+   "episode_status": "running",
+   "error": {
+    "code": "MODEL_CALL_UNCERTAIN",
+    "detail": "model outcome needs reconciliation; no new paid call will be dispatched",
+    "retryable": true
+   },
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "opus55_v3_total_budget_r3",
+   "phase": "research",
+   "publication_status": "private",
+   "replicate_id": "rep_b7bde7bd39454667bfb22ef5b292c0a7",
+   "replicate_status": "blocked",
+   "research_finance": null,
+   "research_mode": "one_shot",
+   "research_score": null,
+   "started_at": "2026-10-17T12:52:38.898336+00:00",
+   "total_score": null,
+   "track": "oneshot",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T12:54:12.856392+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_e61c23e86bf74753a2f59efe29c5898b",
+   "episode_status": "running",
+   "error": {
+    "code": "MODEL_CALL_UNCERTAIN",
+    "detail": "model outcome needs reconciliation; no new paid call will be dispatched",
+    "retryable": true
+   },
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "opus55_v3_total_budget_r3",
+   "phase": "research",
+   "publication_status": "private",
+   "replicate_id": "rep_566c24de7bb74500b7bb33120bc61eb2",
+   "replicate_status": "blocked",
+   "research_finance": null,
+   "research_mode": "vanilla_iterative",
+   "research_score": null,
+   "started_at": "2026-10-17T12:54:13.570136+00:00",
+   "total_score": null,
+   "track": "vanilla",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T13:00:42.779326+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_405b23e38bfa44558fcf69bcd6056656",
+   "episode_status": "running",
+   "error": null,
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "opus55_v3_total_budget_r3",
+   "phase": "final_evaluation",
+   "publication_status": "private",
+   "replicate_id": "rep_583dcd15d1da4fc089049fc888aa3d45",
+   "replicate_status": "running",
+   "research_finance": null,
+   "research_mode": "one_shot",
+   "research_score": null,
+   "started_at": "2026-10-17T13:00:43.625587+00:00",
+   "total_score": null,
+   "track": "oneshot",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T13:26:45.947925+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_12b765a533bc4d9c98ab5d9f1d8b2f99",
+   "episode_status": "running",
+   "error": null,
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "gemini38_v3_total_budget_r3",
+   "phase": "research",
+   "publication_status": "private",
+   "replicate_id": "rep_ceb214e82f8148faa138cf807d70b49c",
+   "replicate_status": "running",
+   "research_finance": null,
+   "research_mode": "one_shot",
+   "research_score": null,
+   "started_at": "2026-10-17T13:26:47.126415+00:00",
+   "total_score": null,
+   "track": "oneshot",
+   "usage_complete": true
+  },
+  {
+   "agent_restarts": 0,
+   "created_at": "2026-10-17T13:27:54.635124+00:00",
+   "diversity": null,
+   "efficiency": null,
+   "eligibility": null,
+   "environment_ref": "d877f4a9",
+   "episode_id": "ep_54da406876b44d5c817242139836e4bb",
+   "episode_status": "running",
+   "error": null,
+   "final_finance": null,
+   "final_score": null,
+   "finished_at": null,
+   "model": null,
+   "model_ref": "opus55_v3_total_budget_r3",
+   "phase": "research",
+   "publication_status": "private",
+   "replicate_id": "rep_0e72f0bcc8c64caf9390e147462e1079",
+   "replicate_status": "running",
+   "research_finance": null,
+   "research_mode": "one_shot",
+   "research_score": null,
+   "started_at": "2026-10-17T13:27:55.40847+00:00",
+   "total_score": null,
+   "track": "oneshot",
+   "usage_complete": true
+  }
+ ],
+ "suite_ref": "sandbox_2022_2023_research_2024_final_v9"
+}
