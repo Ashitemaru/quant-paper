@@ -1,16 +1,43 @@
 \begin{table}[t]
     \centering
     \footnotesize
-    \caption{Reserved leaderboard layout for a single matched suite and budget. Every entry is pending; this table contains no measured result. ARR and excess ARR use the research-cohort convention. DD denotes the magnitude of signed additive drawdown, in percentage points. Actual CPU, coverage, uncertainty, and failure reasons will accompany the completed table.}
+    \caption{Reporting layout for one matched suite and budget. All data cells are intentionally blank. Rows in all panels will identify the same model--harness participant and episode. Financial ranks apply only within registered coverage strata. $R$, ARR, and $\Delta$ARR follow the Top75 research-cohort convention; $|\mathrm{DD}|$ is additive drawdown magnitude in percentage points.}
     \label{tab:leaderboard}
-    \setlength{\tabcolsep}{4pt}
-    \begin{tabular}{@{}llccccccc@{}}
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccccccc@{}}
         \toprule
-        Model & Harness & Done/All & ARR & $\Delta$ARR & RankIC & $|\mathrm{DD}|$ & Tokens & Score \\
+        \multicolumn{8}{@{}l}{\textbf{A. Financial evidence and cohort counts}} \\
+        Participant & Fin. rank & Done/All & $n_{75}/N_{\mathrm{exp}}$ & $R$ & ARR & $\Delta$ARR & $|\mathrm{DD}|$ \\
         \midrule
-        \ph{Pending} & One-shot & -- & -- & -- & -- & -- & -- & -- \\
-        \ph{Pending} & Vanilla & -- & -- & -- & -- & -- & -- & -- \\
-        \ph{Pending} & RSI & -- & -- & -- & -- & -- & -- & -- \\
+        \rule{0pt}{2.6ex} & & & & & & & \\
+        \rule{0pt}{2.6ex} & & & & & & & \\
         \bottomrule
-    \end{tabular}
+    \end{tabular*}
+
+    \medskip
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccccccc@{}}
+        \toprule
+        \multicolumn{8}{@{}l}{\textbf{B. Coverage and predictive evidence}} \\
+        Participant & Stratum & Signal & Label & Paired & Selected label & IC days & RankIC \\
+        \midrule
+        \rule{0pt}{2.6ex} & & & & & & & \\
+        \rule{0pt}{2.6ex} & & & & & & & \\
+        \bottomrule
+    \end{tabular*}
+
+    \medskip
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccccc@{}}
+        \toprule
+        \multicolumn{6}{@{}l}{\textbf{C. Resources, eligibility, and composite availability}} \\
+        Participant & Tokens/status & CPU/status & Fin. eligible & $S$/availability & Reason \\
+        \midrule
+        \rule{0pt}{2.6ex} & & & & & \\
+        \rule{0pt}{2.6ex} & & & & & \\
+        \bottomrule
+    \end{tabular*}
+    \par\smallskip
+    \begin{minipage}{\linewidth}
+        \footnotesize
+        Panel B reports coverage fractions with their expected observation counts in the accompanying per-replicate records; selected-label coverage is the mean of $\gamma^{75}_t$. Panel C reports observed usage and its completeness, separately from ledger charges. Blank cells here indicate unfilled manuscript fields. In a completed report, an unavailable value must include its reason. Separate composite ranks describe only qualifying participants. Cash-account outcomes, uncertainty, and detailed failure records accompany these panels.
+    \end{minipage}
 \end{table}

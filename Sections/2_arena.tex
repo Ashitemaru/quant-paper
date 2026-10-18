@@ -43,7 +43,7 @@ The three input profiles are bound to actual releases before use. Raw-event proc
 \subsection{Durable Accounting and Recoverable Progress}
 \label{sec:arena_recovery}
 
-Model calls, strategy registration, research evaluations, and final commitments carry persistent operation identities. The platform records budget reservations separately from observed consumption. Provider-reported counters settle model usage, and trusted execution measurements settle CPU usage when available. Unreported usage remains unknown. This separation keeps conservative admission estimates from appearing as measured costs.
+Model calls, strategy registration, research evaluations, and final commitments carry persistent operation identities. The platform records reservations, charges, and observed consumption separately. Provider-reported counters settle model usage, and trusted execution measurements settle CPU usage when available. Unreported usage remains unknown even when the ledger assigns a charge under Section~\ref{sec:arena_interaction}. Reports attach separate completeness flags to tokens and CPU, so a zero CPU charge cannot be read as a zero measured cost.
 
 A harness can checkpoint and yield while an evaluation runs, then resume from its saved research state. Strategy execution persists accepted daily outputs so that recoverable interruptions can continue the remaining dates. Completed model operations are recovered under their original identities. When a request's provider outcome or charge cannot be established, the operation remains unresolved pending reconciliation; it is not automatically replaced by another generation. Recovery thus preserves the candidate history and resource boundary of the original replicate.
 
@@ -53,5 +53,7 @@ The evaluator persists core financial and signal results before optional referen
 \label{sec:arena_campaigns}
 
 The campaign interface snapshots the declared participant source and public suite contract, persists submission intent, and submits through the shared Arena services. It collects evaluator-produced scorecards without recomputing financial results. Direct comparisons bind the service origin, suite, selected runtime, budget definition, and protocol. Different input scopes or financial conventions define separate groups.
+
+The comparison export is a record collector. Its model-ranking flag checks official assessment status and general eligibility; it does not test the scorecard's separate financial eligibility or require an available composite score. Consequently, this flag cannot serve as a common filter for the paper's financial and composite tables. Section~\ref{sec:leaderboard} specifies how the report uses the underlying scorecards, retains excluded rows, and applies its own registered comparison policy.
 
 A reproducibility record links the data publication, suite, participant source and prior information, actual model identity, model interactions, admitted trials, usage observations, final commitment, and final scorecard. All prescribed replicates remain visible in the campaign record, including failed, cancelled, blocked, and incomplete runs. Stored model replies support reconstruction of an observed trajectory; new calls to an external provider need not reproduce that trajectory exactly. The registration requirements appear in Appendix~\ref{app:registry}.

@@ -13,23 +13,28 @@
 | `Sections/3_experiments.tex` | 实验设计、leaderboard、对照与验证安排 |
 | `Sections/4_relatedworks.tex`、`Sections/5_conclusion.tex` | 相关工作、贡献总结与后续工作 |
 | `Tables/TabDailyProtocol.tex` | 当前日频协议的固定约定 |
-| `Tables/TabLeaderboard.tex` | 待填 leaderboard，所有单元格均为占位 |
+| `Tables/TabLeaderboard.tex` | 主表的财务、覆盖率、资源与资格三个面板，数据单元格留空 |
+| `Tables/TabTerminology.tex` | suite、episode、replicate 等术语定义 |
+| `Tables/TabBoardRules.tex` | 平台四类榜单的资格与排序规则 |
+| `Tables/TabBenchmarkScope.tex` | 与 AlphaForgeBench 已公开协议的比较 |
 | `Sections/6_appendix_registry.tex` | 待补的真实数据、场次与运行登记 |
 | `Sections/7_appendix_boundary.tex` | 信息边界、多样性公式和指标资格 |
 
-leaderboard 与 RSI Harness 的实现和结果后续补充。正文没有沿用原稿的模型排名、方法增益或跨市场结果。原有表格与汇总图文件保留，当前 `main.tex` 不引用它们。
+当前稿依据 2026-10-18 反馈修订。RSI Harness 仅保留章节标题，实证结果小节与场次登记值留空；leaderboard 保留表头和空白数据行。正文没有沿用原稿的模型排名、方法增益或跨市场结果。原有表格与汇总图文件保留，当前 `main.tex` 不引用它们。
 
 本仓库包含英文论文的 LaTeX 源码、参考文献、模板和图表资源。中文译文与论文理解文档在研究工作区单独维护。
 
 ## 后续填写
 
-先完成附录中的场次登记，再将正式终测 scorecard 填入 leaderboard，并据此撰写结果分析。RSI Harness 章节预留了研究状态、工具与先验、候选生成、修复、预算分配、最终选择及方法冻结条件。原有文献引用继续保留，本轮未重新核验其外部来源。
+先完成附录中的场次登记，包括覆盖率分层、最低证据要求和排序规则，再根据正式终测 scorecard 填写主表。保留全部参与者，分别标注财务资格、综合分可用性、token/CPU 用量完整性及不可用原因。
+
+RSI Harness 的填写要求保留在源码注释中，当前不补写实现。相关工作本轮核验了 AlphaForgeBench v2 的公开原文；其他已有引用未作完整文献审计。
 
 ## 编译
 
 在 Overleaf 中将 `main.tex` 设为主文档，使用 pdfLaTeX 编译。具备完整 TeX Live 环境时，也可运行 `bash build.sh`。构建依次执行 pdfLaTeX、BibTeX 和三轮 pdfLaTeX，使交叉引用稳定；发生编译错误时停止。
 
-模板使用 LaTeX extra、pictures 及 Latin babel 等组件。缺少依赖的精简 TeX 环境需要先补齐对应包。占位内容会在 PDF 中明确显示，投稿前应完成或移除。
+模板使用 LaTeX extra、pictures 及 Latin babel 等组件。缺少依赖的精简 TeX 环境需要先补齐对应包。留空章节和表格需在投稿前完成或移除。
 
 ## 上传到 Overleaf
 

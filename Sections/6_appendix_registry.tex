@@ -8,23 +8,24 @@ Table~\ref{tab:suite_registry} lists the campaign-specific fields to complete be
 \begin{table}[ht]
     \centering
     \small
-    \caption{Campaign registration fields. Pending entries will be replaced with actual suite and run records before empirical claims are added.}
+    \caption{Campaign registration fields. The value column is intentionally blank until actual suite and run records are available.}
     \label{tab:suite_registry}
     \begin{tabular}{@{}p{0.23\linewidth}p{0.57\linewidth}p{0.12\linewidth}@{}}
         \toprule
-        Field & Required specification & Status \\
+        Field & Required specification & Value \\
         \midrule
-        Data release & Provider, market, release identity, provenance, access and publication scope & \ph{Pending} \\
-        Data coverage & Dates, securities, event counts, fields, missingness and its denominator & \ph{Pending} \\
-        Population & Static column construction, inclusion rules, delistings, reference population & \ph{Pending} \\
-        Temporal windows & Training, research, final, warmup, cutoff, label realization & \ph{Pending} \\
-        Sealed history & Release identity, sealing time, prior availability and exposure policy & \ph{Pending} \\
-        Participants & Model/provider identity, parameters, harness source, prompts, prior memory & \ph{Pending} \\
-        Resources & Per-replicate token, evaluation and CPU ceilings; final reserve; usage definition & \ph{Pending} \\
-        Runtime & Selected image, execution protocol, data-service and evaluator revision & \ph{Pending} \\
-        Replicates & Prescribed identifiers, seed handling, statuses, frozen selection references & \ph{Pending} \\
-        Scores & Primary endpoints, targets, risk/coverage thresholds, reference bank and policy & \ph{Pending} \\
-        Reporting & Aggregation, uncertainty, failure policy, result release and retained artifacts & \ph{Pending} \\
+        Data release & Provider, market, release identity, provenance, access and publication scope &  \\
+        Data coverage & Dates, securities, event counts, fields, missingness and its denominator &  \\
+        Population & Static column construction, inclusion rules, delistings, reference population &  \\
+        Temporal windows & Training, research, final, warmup, cutoff, label realization &  \\
+        Sealed history & Release identity, sealing time, prior availability and exposure policy &  \\
+        Participants & Model/provider identity, parameters, harness source, prompts, prior memory &  \\
+        Resources & Per-replicate ceilings; final reserve; observed versus charged usage; token and CPU completeness &  \\
+        Runtime & Selected image, execution protocol, data-service and evaluator revision &  \\
+        Replicates & Prescribed identifiers, seed handling, statuses, frozen selection references &  \\
+        Scores & Calibration, weights, risk and statistical thresholds, reference bank and policy &  \\
+        Comparison & Primary endpoint, financial/composite eligibility, coverage strata, evidence minimum and tie policy & \\
+        Reporting & Aggregation, uncertainty, failure policy, result release and retained artifacts &  \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -36,4 +37,4 @@ Each run retains its model interactions and observed usage, candidate registrati
 The final commitment binds strategy source, runtime, fitted artifact, and feature configuration. The corresponding evaluation retains the frozen dates and data releases, accepted daily execution records, core metrics, coverage, and private detailed evidence. Optional artifact failures retain their own status. Public scorecards expose authorized summaries; private trading records and data-sensitive artifacts follow the registered access policy.
 
 \paragraph{Aggregation and release.}
-Each campaign lists every prescribed replicate, including incomplete and unsuccessful ones. Complete aggregates require all corresponding values, with metric sample counts preserved. Publication changes the authorized visibility of saved results; it does not redefine their financial convention. Imported or locally declared reference results retain their evidence status and are separated from evaluator-verified Arena results. Stored responses permit reconstruction of the observed research sequence, without assuming a future provider call is deterministic.
+Each campaign lists every prescribed replicate, including incomplete and unsuccessful ones. Complete aggregates require all corresponding values, with metric sample counts preserved. Financial eligibility, general eligibility, composite availability, and paper-specific coverage strata remain separate recorded fields. Each table row links to its episode and evaluator-owned final scorecards; token and CPU completeness accompany observed usage. Publication changes the authorized visibility of saved results; it does not redefine their financial convention. Imported or locally declared reference results retain their evidence status and are separated from evaluator-verified Arena results. Stored responses permit reconstruction of the observed research sequence, without assuming a future provider call is deterministic.

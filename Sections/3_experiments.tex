@@ -1,41 +1,51 @@
 \section{Evaluation Design and Leaderboard}
 \label{sec:experiments}
 
-The evaluation will study how model choice, research procedure, resource budget, and input profile affect sealed-window performance under \BenchmarkName. This section specifies the comparison and reporting structure. Leaderboard values and RSI Harness findings will be inserted from registered campaign records; the current draft makes no empirical ranking claim.
+This section defines the comparison and reporting policy for model choice, research procedure, resource budget, and input profile. It contains no measured ranking or effect size. Campaign-specific values and empirical findings are left blank.
 
 \subsection{Experimental Registration}
 \label{sec:exp_setup}
 
-Each comparison binds a data release and its provenance, an instrument population, training and research windows, a sealed final interval, a runtime, a budget profile, a feedback policy, and an evaluator version. Input-profile comparisons use separately identified suites with matched dates and financial rules where feasible. Calendar boundaries include the predecessor signal and final label realization required by Section~\ref{sec:arena_returns}. The actual model/provider identities, prompts, harness versions, model parameters, repeated-run identifiers, and prior resources are recorded before the campaign.
+Each comparison binds the suite in Equation~\eqref{eq:arena_task}, together with actual model/provider identities, prompts, harness versions, model parameters, replicate identifiers, and prior resources. Input-profile comparisons use separately identified suites with matched dates and financial rules where feasible. Calendar boundaries include the predecessor signal and final label realization required by Section~\ref{sec:arena_returns}. Data provenance, population construction, prior public availability, development use, and the method freeze point must be recorded before final evaluation.
 
-The daily profile uses the financial conventions in Table~\ref{tab:daily_protocol}. Data size, date ranges, budgets, calibration targets, and repeat counts require campaign-specific values and remain open in the registration table of Appendix~\ref{app:registry}. Fixed published factors may serve as financial references after reevaluation on the same target window and protocol. Their original historical returns are not substituted for those observations, and they do not enter model-token efficiency comparisons.
+The daily profile uses Table~\ref{tab:daily_protocol}. Dataset size, date ranges, budgets, calibration targets, and repeat counts remain blank in Appendix~\ref{app:registry}; implementation defaults do not supply campaign facts. Fixed published factors may serve as financial references after reevaluation on the same target window and protocol. Their original historical returns are not substituted for those observations, and they do not enter model-token efficiency comparisons.
 
 \input{Tables/TabDailyProtocol}
 
 \subsection{Leaderboard and Reporting Policy}
 \label{sec:leaderboard}
 
-The primary leaderboard compares financial endpoints available across valid scoring programs: Top75 research ARR, paired excess ARR, RankIC, and additive drawdown, together with completion and actual resource usage. Composite scores are reported only for matched settings with the required calibration, usage, and verified feature evidence. Research-period best scores remain distinct from the frozen strategy's final-window scorecard. Cash-account outcomes, label coverage, and the Top200 and Top400 diagnostics accompany the main table.
+\paragraph{Row retention and ranking.}
+The main report retains every registered model--harness participant, including failed and incomplete episodes. Financial ranks require official assessment and the scorecard's financial eligibility. They order mean replicate Top75 research ARR within the same suite, budget, and preregistered coverage stratum; excluded rows retain their metrics and reasons without a rank. Coverage strata and any minimum evidence requirement belong to the paper's reporting policy and must be frozen before final outcomes are inspected. No cross-stratum order is assigned, and no rank is populated until this policy is registered. The platform's financial board does not itself impose this additional comparability rule.
+
+Composite ranks are reported separately for generally eligible episodes with available composites under matching calibration, component weights, complete required token usage, and verified feature evidence when needed. The main report shows score availability for all participants, so this subset cannot be mistaken for a ranking of the entire field. The campaign export's model-ranking flag is not used as a substitute for either eligibility rule; Appendix~\ref{app:eligibility} gives the exact distinctions.
+
+\paragraph{Financial evidence and coverage.}
+Table~\ref{tab:leaderboard} places cumulative research return $R^{75}$, ARR, paired excess ARR, and effective/expected cohort counts on the same reporting path. It also records panel-level signal, label, and paired coverage, selected-cohort label coverage, and valid IC days. The research-return endpoint compares observable selected labels under fixed exposure and costs; it does not require every selected security to be funded or filled. Cash-account outcomes and the Top200/400 diagnostics accompany the completed report. Research-period best scores are kept separate from the frozen strategy's final-window scorecard.
 
 \input{Tables/TabLeaderboard}
 
-For every row, the report will retain the number of prescribed and completed replicates, all failures and unavailable fields, metric sample counts, and dispersion across replicates. Complete aggregate statistics require the prescribed observations; any success-conditioned summary will be explicitly identified and accompanied by completion rates. Time-series uncertainty estimates must respect dependence between adjacent holding cohorts. A missing value will carry its reason, rather than a zero or an inferred result.
+\paragraph{Completeness and uncertainty.}
+Each row links to its episode and final scorecards and retains prescribed/completed replicate counts, execution status, failure reasons, metric sample counts, and dispersion. Complete aggregates require all prescribed observations. Any success-conditioned summary is labeled and accompanied by completion rates. Coverage counts and ratios are disclosed per replicate rather than pooled to hide a failed or sparse run. Missing measurements carry their reasons; token and CPU measurements each carry a completeness flag. Zero-diversity values retain feature-level reasons (Appendix~\ref{app:diversity}).
 
-% INSERTION POINT: Populate TabLeaderboard from evaluator-owned final scorecards.
-% INSERTION POINT: Summarize observed rankings only after registry and scorecards agree.
+Dispersion across replicates measures variation in the model--harness procedure. Time-series uncertainty measures variation in the market observations and must account for overlapping cohorts; these are reported separately. Any moving-block bootstrap analysis registers its resampling unit, block length, resamples, and seed, with a justification for the time-dependence treatment.
 
 \subsection{Benchmark Analyses}
 \label{sec:exp_analysis}
 
 \paragraph{Model and harness effects.}
-Matched model-by-harness comparisons will include one-shot generation, vanilla feedback iteration, and the registered RSI Harness. These conditions share the applicable data, execution, and financial contract. Their distinct feedback opportunities and final-selection policies are explicit experimental factors. Harness-specific component studies will be added after its implementation and frozen evaluation variant are specified.
+One-shot and vanilla comparisons evaluate complete research modes. They differ jointly in feedback, model-assisted repair, training opportunities, and final-candidate selection. Their outcome difference therefore cannot identify a feedback-only effect. Component attribution requires matched training permissions, repair budgets, selection rules, and model resources, changing only the mechanism being studied. External harnesses enter the comparison only after their procedures and evaluation variants are registered.
 
 \paragraph{Budget and information effects.}
-Preregistered budget settings will measure how final-window outcomes change with token and evaluation limits, alongside actual usage. Research tokens required to reach a fixed target may be reported as a secondary diagnostic, with non-attainment and incomplete execution distinguished. Input-profile comparisons will report both information availability and preprocessing differences, so a change in outcome is interpreted under its actual observation contract.
+Preregistered token and evaluation limits will be compared alongside observed usage and its completeness. Tokens required to reach a fixed research target may be reported as a secondary diagnostic, with non-attainment and incomplete execution distinguished. Input-profile comparisons disclose both information availability and preprocessing differences.
 
-\paragraph{Financial reference and operational checks.}
-Fixed-factor references will be reevaluated on the target suite, retaining their genuine missingness and disclosing instrument-scope differences. Platform checks will exercise future-data rejection, sealed-release access, final commitment, recovery of model operations, and preservation of core results when optional publication fails. Matched real-data runs through the research and Arena entry points will test financial agreement. Synthetic contract checks, deployed boundary checks, and measured campaign performance will be reported as separate evidence.
+\paragraph{Financial sensitivity.}
+Cost and coverage analyses will compare the same frozen strategies under explicitly versioned conditions. They will examine cumulative research returns alongside ARR, coverage strata, and funded-account outcomes. Cost variation distinguishes the research cohort's fixed deduction from account commissions and execution assumptions. Alternative settings preserve the original scorecard and do not replace missing labels with zero. These analyses are needed to determine how much a conclusion depends on sparse observations or the chosen execution convention.
 
-\begin{tcolorbox}[title={Reserved: empirical findings},colback=brandbg,colframe=brandprimary,breakable]
-Insert the finalized leaderboard, budget analyses, completion and recovery statistics, and RSI Harness comparisons here. Each result must identify its suite and run records. The available implementation defines the measurement procedure; campaign data will establish the observed rankings and effect sizes.
-\end{tcolorbox}
+\paragraph{Reference and operational checks.}
+Fixed-factor references will be reevaluated on the target suite, retaining missingness and disclosing instrument-scope differences. Platform checks will exercise future-data rejection, research/final isolation, final-commitment immutability, recovery of accepted daily outputs, and unresolved model operations. Real-data agreement between research and Arena entry points requires matched factors, dates, releases, parameters, runtime versions, and complete replay records. Synthetic checks, deployed boundary checks, and campaign completion, recovery, and overhead measurements remain separate evidence classes.
+
+\subsection{Empirical Findings}
+\label{sec:exp_findings}
+
+% Pending: insert measured results only after registration and scorecard checks.
