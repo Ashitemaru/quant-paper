@@ -1,51 +1,63 @@
-\section{Evaluation Design and Leaderboard}
+\section{Experiments and Results}
 \label{sec:experiments}
 
-This section defines the comparison and reporting policy for model choice, research procedure, resource budget, and input profile. It contains no measured ranking or effect size. Campaign-specific values and empirical findings are left blank.
+We analyze the 18 October 2026, 20:27 (Asia/Shanghai) archive. Its 106 episodes comprise 100 main-experiment records (E1) and six errors-only feedback controls (E2). E1 has 24 completed financial records, 17 failures, four running episodes, and 55 cancellations. E2 has four completed and two running episodes. We separate the suites throughout: an errors-only run is not a full-feedback vanilla replicate. The campaign remains incomplete. We use it to examine financial outcomes, feedback conditions, and research trajectories; the available observations do not support a definitive model ranking.
 
-\subsection{Experimental Registration}
+\subsection{Experimental Setup and Financial Basis}
 \label{sec:exp_setup}
 
-Each comparison binds the suite in Equation~\eqref{eq:arena_task}, together with actual model/provider identities, prompts, harness versions, model parameters, replicate identifiers, and prior resources. Input-profile comparisons use separately identified suites with matched dates and financial rules where feasible. Calendar boundaries include the predecessor signal and final label realization required by Section~\ref{sec:arena_returns}. Data provenance, population construction, prior public availability, development use, and the method freeze point must be recorded before final evaluation.
+Strategies use the raw-L2 input profile to score a static universe of 3,042 Shenzhen A-share columns. Research uses 2022--2023 data and final assessment uses 2024 data. Historical warmup is authorized separately; this campaign has no training window. Each episode requires one replicate, with a maximum of 500,000 model tokens and five benchmark research evaluations. The public resource profile lists a 32-million CPU-second ceiling; measured CPU usage is reported separately. Exact data-availability cutoffs and execution times are not disclosed.
 
-The daily profile uses Table~\ref{tab:daily_protocol}. Dataset size, date ranges, budgets, calibration targets, and repeat counts remain blank in Appendix~\ref{app:registry}; implementation defaults do not supply campaign facts. Fixed published factors may serve as financial references after reevaluation on the same target window and protocol. Their original historical returns are not substituted for those observations, and they do not enter model-token efficiency comparisons.
+E1 compares one-shot and full-feedback vanilla. One-shot can read platform documents and repair invalid output but receives no research-performance feedback. Vanilla may revise candidates, inspect research results, select a completed candidate, and stop within the maximum allowances. E2 uses an errors-only feedback policy for Astra and DeepSeek. Its results measure a different research condition and appear only in the feedback comparison. Model names are configured provider or relay aliases; Appendix~\ref{app:registry} preserves the references without asserting independently verified upstream model revisions.
+
+The primary financial tables use the supplied \emph{offline cash-account re-evaluation} of the frozen strategies. We independently recomputed ARR, net return, Sharpe, and maximum drawdown from the saved account series for all 52 available episode--window pairs, verifying 208 statistics. All 28 completed episodes have final account records; four lack a required research assessment and total score. The archive also supplies offline versioned total scores. These do not establish deployment of a new online leaderboard. Historical additive metrics remain in Appendix~\ref{app:registry}; financial bases are not pooled.
 
 \input{Tables/TabDailyProtocol}
 
-\subsection{Leaderboard and Reporting Policy}
+\subsection{Can Research Runs Produce Out-of-Sample Value?}
 \label{sec:leaderboard}
 
-\paragraph{Row retention and ranking.}
-The main report retains every registered model--harness participant, including failed and incomplete episodes. Financial ranks require official assessment and the scorecard's financial eligibility. They order mean replicate Top75 research ARR within the same suite, budget, and preregistered coverage stratum; excluded rows retain their metrics and reasons without a rank. Coverage strata and any minimum evidence requirement belong to the paper's reporting policy and must be frozen before final outcomes are inspected. No cross-stratum order is assigned, and no rank is populated until this policy is registered. The platform's financial board does not itself impose this additional comparability rule.
+Table~\ref{tab:cash_results} reports E1 Top75 cash-account results. Means and sample standard deviations condition on completion, including financial records whose total score is unavailable. Attempt outcomes appear separately in Table~\ref{tab:run_status}. A single observation has no estimated dispersion. Across-run standard deviations describe variation among completed runs. They do not quantify uncertainty across market periods, since every strategy uses the same final interval. Missing totals do not remove a completed financial record from these summaries, and missing measurements are never replaced with zero.
 
-Composite ranks are reported separately for generally eligible episodes with available composites under matching calibration, component weights, complete required token usage, and verified feature evidence when needed. The main report shows score availability for all participants, so this subset cannot be mistaken for a ranking of the entire field. The campaign export's model-ranking flag is not used as a substitute for either eligibility rule; Appendix~\ref{app:eligibility} gives the exact distinctions.
+\input{Tables/TabCashResults}
 
-\paragraph{Financial evidence and coverage.}
-Table~\ref{tab:leaderboard} places cumulative research return $R^{75}$, ARR, paired excess ARR, and effective/expected cohort counts on the same reporting path. It also records panel-level signal, label, and paired coverage, selected-cohort label coverage, and valid IC days. The research-return endpoint compares observable selected labels under fixed exposure and costs; it does not require every selected security to be funded or filled. Cash-account outcomes and the Top200/400 diagnostics accompany the completed report. Research-period best scores are kept separate from the frozen strategy's final-window scorecard.
+\paragraph{Positive returns are not necessarily positive excess returns.}
+Eight of the 24 completed E1 strategies have positive cash-account ARR, but only two exceed the aligned gross equal-weight market reference, whose ARR is approximately $17.1\%$. The two positive-excess observations are one Opus vanilla and one DeepSeek vanilla run. The reference does not bear the strategies' account costs, so this comparison is not a substitute for matched tradable baselines. It nevertheless shows why absolute profitability and performance beyond a market reference must be reported separately.
 
-\input{Tables/TabLeaderboard}
+\paragraph{Better predictive ordering need not improve the selected portfolio.}
+Astra's three vanilla runs have mean cash ARR of $8.5\%$ and mean RankIC of $0.0472$, compared with $-8.5\%$ and $-0.0112$ for its three one-shot runs. Their mean cash excess remains negative at $-8.5$ percentage points. Gemini's two vanilla runs have higher mean RankIC than its three one-shot runs ($0.0447$ versus $-0.0009$), alongside lower mean cash ARR ($-9.0\%$ versus $0.3\%$). Full-universe ordering and the returns of a constrained head portfolio are different outcomes; the current summaries do not identify which exposure, selection, or execution mechanism explains the gap.
 
-\paragraph{Completeness and uncertainty.}
-Each row links to its episode and final scorecards and retains prescribed/completed replicate counts, execution status, failure reasons, metric sample counts, and dispersion. Complete aggregates require all prescribed observations. Any success-conditioned summary is labeled and accompanied by completion rates. Coverage counts and ratios are disclosed per replicate rather than pooled to hide a failed or sparse run. Missing measurements carry their reasons; token and CPU measurements each carry a completeness flag. Zero-diversity values retain feature-level reasons (Appendix~\ref{app:diversity}).
+\paragraph{Sparse signal activity and small samples qualify apparent leaders.}
+Opus vanilla averages $17.4\%$ cash ARR and $0.3$ percentage points of excess across two completed runs. DeepSeek vanilla has only one completed run: $18.9\%$ cash ARR and $1.9$ percentage points of excess. Its historical signal-coverage bucket is 0--50\%, while the account series covers the full assessment interval and retains idle periods. Low signal activity is therefore an exposure characteristic to examine, rather than a reason to omit account dates or present the historical $32.1\%$ additive ARR as investable performance. GLM has one completed record per track; Kimi has two one-shot records and no completed vanilla record. These observations do not support a definitive model ranking.
 
-Dispersion across replicates measures variation in the model--harness procedure. Time-series uncertainty measures variation in the market observations and must account for overlapping cohorts; these are reported separately. Any moving-block bootstrap analysis registers its resampling unit, block length, resamples, and seed, with a justification for the time-dependence treatment.
+\subsection{Does Financial Feedback Help Research?}
+\label{sec:feedback}
 
-\subsection{Benchmark Analyses}
+\input{Tables/TabFeedback}
+
+Astra has three completed runs in each feedback condition. Full feedback yields mean cash excess of $-8.5$ percentage points and RankIC $0.0472$, compared with $-29.3$ percentage points and $-0.0081$ under errors-only feedback. However, the full-feedback runs use an average of four research evaluations and 80.0k tokens, while all three errors-only runs stop after one evaluation, averaging 40.2k tokens. This is evidence about the feedback policy together with the search and stopping behavior it induces; it does not isolate information quality at equal realized search effort. DeepSeek has only one completed run and two still running in each condition. A comparison with matched evaluation opportunities, repair permissions, and final-selection rules is needed to isolate the contribution of financial feedback.
+
+\subsection{What Changes During the Research Process?}
+\label{sec:research_process}
+
+The saved trajectories support within-run comparisons between the first executable candidate and the final selected candidate. Among nine completed E1 vanilla runs, eight improve the research-window paired excess metric, with a mean improvement of 10.6 percentage points. None selects its first executable candidate, and six select the candidate with the highest recorded research excess. These process metrics retain the historical basis on which research feedback was generated; they are not cash-account recalculations.
+
+Only the selected candidate has a final-window assessment in the archive. Thus, improvement along the observed research trajectory does not establish improvement in out-of-sample performance. Replaying frozen first and intermediate candidates, after all commitments and without returning these diagnostic results to the model, would distinguish research-window progress from generalization and candidate-selection effects. Such replays have not been performed here.
+
+\paragraph{Repetition and signal agreement.}
+The saved final signal panel covers 23 of the 24 completed E1 strategies; it omits the newly completed Kimi record. Mean Spearman correlation is $0.591$ across 17 same-track replicate pairs, $0.340$ across 211 cross-model pairs, and $0.139$ across 25 same-model cross-track pairs. The cross-model aggregate mixes tracks, and pairs share strategies and dates. These are descriptive signal-agreement statistics, not independent experimental samples, evidence of incremental returns, or a causal measure of model identity. This 23-strategy panel therefore describes a narrower snapshot than the 24-strategy financial table.
+
+\subsection{Scores, Resources, and Reliability}
 \label{sec:exp_analysis}
 
-\paragraph{Model and harness effects.}
-One-shot and vanilla comparisons evaluate complete research modes. They differ jointly in feedback, model-assisted repair, training opportunities, and final-candidate selection. Their outcome difference therefore cannot identify a feedback-only effect. Component attribution requires matched training permissions, repair budgets, selection rules, and model resources, changing only the mechanism being studied. External harnesses enter the comparison only after their procedures and evaluation variants are registered.
+The supplied offline scoring revision provides 20 non-null totals for E1 and four for E2. Ten E1 totals are positive; all four E2 totals are zero. Four E1 financial records retain missing totals. We report these supplied outputs without reconstructing or disclosing private final-score computation. The earlier historical export has only three positive totals; that concentration is specific to its earlier version and is not a finding about the revised score.
 
-\paragraph{Budget and information effects.}
-Preregistered token and evaluation limits will be compared alongside observed usage and its completeness. Tokens required to reach a fixed research target may be reported as a secondary diagnostic, with non-attainment and incomplete execution distinguished. Input-profile comparisons disclose both information availability and preprocessing differences.
+\input{Tables/TabResources}
+\input{Tables/TabRunStatus}
 
-\paragraph{Financial sensitivity.}
-Cost and coverage analyses will compare the same frozen strategies under explicitly versioned conditions. They will examine cumulative research returns alongside ARR, coverage strata, and funded-account outcomes. Cost variation distinguishes the research cohort's fixed deduction from account commissions and execution assumptions. Alternative settings preserve the original scorecard and do not replace missing labels with zero. These analyses are needed to determine how much a conclusion depends on sparse observations or the chosen execution convention.
+All 28 completed financial records mark token accounting complete. Resource summaries in Table~\ref{tab:resources} include only completed E1 records, and do not represent total campaign expenditure. The nominal ceilings do not imply equal actual spending or equal effective computation. Missing total scores are excluded only from score summaries, not from financial or resource statistics.
 
-\paragraph{Reference and operational checks.}
-Fixed-factor references will be reevaluated on the target suite, retaining missingness and disclosing instrument-scope differences. Platform checks will exercise future-data rejection, research/final isolation, final-commitment immutability, recovery of accepted daily outputs, and unresolved model operations. Real-data agreement between research and Arena entry points requires matched factors, dates, releases, parameters, runtime versions, and complete replay records. Synthetic checks, deployed boundary checks, and campaign completion, recovery, and overhead measurements remain separate evidence classes.
+E1 has 24 financial completions among 41 terminated non-cancelled episodes, with four further episodes still running. The 55 cancellations carry an unresolved model-call code and remain a separate category. Failed episodes include proposal, execution, eligibility, and service errors; an error code alone does not establish fault attributable to the model. Trial-level legality, execution, and repair records can locate the stage of failure, but analyses must distinguish ongoing trajectories and service incidents from completed research outcomes.
 
-\subsection{Empirical Findings}
-\label{sec:exp_findings}
-
-% Pending: insert measured results only after registration and scorecard checks.
+\paragraph{Scope and next evidence.}
+The snapshot covers one market, one final historical interval, and one nominal resource profile. Saved daily account series permit temporal diagnostics, but do not create independent market samples or rule out prior exposure. Same-condition fixed baselines, frozen-candidate replays, completed feedback controls, and additional predeclared repetitions are the highest-priority extensions. Claims of broader durability would require a fresh final interval or another market. The current evidence establishes a gap between research-window improvement, predictive ordering, and economic outcomes; it does not by itself identify backtest overfitting as the cause.

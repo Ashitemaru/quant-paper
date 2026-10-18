@@ -1,20 +1,19 @@
 \begin{table}[t]
-    \centering
-    \small
-    \caption{Evaluation units and financial terms used in this paper.}
-    \label{tab:terminology}
-    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.19\linewidth}>{\raggedright\arraybackslash}p{0.75\linewidth}@{}}
-        \toprule
-        Term & Meaning \\
-        \midrule
-        Suite & Frozen data, access, interaction, resource, runtime, and evaluation rules. \\
-        Participant & A registered language model together with a research harness. \\
-        Harness & The procedure that constructs prompts, proposes and revises candidates, stops, and selects a final strategy. \\
-        Replicate & One research attempt with its own budget and final commitment, or an unsuccessful terminal state. \\
-        Episode & The prescribed set of replicates for a participant under one suite, including all outcomes. \\
-        Scoring program & Executable computation that returns cross-sectional stock scores on authorized dates. \\
-        Research return & An observed-label, fixed-notional cohort statistic under the registered exposure and cost convention. \\
-        Cash account & A separately simulated funded portfolio with cash, lot-size, and execution constraints. \\
-        \bottomrule
-    \end{tabular}
+\centering\small
+\caption{Evaluation units and reporting terms. The pilot requires one replicate per episode.}
+\label{tab:terminology}
+\begin{tabular}{@{}p{0.20\linewidth}p{0.72\linewidth}@{}}
+\toprule
+Term & Meaning \\
+\midrule
+Suite & Registered data, access, interaction, resource, runtime, and evaluation contract. \\
+Participant & Model together with the procedure governing its research interactions and final selection. \\
+Track & Permitted feedback, repair, stopping, and selection rules for a research condition. \\
+Replicate & One execution with its own resource allowance, ending in a final strategy assessment or another recorded outcome. \\
+Episode & Registered submission containing the prescribed replicates and their outcomes. \\
+Completed-run summary & Statistics conditional on financial completion; attempt counts and other outcomes are reported separately. \\
+Historical result & Exported scorecard retained under the financial and scoring version used to produce it. \\
+Offline re-evaluation & Assessment of frozen strategies under a separately identified revision; it does not establish an online deployment. \\
+\bottomrule
+\end{tabular}
 \end{table}

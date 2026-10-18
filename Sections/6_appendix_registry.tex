@@ -1,40 +1,64 @@
-\section{Suite Registry and Reproducibility}
+\section{Campaign Records and Reproducibility}
 \label{app:registry}
 
-A suite supplies the concrete values underlying Equation~\eqref{eq:arena_task}. This revision describes the current daily research protocol, identified as \texttt{sandbox\_daily\_research\_v2}, from implementation revision \texttt{7889d4f}. These identifiers locate the implementation basis of the description; the deployed campaign revision and its actual data releases must be registered independently. Historical suites retain their original result, runtime, and budget conventions.
+The empirical results use the 20:27 \texttt{raw-results-20261018} export: one JSONL record and one CSV row per episode. All 106 identifiers and statuses agree between the files; 2,712 scalar fields were reconciled. Historical summaries are generated from the JSONL scorecards, with the CSV serving as a cross-check. E1 and E2 are grouped separately by suite identity. Main financial results additionally use the supplied offline account records: 208 statistics were verified directly against saved NAV series. Each episode has one required replicate. Cross-episode summaries use sample standard deviations, without interpreting the within-episode, single-replicate standard deviation of zero as experimental stability.
 
-Table~\ref{tab:suite_registry} lists the campaign-specific fields to complete before reporting results. The financial conventions in Table~\ref{tab:daily_protocol} do not determine data size, sample dates, model identity, or resource ceilings. No values for those fields are inferred from implementation defaults.
+The public suite configuration and exported scorecards establish the reported population, resource limits, statuses, and metric values. The historical results and the revised public research protocol have distinct version provenance. Public replication covers aggregation of reported outcomes; execution schedules, data cutoffs, and final-score construction remain private. Hosted re-evaluation requires the organizer's registered evaluator.
 
-\begin{table}[ht]
-    \centering
-    \small
-    \caption{Campaign registration fields. The value column is intentionally blank until actual suite and run records are available.}
-    \label{tab:suite_registry}
-    \begin{tabular}{@{}p{0.23\linewidth}p{0.57\linewidth}p{0.12\linewidth}@{}}
-        \toprule
-        Field & Required specification & Value \\
-        \midrule
-        Data release & Provider, market, release identity, provenance, access and publication scope &  \\
-        Data coverage & Dates, securities, event counts, fields, missingness and its denominator &  \\
-        Population & Static column construction, inclusion rules, delistings, reference population &  \\
-        Temporal windows & Training, research, final, warmup, cutoff, label realization &  \\
-        Sealed history & Release identity, sealing time, prior availability and exposure policy &  \\
-        Participants & Model/provider identity, parameters, harness source, prompts, prior memory &  \\
-        Resources & Per-replicate ceilings; final reserve; observed versus charged usage; token and CPU completeness &  \\
-        Runtime & Selected image, execution protocol, data-service and evaluator revision &  \\
-        Replicates & Prescribed identifiers, seed handling, statuses, frozen selection references &  \\
-        Scores & Calibration, weights, risk and statistical thresholds, reference bank and policy &  \\
-        Comparison & Primary endpoint, financial/composite eligibility, coverage strata, evidence minimum and tie policy & \\
-        Reporting & Aggregation, uncertainty, failure policy, result release and retained artifacts &  \\
-        \bottomrule
-    \end{tabular}
+\begin{table}[htbp]
+\centering\small
+\caption{Recorded campaign configuration and remaining provenance gaps. Values are specific to the exported campaign; unprovided deployment and data identifiers are not inferred from defaults.}
+\label{tab:suite_registry}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.70\linewidth}@{}}
+\toprule
+Field & Recorded specification \\
+\midrule
+Suite and input & \texttt{sz-a-share-daily-2022-2024}; raw-L2 Python strategies; 3,042 static Shenzhen A-share columns \\
+Research window & 2022--2023; authorized historical warmup \\
+Final window & 2024; no training window \\
+Budget & 500,000 tokens; at most 5 charged research evaluations; public CPU ceiling 32,000,000 seconds \\
+Replication & One required replicate per episode; 106 observed episodes, including failed, running and cancelled records \\
+Scoring & Offline revised results distinguished from historical exported totals; research formula public; final-score construction private \\
+Execution & Hosted evaluator; Top75 primary, Top200/400 diagnostics \\
+Feature evidence & Score-rank regression; cap 32; no reference-bank novelty \\
+Metric coverage & Exported coverage and missingness retained alongside metric values \\
+Retained identities & Episode and replicate IDs, configured model/provider, per-episode interaction-track reference, result revision and trial statuses \\
+Additional artifacts needed & Immutable release and runtime identities, source bundles, prompts, model parameters, seeds, and data exposure history; private evaluator details remain organizer-held \\
+\bottomrule
+\end{tabular}
 \end{table}
 
-\paragraph{Research and model records.}
-Each run retains its model interactions and observed usage, candidate registrations, admitted evaluations, feedback, operation outcomes, and final-selection record. A source snapshot identifies the harness that generated the sequence. External information and preinitialized memory are part of the participant declaration. Provider-returned model identities and usage counters supplement configured display names. Unknown counters and uncertain paid operations remain explicit.
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Model identities as recorded in the export. Names denote configured provider or relay aliases; the table does not independently verify upstream model revisions.}
+\label{tab:campaign_models}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Display name & Model reference & Provider \\
+\midrule
+GPT-6 Astra & \texttt{astra6\_v3\_total\_budget\_r3} & \texttt{sbtunnel} \\
+Gemini 3.8 Flash & \texttt{gemini38\_v3\_total\_budget\_r3} & \texttt{hoyoo} \\
+Claude Opus 5.5 & \texttt{opus55\_stream\_v1} & \texttt{xiaogou} \\
+DeepSeek V4.1 Flash & \texttt{deepseek41\_stream\_v1} & \texttt{dpsk} \\
+GLM-5.3 & \texttt{glm53\_stream\_v2} & \texttt{shuzirensheng} \\
+Kimi K3 & \texttt{kimik3\_stream\_v2} & \texttt{shuzirensheng} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\paragraph{Financial and execution records.}
-The final commitment binds strategy source, runtime, fitted artifact, and feature configuration. The corresponding evaluation retains the frozen dates and data releases, accepted daily execution records, core metrics, coverage, and private detailed evidence. Optional artifact failures retain their own status. Public scorecards expose authorized summaries; private trading records and data-sensitive artifacts follow the registered access policy.
+\paragraph{Result retention and selection.}
+The aggregation retains all provided episodes. Cancellations are a separate category, not silently removed observations. Completed episodes with a missing research-window score remain in financial and resource summaries. Ongoing submissions are retained at their exported state rather than replaced by later live results. The handoff report's intended three runs per model--track cell is not a complete preregistration manifest, so observed submission counts are not relabelled as prescribed replicates.
 
-\paragraph{Aggregation and release.}
-Each campaign lists every prescribed replicate, including incomplete and unsuccessful ones. Complete aggregates require all corresponding values, with metric sample counts preserved. Financial eligibility, general eligibility, composite availability, and paper-specific coverage strata remain separate recorded fields. Each table row links to its episode and evaluator-owned final scorecards; token and CPU completeness accompany observed usage. Publication changes the authorized visibility of saved results; it does not redefine their financial convention. Imported or locally declared reference results retain their evidence status and are separated from evaluator-verified Arena results. Stored responses permit reconstruction of the observed research sequence, without assuming a future provider call is deterministic.
+\paragraph{Coverage and uncertainty.}
+The historical scorecards provide coverage buckets and aggregate financial metrics; their within-window confidence fields are null. The updated archive also contains daily account series for temporal diagnostics. We report cross-run dispersion where available; repeated runs on one market interval do not supply independent market samples. Exact observation schedules and trading records are not disclosed, and statistical significance is not inferred from the aggregate metrics.
+
+\paragraph{Historical financial comparison.}
+The following tables preserve E1 historical additive results for provenance. They do not replace the cash-account main analysis or mix E2 controls into vanilla.
+
+\input{Tables/TabLeaderboard}
+\input{Tables/TabTopNDiagnostics}
+
+\input{Tables/TabSignalDiagnostics}
+
+\paragraph{Financial semantics and disclosure.}
+The historical tables in this appendix use additive research returns, paired excess ARR, and additive drawdown. Main tables explicitly use offline cash-account statistics and versioned offline totals. Neither set establishes deployment of the revised scorer. The public protocol describes evaluation dimensions and the revised research formula. Final-score transformations, weights, aggregation, exact execution times, and data-availability cutoffs are outside the public disclosure scope.
