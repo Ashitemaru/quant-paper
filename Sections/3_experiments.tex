@@ -1,63 +1,116 @@
-\section{Experiments and Results}
+\section{Experiments}
 \label{sec:experiments}
 
-We analyze the 18 October 2026, 20:27 (Asia/Shanghai) archive. Its 106 episodes comprise 100 main-experiment records (E1) and six errors-only feedback controls (E2). E1 has 24 completed financial records, 17 failures, four running episodes, and 55 cancellations. E2 has four completed and two running episodes. We separate the suites throughout: an errors-only run is not a full-feedback vanilla replicate. The campaign remains incomplete.
+\subsection{Setup}
+\label{sec:setup}
 
-\subsection{Experimental Setup and Financial Basis}
-\label{sec:exp_setup}
+\paragraph{Models.} We evaluate six frontier models:
+\ModelClaudeOpus, \ModelAstra, \ModelGemini, \ModelDeepSeek, \ModelGLM, and~\ModelKimi. All models run under default provider settings unless stated otherwise. Calls go through the platform gateway, which records token usage.
 
-Strategies use the raw-L2 input profile to score a static universe of 3,042 Shenzhen A-share columns. Research uses 2022--2023 data and final assessment uses 2024 data. Historical warmup is authorized separately; this campaign has no training window. Each episode requires one replicate, with a maximum of 500,000 model tokens and five benchmark research evaluations. The public resource profile lists a 32-million CPU-second ceiling; measured CPU usage is reported separately. Exact data-availability cutoffs and execution times are not disclosed.
+\paragraph{Protocol.} Each model enters the one-shot and iterative-research tracks with the platform harnesses (Section~\ref{sec:tracks}), on the suite of Section~\ref{sec:data}. Following the leaderboard rule, each model has \emph{one official run per track}, and Table~\ref{tab:main} reports that run. Additional attempts and failures are reported separately in Section~\ref{sec:reliability}.
 
-E1 compares one-shot and full-feedback vanilla. One-shot can read platform documents and repair invalid output but receives no research-performance feedback. Vanilla may revise candidates, inspect research results, select a completed candidate, and stop within the maximum allowances. E2 uses an errors-only feedback policy for Astra and DeepSeek. Its results measure a different research condition and appear only in the feedback comparison. Model names are configured provider or relay aliases; Appendix~\ref{app:registry} preserves the references without asserting independently verified upstream model revisions.
+\paragraph{Reference.} As an upper reference we include \emph{Navers}, a professional cross-sectional strategy developed by our team. It is evaluated by the same platform, on the same universe, windows, cash account, and scoring rule, using own-agent weights and zero model tokens. Navers is not an LLM entry. It shows how far a strong human-built strategy gets under identical conditions.
 
-The primary financial tables use the supplied \emph{offline cash-account re-evaluation} of the frozen strategies. We independently recomputed ARR, net return, Sharpe, and maximum drawdown from the saved account series for all 52 available episode--window pairs, verifying 208 statistics. All 28 completed episodes have final account records; four lack a required research assessment and total score. The archive also supplies offline versioned total scores. These do not establish deployment of a new online leaderboard. Historical additive metrics remain in Appendix~\ref{app:registry}; financial bases are not pooled.
+\subsection{Main Results}
+\label{sec:main}
 
-\input{Tables/TabDailyProtocol}
+\input{Tables/TabMain}
 
-\subsection{Can Research Runs Produce Out-of-Sample Value?}
-\label{sec:leaderboard}
+\begin{figure*}[t]
+    \centering
+    \begin{subfigure}[t]{0.38\linewidth}
+        \centering
+        \figorph{Figures/fig_leaderboard.pdf}{\linewidth}{Leaderboard}
+        \caption{Total score, iterative research.}
+        \label{fig:leaderboard}
+    \end{subfigure}\hfill
+    \begin{subfigure}[t]{0.60\linewidth}
+        \centering
+        \figorph{Figures/fig_nav.pdf}{\linewidth}{Cash-account NAV}
+        \caption{Cash-account NAV, in-sample and out-of-sample.}
+        \label{fig:nav}
+    \end{subfigure}
+    \caption{Iterative-research results. (a) Total scores with the in-sample and out-of-sample contributions; the dashed line marks the Navers reference. (b) Daily cash-account NAV of each model's official run, Navers, and the equal-weight market reference, normalized to 1 at the start of each window.}
+    \label{fig:main}
+\end{figure*}
 
-Table~\ref{tab:cash_results} reports E1 Top75 cash-account results. Means and sample standard deviations condition on completion, including financial records whose total score is unavailable. Attempt outcomes appear separately in Table~\ref{tab:run_status}. A single observation has no estimated dispersion. Across-run standard deviations are not confidence intervals for market returns, and repeated strategies share the same final market interval.
+Table~\ref{tab:main} and Figure~\ref{fig:main} summarize the results.
 
-\input{Tables/TabCashResults}
+\paragraph{No model comes close to the reference.} Navers scores 51.57 and returns 70.9\% in 2024. The best model, \ModelClaudeOpus\ with iterative research, scores 31.94 and returns 30.4\%. The three strongest models (\ModelClaudeOpus, \ModelAstra, \ModelDeepSeek) lie within 2.4 points of each other, far below the reference. \ModelGemini\ and \ModelGLM\ trail at 10.22 and 4.05.
 
-\paragraph{Positive returns are not necessarily positive excess returns.}
-Eight of the 24 completed E1 strategies have positive cash-account ARR, but only two exceed the aligned gross equal-weight market reference, whose ARR is approximately $17.1\%$. The two positive-excess observations are one Opus vanilla and one DeepSeek vanilla run. The reference does not bear the strategies' account costs, so this comparison is not a substitute for matched tradable baselines. It nevertheless shows why absolute profitability and performance beyond a market reference must be reported separately.
+\paragraph{Beating the market is rare.} The equal-weight market returned 17.1\% in 2024. Only two of ten official runs beat it: \ModelClaudeOpus\ (+13.3 pp) and \ModelDeepSeek\ (+1.9 pp), both with iterative research. \ModelAstra\ earns a positive 16.4\% but still trails the market. Because the score rewards excess rather than absolute return, \ModelAstra's in-sample lead (36.73, the highest of any model) does not carry over to 2024.
 
-\paragraph{Better predictive ordering need not improve the selected portfolio.}
-Astra's three vanilla runs improve mean cash ARR from $-8.5\%$ for one-shot to $8.5\%$, and mean RankIC from $-0.0112$ to $0.0472$. Their mean cash excess remains negative at $-8.5$ percentage points. Gemini's two vanilla runs also improve mean RankIC, from $-0.0009$ to $0.0447$, while mean cash ARR declines from $0.3\%$ to $-9.0\%$. Full-universe ordering and the returns of a constrained head portfolio are different outcomes; the current summaries do not identify which exposure, selection, or execution mechanism explains the gap.
+\paragraph{The sealed year reorders models.} In-sample and out-of-sample rankings disagree. \ModelAstra\ ranks first in-sample but third out-of-sample, while \ModelGemini\ and \ModelGLM\ hold respectable in-sample scores (24.63 and 13.51) that collapse in 2024 (4.04 and 0.00). This is the gap the sealed window is designed to expose: research-window performance is an unreliable proxy for generalization.
 
-\paragraph{Sparse signal activity and small samples qualify apparent leaders.}
-Opus vanilla averages $17.4\%$ cash ARR and $0.3$ percentage points of excess across two completed runs. DeepSeek vanilla has only one completed run: $18.9\%$ cash ARR and $1.9$ percentage points of excess. Its historical signal-coverage bucket is 0--50\%, while the account series covers the full assessment interval and retains idle periods. Low signal activity is therefore an exposure characteristic to examine, rather than a reason to omit account dates or present the historical $32.1\%$ additive ARR as investable performance. GLM has one completed record per track; Kimi has two one-shot records and no completed vanilla record. These observations do not support a definitive model ranking.
+\paragraph{Risk profiles differ.} \ModelDeepSeek's 2024 strategy has the highest Sharpe ratio (1.16) and by far the smallest drawdown ($-7.9\%$). It trades rarely and stays in cash on many days. In particular, it held cash through the February crash. \ModelClaudeOpus\ earns more but with a drawdown of $-31.1\%$. Figure~\ref{fig:nav} shows that for every model, most of the 2024 gain arrives in the market rally of late September. Before the rally, all model strategies except \ModelDeepSeek's were below their starting value, whereas Navers was already ahead of the market.
 
-\subsection{Does Financial Feedback Help Research?}
-\label{sec:feedback}
+\subsection{Does Iterative Research Help?}
+\label{sec:feedback_effect}
 
-\input{Tables/TabFeedback}
+\begin{figure}[t]
+    \centering
+    \figorph{Figures/fig_oneshot_vs_vanilla.pdf}{\linewidth}{One-shot vs iterative}
+    \caption{One-shot versus iterative research for each model: 2024 excess return over the market (left) and total score (right).}
+    \label{fig:oneshot_vs_vanilla}
+\end{figure}
 
-Astra has three completed runs in each feedback condition. Full feedback yields mean cash excess of $-8.5$ percentage points and RankIC $0.0472$, compared with $-29.3$ percentage points and $-0.0081$ under errors-only feedback. However, the full-feedback runs use an average of four research evaluations and 80.0k tokens, while all three errors-only runs stop after one evaluation, averaging 40.2k tokens. This is evidence about the feedback policy together with the search and stopping behavior it induces; it does not isolate information quality at equal realized search effort. DeepSeek has only one completed run and two still running in each condition. A fixed-opportunity feedback comparison is needed before claiming a general feedback effect.
+Every model scores higher with iterative research than with one-shot generation (Figure~\ref{fig:oneshot_vs_vanilla}). In the one-shot track, every strategy loses to the market in 2024, with excess returns between $-11.5$ and $-37.1$ percentage points. Four of five one-shot strategies score zero. Their signals carry essentially no predictive information out of sample: 2024 RankIC is between $-0.015$ and $0.022$. Only \ModelClaudeOpus\ scores at all (4.41), from its in-sample window.
 
-\subsection{What Changes During the Research Process?}
-\label{sec:research_process}
+With feedback, 2024 RankIC rises to 0.029--0.049 for every model, and every total score increases. Excess return improves for four models, by 7.5 (\ModelGLM) to 39.0 (\ModelDeepSeek) percentage points. \ModelGemini\ is the exception: its signal improves, but its 2024 excess return falls from $-15.6$ to $-19.9$ percentage points, an instance of the signal--portfolio gap discussed next. Iteration is also where tokens go: one-shot runs use 16--96k tokens, iterative runs 96--418k. Without feedback, current models do not produce usable quantitative strategies; with five rounds of feedback, they produce strategies with real but modest predictive power.
 
-The saved trajectories support within-run comparisons between the first executable candidate and the final selected candidate. Among nine completed E1 vanilla runs, eight improve the research-window paired excess metric, with a mean improvement of 10.6 percentage points. None selects its first executable candidate, and six select the candidate with the highest recorded research excess. These process metrics retain the historical basis on which research feedback was generated; they are not cash-account recalculations.
+\subsection{Predictive Signal versus Portfolio Outcome}
+\label{sec:signal_vs_portfolio}
 
-Only the selected candidate has a final-window assessment in the archive. Thus, improvement along the observed research trajectory does not establish improvement in out-of-sample performance. Replaying frozen first and intermediate candidates, after all commitments and without returning these diagnostic results to the model, would distinguish research-window progress from generalization and candidate-selection effects. Such replays have not been performed here.
+Strong signal statistics do not guarantee a strong portfolio. In the iterative track, all five models reach similar 2024 RankIC (0.029--0.049), yet their 2024 excess returns span 38 percentage points, from $+13.3$ to $-24.9$. The two models with the \emph{highest} in-sample RankIC, \ModelGemini\ (0.064) and \ModelGLM\ (0.056), produce the \emph{worst} 2024 portfolios. Their long--short Sharpe ratios fall to zero or below. \ModelClaudeOpus\ has the lowest 2024 RankIC of the five (0.029) but the best portfolio and a long--short Sharpe of 1.51.
 
-\paragraph{Repetition and signal agreement.}
-The saved final signal panel covers 23 of the 24 completed E1 strategies; it omits the newly completed Kimi record. Mean Spearman correlation is $0.591$ across 17 same-track replicate pairs, $0.340$ across 211 cross-model pairs, and $0.139$ across 25 same-model cross-track pairs. The cross-model aggregate mixes tracks, and pairs share strategies and dates. These are descriptive signal-agreement statistics, not independent experimental samples, evidence of incremental returns, or a causal measure of model identity. Appendix~\ref{app:registry} reports the panel's coverage limitations.
+RankIC measures how well a strategy orders the whole market. The portfolio depends only on the top 75 stocks, and on whether they can actually be bought and held under price limits. A model that optimizes average correlation can improve the ordering of thousands of uninteresting stocks while leaving the head of the ranking no better than chance. This is why \BenchmarkName\ scores signal and portfolio terms jointly, and why the geometric mean in Equation~\eqref{eq:quality} requires every term to be positive.
 
-\subsection{Scores, Resources, and Reliability}
-\label{sec:exp_analysis}
+\subsection{Effect of Reasoning Effort}
+\label{sec:effort}
 
-The supplied offline scoring revision provides 20 non-null totals for E1 and four for E2. Ten E1 totals are positive; all four E2 totals are zero. Four E1 financial records retain missing totals. We report these supplied outputs without reconstructing or disclosing private final-score computation. The earlier historical export has only three positive totals; that concentration is specific to its earlier version and is not a finding about the revised score.
+\begin{figure}[t]
+    \centering
+    \figorph{Figures/fig_effort.pdf}{\linewidth}{Reasoning effort}
+    \caption{Effect of reasoning effort. Total score and tokens used for each model at each reasoning setting. \ph{Results pending.}}
+    \label{fig:effort}
+\end{figure}
 
-\input{Tables/TabResources}
-\input{Tables/TabRunStatus}
+Reasoning effort is the main inference-time setting that participants control. For each model whose provider exposes a working control, we run both tracks at a low and a high setting, in addition to the default, under the same suite and budget. Providers control reasoning in different ways: discrete effort levels, explicit thinking budgets, or an on/off switch. Some models cannot vary it at all. We use each provider's native control and report the reasoning tokens actually consumed.
 
-All 28 completed financial records mark token accounting complete. Resource summaries in Table~\ref{tab:resources} include only completed E1 records, and do not represent total campaign expenditure. The nominal ceilings do not imply equal actual spending or equal effective computation. Missing total scores are excluded only from score summaries, not from financial or resource statistics.
+\phtext{Results pending: per-model findings on whether more reasoning improves the committed strategy, how it changes token use and therefore $E$, and whether it helps one-shot more than iterative research.}
 
-E1 has 24 financial completions among 41 terminated non-cancelled episodes, with four further episodes still running. The 55 cancellations carry an unresolved model-call code and remain a separate category. Failed episodes include proposal, execution, eligibility, and service errors; an error code alone does not establish fault attributable to the model. Trial-level legality, execution, and repair records can locate the stage of failure, but analyses must distinguish ongoing trajectories and service incidents from completed research outcomes.
+\subsection{Granularity of Research Feedback}
+\label{sec:e2}
 
-\paragraph{Scope and next evidence.}
-The snapshot covers one market, one final historical interval, and one nominal resource profile. Saved daily account series permit temporal diagnostics, but do not create independent market samples or rule out prior exposure. Same-condition fixed baselines, frozen-candidate replays, completed feedback controls, and additional predeclared repetitions are the highest-priority extensions. Claims of broader durability would require a fresh final interval or another market. The current evidence establishes a gap between research-window improvement, predictive ordering, and economic outcomes; it does not by itself identify backtest overfitting as the cause.
+The iterative track returns aggregate return, signal, and coverage statistics along with execution errors. To test how much this information matters, we ran a control suite that is identical except that feedback contains \emph{only execution errors}: the model learns whether its strategy ran, but not how it performed.
+
+Under errors-only feedback, both tested models score zero. \ModelAstra's 2024 excess return falls from $-0.7$ to $-23.5$ percentage points, and \ModelDeepSeek's from $+1.9$ to $-20.2$. The behavior changes as well: without performance information, \ModelAstra\ stops after a single evaluation and uses 50k tokens instead of 96k. The value of iteration comes from performance feedback, not from the opportunity to fix bugs. \phtext{Additional models under errors-only feedback pending.}
+
+\subsection{What Happens During Research}
+\label{sec:process}
+
+We compare the first executable candidate of each completed iterative run with the strategy it finally commits to. Eight of nine runs improve their in-sample excess return over that trajectory, by 10.6 percentage points on average. No run commits to its first candidate, and six commit to the candidate with the best in-sample result. Models therefore use feedback actively and select greedily on the research window. Because only the committed strategy is assessed on 2024, this improvement is in-sample progress. Section~\ref{sec:main} shows that it transfers unevenly.
+
+\begin{figure}[t]
+    \centering
+    \figorph{Figures/fig_tokens_vs_score.pdf}{\linewidth}{Tokens vs score}
+    \caption{Tokens used versus total score for all completed runs. Official runs are highlighted.}
+    \label{fig:tokens}
+\end{figure}
+
+Token use and score are only loosely related (Figure~\ref{fig:tokens}). \ModelAstra\ reaches 30.29 with 96k tokens, while \ModelGemini\ and \ModelGLM\ spend about 370k tokens for scores of 10.22 and 4.05. \ModelClaudeOpus\ and \ModelDeepSeek\ spend 320k and 418k for the top two out-of-sample scores. Spending more of the budget helps only when the model can turn feedback into better candidates.
+
+\subsection{Reliability}
+\label{sec:reliability}
+
+\input{Tables/TabAttempts}
+
+Completing a research run is itself a capability. Table~\ref{tab:attempts} reports all attempts in the main campaign, excluding runs cancelled because of platform or provider incidents. Failure rates differ sharply by model. Here a failure means the run produced no valid committed strategy: an invalid proposal, a strategy that fails during execution, or a harness protocol failure.
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+    \item \ModelAstra\ and \ModelDeepSeek\ completed every attempt.
+    \item \ModelClaudeOpus\ failed 7 of 10 one-shot attempts.
+    \item \ModelKimi\ failed 5 of 7 one-shot attempts and its only iterative attempt.
+\end{itemize}
+\ModelKimi's failures occurred through a third-party relay and its runs through the official API are pending. \ph{Failure breakdown by cause pending.} A model that cannot reliably produce an executable strategy in one pass has a lower expected score in practice than its best run suggests.
+
+\phtext{Stability across repeated runs of the same model and track is analyzed separately.}

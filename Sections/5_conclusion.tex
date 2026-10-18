@@ -1,8 +1,12 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We introduced \BenchmarkName, a released benchmark for autonomous quantitative research on real historical market data. It makes the complete research run the unit of comparison, combining controlled feedback, strategy commitment, sealed final assessment, and distinct predictive, financial, and execution evidence.
+We introduced \BenchmarkName, a benchmark and open leaderboard that evaluates LLMs on complete quantitative research runs. A model researches with bounded feedback on 2022--2023 data, commits one strategy, and is assessed once on a sealed 2024 window. The assessment uses a cash account with realistic execution constraints, and the score covers signal quality, excess return, efficiency, and feature diversity.
 
-The updated pilot includes 24 completed main-experiment strategies and four completed feedback controls. Offline cash-account evaluation finds positive returns in eight main-experiment runs, but positive excess over the gross market reference in only two. Research trajectories often improve in-sample, while the relationship between predictive ordering and final portfolio outcomes remains uneven. Frozen-candidate replays and controlled feedback comparisons are needed to determine when research progress generalizes.
-
-Public materials describe evaluation dimensions and the research-window scoring rule. Final-score construction and exact execution timing remain private. Offline revised results are distinguished from historical official scorecards and do not establish an updated online leaderboard.
+Our first evaluation of six frontier models gives three findings.
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+    \item Performance feedback is what makes LLM research work. Without it, no model beats the market; with it, the best model earns 13.3 percentage points of excess return.
+    \item In-sample progress and predictive correlation are poor proxies for out-of-sample portfolio value. Models with the strongest research-window signals produced some of the weakest 2024 portfolios.
+    \item All models remain far below a professional reference strategy.
+\end{itemize}
+\BenchmarkName\ is open to submissions from any model or agent harness. We plan to add markets, input profiles such as order-book data and anonymized features, and fresh sealed windows.

@@ -1,0 +1,30 @@
+\begin{table*}[t]
+\centering
+\footnotesize
+\caption{Main results on the Shenzhen A-share suite. Each model has one official run per track. $S$ is the total score; $S_{\mathrm{in}}$ and $S_{\mathrm{out}}$ are the in-sample (2022--2023) and out-of-sample (2024) window scores. Financial columns are for the sealed 2024 window on the cash account; excess is over the full-market equal-weight reference (17.1\% ARR in 2024). Tokens are model tokens used during research (budget 500k). The reference strategy is scored with own-agent weights and uses no model tokens.}
+\label{tab:main}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}llrrrrrrrrr@{}}
+\toprule
+Track & Model & $S$ & $S_{\mathrm{in}}$ & $S_{\mathrm{out}}$ & ARR (\%) & Excess (pp) & Sharpe & MDD (\%) & RankIC & Tokens \\
+\midrule
+\multirow{6}{*}{Iterative}
+ & \ModelClaudeOpus & \textbf{31.94} & 30.47 & \textbf{32.58} & \textbf{30.4} & \textbf{+13.3} & 0.92 & $-31.1$ & 0.0290 & 320k \\
+ & \ModelAstra & 30.29 & \textbf{36.73} & 27.53 & 16.4 & $-0.7$ & 0.64 & $-29.4$ & 0.0462 & \textbf{96k} \\
+ & \ModelDeepSeek & 29.54 & 28.08 & 30.16 & 18.9 & +1.9 & \textbf{1.16} & \textbf{$-7.9$} & \textbf{0.0494} & 418k \\
+ & \ModelGemini & 10.22 & 24.63 & 4.04 & $-2.9$ & $-19.9$ & 0.06 & $-33.8$ & 0.0447 & 370k \\
+ & \ModelGLM & 4.05 & 13.51 & 0.00 & $-7.8$ & $-24.9$ & $-0.18$ & $-27.8$ & 0.0455 & 369k \\
+ & \ModelKimi & \ph{pending} & & & & & & & & \\
+\midrule
+\multirow{6}{*}{One-shot}
+ & \ModelClaudeOpus & \textbf{4.41} & \textbf{14.72} & 0.00 & 5.6 & \textbf{$-11.5$} & \textbf{0.34} & \textbf{$-21.0$} & $-0.0005$ & 64k \\
+ & \ModelAstra & 0.00 & 0.00 & 0.00 & $-9.9$ & $-26.9$ & $-0.22$ & $-30.3$ & $-0.0148$ & \textbf{16k} \\
+ & \ModelDeepSeek & 0.00 & 0.00 & 0.00 & $-20.0$ & $-37.1$ & $-0.63$ & $-35.9$ & 0.0007 & 90k \\
+ & \ModelGemini & 0.00 & 0.00 & 0.00 & 1.5 & $-15.6$ & 0.20 & $-27.4$ & $-0.0043$ & 96k \\
+ & \ModelGLM & 0.00 & 0.00 & 0.00 & $-15.4$ & $-32.4$ & $-0.51$ & $-32.1$ & \textbf{0.0219} & 65k \\
+ & \ModelKimi & \ph{pending} & & & & & & & & \\
+\midrule
+Reference & Navers & 51.57 & 53.28 & 50.83 & 70.9 & +53.9 & 1.75 & $-33.2$ & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

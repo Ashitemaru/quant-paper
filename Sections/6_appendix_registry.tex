@@ -1,64 +1,31 @@
-\section{Campaign Records and Reproducibility}
+\section{Suite Specification}
 \label{app:registry}
 
-The empirical results use the 20:27 \texttt{raw-results-20261018} export: one JSONL record and one CSV row per episode. All 106 identifiers and statuses agree between the files; 2,712 scalar fields were reconciled. Historical summaries are generated from the JSONL scorecards, with the CSV serving as a cross-check. E1 and E2 are grouped separately by suite identity. Main financial results additionally use the supplied offline account records: 208 statistics were verified directly against saved NAV series. Each episode has one required replicate. Cross-episode summaries use sample standard deviations, without interpreting the within-episode, single-replicate standard deviation of zero as experimental stability.
-
-The public suite configuration and exported scorecards establish the reported population, resource limits, statuses, and metric values. The historical results and the revised public research protocol have distinct version provenance. Public replication covers aggregation of reported outcomes; execution schedules, data cutoffs, and final-score construction remain private. Hosted re-evaluation requires the organizer's registered evaluator.
+Table~\ref{tab:suite_registry} lists the public specification of the suite used in this paper.
 
 \begin{table}[htbp]
 \centering\small
-\caption{Recorded campaign configuration and remaining provenance gaps. Values are specific to the exported campaign; unprovided deployment and data identifiers are not inferred from defaults.}
+\caption{Public specification of the Shenzhen A-share suite.}
 \label{tab:suite_registry}
 \begin{tabular}{@{}p{0.24\linewidth}p{0.70\linewidth}@{}}
 \toprule
-Field & Recorded specification \\
+Field & Specification \\
 \midrule
-Suite and input & \texttt{sz-a-share-daily-2022-2024}; raw-L2 Python strategies; 3,042 static Shenzhen A-share columns \\
-Research window & 2022--2023; authorized historical warmup \\
-Final window & 2024; no training window \\
-Budget & 500,000 tokens; at most 5 charged research evaluations; public CPU ceiling 32,000,000 seconds \\
-Replication & One required replicate per episode; 106 observed episodes, including failed, running and cancelled records \\
-Scoring & Offline revised results distinguished from historical exported totals; research formula public; final-score construction private \\
-Execution & Hosted evaluator; Top75 primary, Top200/400 diagnostics \\
-Feature evidence & Score-rank regression; cap 32; no reference-bank novelty \\
-Metric coverage & Exported coverage and missingness retained alongside metric values \\
-Retained identities & Episode and replicate IDs, configured model/provider, per-episode interaction-track reference, result revision and trial statuses \\
-Additional artifacts needed & Immutable release and runtime identities, source bundles, prompts, model parameters, seeds, and data exposure history; private evaluator details remain organizer-held \\
+Market and universe & Shenzhen A-shares; static universe of 3,042 stocks; missing and delisted stocks retained \\
+Input profile & Raw daily and Level-2 market data through a date-scoped data interface; Python strategies \\
+Windows & In-sample research 2022--2023 with authorized warmup history; sealed out-of-sample 2024; no training window \\
+Budget & 500,000 model tokens; at most 5 research evaluations \\
+Feedback (iterative track) & Aggregate return, signal, and coverage statistics on the research window, plus execution errors \\
+Portfolio & Top-75 equal-weight long portfolio, held for one trading day, boundary ties retained; Top-200/400 diagnostics \\
+Accounting & Cash account with 100-share lots; no buys at the upper price limit; deferred sales under suspension or the lower price limit; no replacement of unfilled buys; idle days earn zero; liquidation at window end \\
+Costs & Slippage computed from order-book limits and market impact rather than set to a fixed value \\
+Features & Up to 32 declared features; usage tested by score-rank regression on correlation clusters \\
+Scoring & In-sample rule of Section~\ref{sec:scoring}; out-of-sample score uses the same metrics with an unpublished combination; total $0.3\,S_{\mathrm{in}}+0.7\,S_{\mathrm{out}}$ \\
+Runs & One run per submission; results published automatically and not withdrawable; daily submission limit per account \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
-\centering\footnotesize
-\caption{Model identities as recorded in the export. Names denote configured provider or relay aliases; the table does not independently verify upstream model revisions.}
-\label{tab:campaign_models}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Display name & Model reference & Provider \\
-\midrule
-GPT-6 Astra & \texttt{astra6\_v3\_total\_budget\_r3} & \texttt{sbtunnel} \\
-Gemini 3.8 Flash & \texttt{gemini38\_v3\_total\_budget\_r3} & \texttt{hoyoo} \\
-Claude Opus 5.5 & \texttt{opus55\_stream\_v1} & \texttt{xiaogou} \\
-DeepSeek V4.1 Flash & \texttt{deepseek41\_stream\_v1} & \texttt{dpsk} \\
-GLM-5.3 & \texttt{glm53\_stream\_v2} & \texttt{shuzirensheng} \\
-Kimi K3 & \texttt{kimik3\_stream\_v2} & \texttt{shuzirensheng} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\paragraph{Models.} All models are accessed through the platform gateway under their default provider settings, except in the reasoning-effort study. \ModelKimi\ results use the official provider API. \phtext{Confirm the final endpoint list for all six models.}
 
-\paragraph{Result retention and selection.}
-The aggregation retains all provided episodes. Cancellations are a separate category, not silently removed observations. Completed episodes with a missing research-window score remain in financial and resource summaries. Ongoing submissions are retained at their exported state rather than replaced by later live results. The handoff report's intended three runs per model--track cell is not a complete preregistration manifest, so observed submission counts are not relabelled as prescribed replicates.
-
-\paragraph{Coverage and uncertainty.}
-The historical scorecards provide coverage buckets and aggregate financial metrics; their within-window confidence fields are null. The updated archive also contains daily account series for temporal diagnostics. We report cross-run dispersion where available; repeated runs on one market interval do not supply independent market samples. Exact observation schedules and trading records are not disclosed, and statistical significance is not inferred from the aggregate metrics.
-
-\paragraph{Historical financial comparison.}
-The following tables preserve E1 historical additive results for provenance. They do not replace the cash-account main analysis or mix E2 controls into vanilla.
-
-\input{Tables/TabLeaderboard}
-\input{Tables/TabTopNDiagnostics}
-
-\input{Tables/TabSignalDiagnostics}
-
-\paragraph{Financial semantics and disclosure.}
-The historical tables in this appendix use additive research returns, paired excess ARR, and additive drawdown. Main tables explicitly use offline cash-account statistics and versioned offline totals. Neither set establishes deployment of the revised scorer. The public protocol describes evaluation dimensions and the revised research formula. Final-score transformations, weights, aggregation, exact execution times, and data-availability cutoffs are outside the public disclosure scope.
+\paragraph{Result records.} For every run, the platform records the model, track, harness, all model calls with token usage, every research evaluation, the committed strategy, and both window assessments. Failed and cancelled runs remain in the record. Each official leaderboard entry links to its run record.

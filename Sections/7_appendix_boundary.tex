@@ -1,24 +1,15 @@
-\section{Information Boundary and Qualification Rules}
+\section{Information Boundary and Feature Diversity}
 \label{app:boundary}
 
-\subsection{Authorization and Final-Assessment Boundary}
+\subsection{Information Boundary}
 
-The model interaction service receives the public suite, authorized tools, permitted research feedback, and remaining-resource state. Quantitative strategy execution receives a separately scoped market-data capability. The trusted supervisor holds that capability and mediates requests through the permitted version, dates, instruments, fields, and availability cutoff. Strategy programs cannot expand the scope by supplying another date or forwarding their own internal authorization headers. Final evaluation uses the registered sealed release through the private data plane.
+The model conversation receives the public suite description, the platform documentation, the feedback permitted by the track, and its remaining budget. It never receives market data matrices, evaluation internals, or anything from the sealed window. Strategy code runs separately, with a market-data capability scoped to the permitted dates, stocks, and fields. A trusted supervisor holds that capability, so a strategy cannot widen its scope by requesting another date or forging credentials. The sealed window is served only to the final evaluator.
 
-A final commitment ends candidate selection for that replicate. The same frozen strategy and trained artifact, when present, are used for sealed assessment. Recovery continues the recorded operation and accepted progress; it does not authorize a new candidate or new paid model response. A separate replay or changed evaluation contract creates a separate result and preserves the original commitment.
+A commitment ends candidate selection. The same frozen strategy is used for the sealed assessment, and recovery after an interruption continues the recorded run without allowing a new candidate.
 
-This boundary addresses runtime access and evaluation ownership. It does not establish that historical information was absent from a model's training data or prior resources. Organizers must document population construction, earlier publication of data, development experiments, and the freeze point. Public benchmark feedback can also influence later submissions. Campaign registration therefore specifies the intended experiment set and disclosure policy, retaining all attempts used for the reported comparison. Periodically refreshed or separately retained final windows are possible governance extensions, rather than assumed properties of the current runtime.
+This boundary controls access at run time. It cannot rule out that historical market information appears in a model's pretraining data. A fixed historical sealed window is therefore a known limitation; refreshed sealed windows are a planned extension.
 
-\subsection{Feature Diversity as an Evaluation Dimension}
+\subsection{Feature Diversity}
 \label{app:diversity}
 
-The benchmark considers whether a strategy declares distinct, qualified features and actually uses them. Repeated copies of a feature do not constitute additional diversity. For the public research protocol, the feature count is capped at 32, with rank-based regression used to assess contribution and correlated features grouped before counting. These groups describe statistical redundancy; they do not establish independent economic mechanisms. The supplied campaign has no reference-bank novelty measurement.
-
-The public research contribution enters Equation~\eqref{eq:efficiency}. Final-window feature qualification and its mapping into the final score are private. We disclose the evaluation dimension without publishing final qualification thresholds, component values, or an algorithm for reconstructing that score.
-
-\subsection{Metric Availability and Score Eligibility}
-
-Execution completion, strategy freezing, metric availability, and score eligibility are separate states. Eligibility does not establish full-window coverage or low risk. Table~\ref{tab:leaderboard} therefore retains coverage qualifications alongside financial results. Missing metrics are not filled with zeros, and financial records with unavailable totals remain in the relevant financial summaries.
-
-\paragraph{Verification and access.}
-Public campaign records support checks of submission identity, outcome counts, resource use, and reported results. Exact trade scheduling, data-availability cutoffs, and final-score construction are held by the organizer. Hosted re-evaluation uses the registered evaluator version; the public description alone does not support independent reconstruction of the private final score.
+Diversity rewards strategies that combine several distinct sources of signal. A strategy may declare up to 32 named features. Features that pass a quality screen are grouped into clusters of highly correlated features. A cluster counts as \emph{used} if regressing the strategy's daily score ranks on the cluster's feature ranks shows a material unique contribution (threshold 0.01). $K$ is the number of used clusters. Duplicating a feature therefore adds nothing, and declaring a feature that the score ignores adds nothing. Clusters describe statistical redundancy, not distinct economic mechanisms. $D$ enters the score through Equation~\eqref{eq:ed}.

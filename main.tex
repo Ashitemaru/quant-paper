@@ -37,8 +37,13 @@
 % underlined so it cannot be mistaken for a real result, on screen or in print.
 % Every occurrence must be replaced or removed before submission.
 \newcommand{\ph}[1]{\textcolor{magenta}{\underline{\textsf{#1}}}}
+% \phtext{...}: a breakable placeholder sentence (magenta, not underlined).
+\newcommand{\phtext}[1]{\textcolor{magenta}{\textsf{[#1]}}}
 
 % Custom commands from original paper
+% \figorph{file}{width}{label}: include the figure if it exists, else a placeholder box.
+\newcommand{\figorph}[3]{\IfFileExists{#1}{\includegraphics[width=#2]{#1}}{\fbox{\parbox[c][0.28\linewidth][c]{0.95\linewidth}{\centering\ph{Figure pending: #3}}}}}
+
 \newcommand\mc[1]{\mathcal{#1}}
 \newcommand{\mbf}[1]{\mathbf{#1}}
 
@@ -78,7 +83,6 @@
 
 \input{Sections/1_introduction}
 \input{Sections/2_method}
-\input{Sections/2_arena}
 \input{Sections/3_experiments}
 \input{Sections/4_relatedworks}
 \input{Sections/5_conclusion}
@@ -126,5 +130,6 @@
 
 \input{Sections/6_appendix_registry}
 \input{Sections/7_appendix_boundary}
+\input{Sections/8_appendix_platform}
 
 \end{document}

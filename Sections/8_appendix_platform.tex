@@ -1,9 +1,9 @@
-\section{Arena Execution and Reproducibility}
-\label{sec:arena}
+\section{Arena Platform}
+\label{app:platform}
 
 The Arena platform implements the released benchmark contract across model interaction, market-data access, strategy execution, and final scoring. Its control plane records suites, submissions, replicates, operations, resource usage, and results. Registration is distinct from public disclosure: exact execution times, data cutoffs, and final-scoring details remain organizer-held. Quantitative workers and data services execute the authorized computation. A batch campaign interface uses these services to compare registered models, interaction tracks, budgets, and suites.
 
-\subsection{Separation of Model Interaction and Quantitative Execution}
+\subsection*{Separation of Model Interaction and Quantitative Execution}
 \label{sec:arena_execution}
 
 The model interaction service exposes only the tools and feedback allowed by the registered track, while computational strategies execute under a separate identity with scoped market-data access. A trusted evaluator consumes the resulting scores and applies the frozen financial rules. This division allows data-intensive strategy evaluation without forwarding raw market matrices or private evaluation artifacts into the model conversation. Table~\ref{tab:arena_roles} summarizes the responsibilities.
@@ -27,20 +27,18 @@ The model interaction service exposes only the tools and feedback allowed by the
     \end{tabular}
 \end{table}
 
-Model-provider credentials and data-access capabilities are held by trusted services. In the reusable execution environment, a supervisor advances the frozen sequence of signal dates. Each date starts a fresh low-privilege strategy process, working directory, and date-scoped data gateway. Before advancing, the supervisor closes the day's processes and connections and persists its accepted output. Reusing the virtual machine therefore preserves controlled execution infrastructure; state crosses stages only through declared artifacts such as a frozen fitted model. Earlier per-day runtime contracts remain identifiable by their registered versions.
+Model-provider credentials and data-access capabilities are held by trusted services. In the reusable execution environment, a supervisor advances the frozen sequence of signal dates. Each date starts a fresh low-privilege strategy process, working directory, and date-scoped data gateway. Before advancing, the supervisor closes the day's processes and connections and persists its accepted output. Reusing the virtual machine therefore preserves controlled execution infrastructure; state crosses stages only through declared artifacts such as a frozen fitted model.
 
 Training, research, and final assessment use separately bound executions. The final evaluator accepts registered sealed releases through a private data plane, while research credentials retain their authorized research scope. The resulting boundary combines service authorization with process isolation. Claims about a hosted benchmark additionally depend on the deployed runtime, network configuration, and boundary checks recorded for that campaign.
 
-\subsection{Immutable Data and Shared Financial Evaluation}
+\subsection*{Immutable Data and Shared Financial Evaluation}
 \label{sec:arena_data}
 
 Market observations are served from immutable publications. Offline preparation establishes the data layout, indexes, calendar, and declared coverage. Online access resolves the authorized release and reads bounded dates, instruments, and fields. Daily data use published queryable stores; indexed intraday data support column and time-range selection. Exact price and quantity semantics, exchange-local timestamps, and source missingness are retained through the query interface. A change to the default publication does not redirect an active suite away from its registered version.
 
-Arena and the internal research platform use a shared daily replay and statistical core. Within one daily evaluation, market observations support forward labels, the full-market reference, research cohorts, and cash accounts under the same conventions. This limits semantic drift between financial research and benchmark reporting. Access and disclosure policies remain specific to each setting: a visible-date cutoff alone does not establish a sealed evaluation release. Likewise, common evaluation code supports consistency, while agreement of deployed entry points requires matched end-to-end run evidence.
-
 The three input profiles are bound to actual releases before use. Raw-event processing, fifteen-second observations, and anonymous features introduce different preprocessing and information conditions; platform support alone does not establish that a dataset has been publicly released or used in a completed campaign. Publication receipts and coverage summaries identify the data underlying each leaderboard setting.
 
-\subsection{Durable Accounting and Recoverable Progress}
+\subsection*{Durable Accounting and Recoverable Progress}
 \label{sec:arena_recovery}
 
 Model calls, strategy registration, research evaluations, and final commitments carry persistent operation identities. The platform records budget reservations separately from observed consumption. Provider-reported counters settle model usage, and trusted execution measurements settle CPU usage when available. Unreported usage remains unknown. This separation keeps conservative admission estimates from appearing as measured costs.
@@ -49,9 +47,9 @@ A benchmark run can checkpoint and yield while an evaluation runs, then resume f
 
 The evaluator persists core financial and signal results before optional reference comparisons, reports, and detailed artifact publication. A failure in an optional step affects that evidence and any dependent component, while preserving the core result. Model errors, infrastructure blockage, cancellation, and statistical unavailability remain distinct outcomes. These are properties of the execution design; campaign completion rates, recovery success, and runtime overhead are empirical quantities to be reported separately.
 
-\subsection{Campaigns and Reproducibility Records}
+\subsection*{Campaigns and Reproducibility Records}
 \label{sec:arena_campaigns}
 
 The campaign interface snapshots the registered model, interaction track, source program, and public suite contract, persists submission intent, and submits through the shared Arena services. It collects evaluator-produced scorecards without recomputing financial results. Direct comparisons bind the service origin, suite, selected runtime, budget definition, and protocol. Different input scopes or financial conventions define separate groups.
 
-A reproducibility record links the data publication, suite, model identity, interaction track, model operations, admitted trials, usage observations, final commitment, and final scorecard. All prescribed replicates remain visible in the campaign record, including failed, cancelled, blocked, and incomplete runs. Stored model replies support reconstruction of an observed trajectory; new calls to an external provider need not reproduce that trajectory exactly. The registration requirements appear in Appendix~\ref{app:registry}.
+A reproducibility record links the data publication, suite, model identity, interaction track, model operations, admitted trials, usage observations, final commitment, and final scorecard. All prescribed replicates remain visible in the campaign record, including failed, cancelled, blocked, and incomplete runs. Stored model replies support reconstruction of an observed trajectory; new calls to an external provider need not reproduce that trajectory exactly. The suite specification appears in Appendix~\ref{app:registry}.
