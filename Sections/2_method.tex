@@ -1,9 +1,9 @@
 \section{\BenchmarkName: Task and Evaluation Protocol}
 \label{sec:benchmark}
 
-\BenchmarkName\ evaluates a complete quantitative research run, from the first model interaction to a frozen strategy's sealed assessment. The benchmark specifies the comparison contract; the Arena platform executes that contract. This separation allows research procedures to vary while preserving the information and measurement rules used to judge their outputs.
+\BenchmarkName\ is a released benchmark contract for complete quantitative research runs, from the first model interaction to a frozen strategy's sealed assessment. The benchmark fixes the information, resource, interaction, financial, and scoring rules; the Arena platform executes and records them.
 
-\subsection{Task, Participant, and Evaluation Unit}
+\subsection{Task and Evaluation Unit}
 \label{sec:arena_task}
 
 We define a benchmark suite as
@@ -13,108 +13,83 @@ We define a benchmark suite as
 \end{equation}
 where $\mathcal{D}$ identifies immutable data releases, $\mathcal{U}$ the authorized instrument population, $\mathcal{W}$ the chronological windows and warmup rules, $\mathcal{P}$ the input profile, $\mathcal{E}$ the execution environment, $\mathbf{B}$ the resource budgets, $\mathcal{F}$ the feedback policy, and $\mathcal{V}$ the financial and scoring evaluator. All components are frozen before a matched comparison. A change to this contract defines a new benchmark setting.
 
-A participant $a=(M,H)$ combines a registered language model $M$ with a research harness $H$. The harness determines prompt construction, candidate generation, feedback interpretation, stopping, and final selection. A replicate executes this participant under $q$ with a registered seed identifier and its own budget. An episode contains the prescribed replicates; their complete records constitute the unit of comparison. Harness changes, including different prior memories or candidate-selection policies, define participant variants under the same suite.
+A benchmark run registers a model, an interaction track, a strategy program, and a seed identifier under $q$. The track fixes the permitted feedback and stopping rule; the run commits one final strategy before sealed assessment. An episode contains its prescribed replicates, and their complete records constitute the unit of comparison. A change to the model, track, source program, or suite defines a new registered condition.
 
-The platform supports three input profiles: authorized raw market data, fifteen-second order-book observations, and anonymous numerical features. They expose different information and preprocessing requirements and are evaluated as distinct conditions. Strategies return cross-sectional stock scores for authorized signal dates and may declare constituent features. Optional training uses an earlier registered interval; the resulting model artifact is frozen and reused in research and final evaluation. Both participant-defined scoring programs and trusted linear combinations of declared features are supported. The latter provide directly verifiable feature-use evidence for diversity assessment.
+The platform supports three input profiles: authorized raw market data, fifteen-second order-book observations, and anonymous numerical features. They expose different information and preprocessing requirements and are evaluated as distinct conditions. Strategies return cross-sectional stock scores for authorized signal dates and may declare constituent features. Optional training uses an earlier registered interval; the resulting model artifact is frozen and reused in research and final evaluation. The reported campaign uses registered Python scoring programs. The platform also supports trusted linear combinations in separately configured suites. Feature-use evidence for the reported Python programs is obtained through the score-rank regression described in Appendix~\ref{app:diversity}.
 
 \subsection{Research Interaction and Resource Constraints}
 \label{sec:arena_interaction}
 
-The harness alternates between model interactions and admitted research evaluations. Each completed evaluation returns the projection permitted by $\mathcal{F}$, including selected metrics, validity and coverage information, execution summaries, and remaining resources. Metric precision and available diagnostics are fixed by the suite. Private signal matrices, quantitative execution logs, fitted artifacts, and trading records are withheld from the research feedback channel.
+The model interaction service alternates model calls and admitted research evaluations. Each completed evaluation returns the projection permitted by $\mathcal{F}$, including selected metrics, validity and coverage information, execution summaries, and remaining resources. Metric precision and available diagnostics are fixed by the suite. Private signal matrices, quantitative execution logs, fitted artifacts, and trading records are withheld from the research feedback channel.
 
-The current budget profile distinguishes model tokens, admitted research evaluations, and execution CPU usage. Let $u_j$ be the reported token usage of model operation $j$, $n_{\mathrm{adm}}$ the number of admitted research evaluations, and $c_\ell$ the measured CPU usage of execution $\ell$. The corresponding usage vector is
+The current budget profile distinguishes model tokens, charged research evaluations, and execution CPU usage. Let $u_j$ be the reported token usage of model operation $j$, $n_{\mathrm{chg}}$ the number of charged research evaluations, and $c_\ell$ the measured CPU usage of execution $\ell$. The corresponding usage vector is
 \begin{equation}
-    \mathbf{b} = \left(\sum_j u_j,\ n_{\mathrm{adm}},\ \sum_\ell c_\ell\right),
+    \mathbf{b} = \left(\sum_j u_j,\ n_{\mathrm{chg}},\ \sum_\ell c_\ell\right),
     \qquad \mathbf{b} \preceq \mathbf{B}
-    \quad\text{for budget-eligible runs}.
+    \quad\text{for budget-eligible benchmark runs}.
     \label{eq:budgets}
 \end{equation}
 These sums apply when the required usage records are known; unresolved usage retains an explicit unavailable state. Admission also accounts for outstanding reservations and protects CPU capacity for final evaluation. Reservations are released or settled against observations and do not become measured consumption by definition. CPU accounting covers registered executions rather than all shared-service overhead. Token ceilings do not imply equal monetary expenditure or equal effective computation across models.
 
-A malformed model reply consumes its observed tokens. A strategy rejected before evaluation admission does not consume an admitted evaluation; an accepted evaluation retains its evaluation charge if execution subsequently fails. Data requests and bytes remain metered under the current service-limit profile, with access and concurrency controls; historical profiles retain their own cumulative resource definitions.
+A malformed model reply consumes its observed tokens. A strategy rejected before evaluation admission does not consume an evaluation; an accepted evaluation retains its charge when the strategy fails. Platform faults and cancellation do not become charged research evaluations. Data requests and bytes remain metered under the current service-limit profile, with access and concurrency controls; historical profiles retain their own cumulative resource definitions.
 
-Three participation modes establish different research conditions. \emph{One-shot} permits one model operation and directly freezes a valid strategy, without research feedback, model-assisted repair, or additional training. \emph{Vanilla} uses a model--feedback conversation: the model may finish with a completed candidate, and the last completed candidate with feedback is the declared fallback when the budget ends. \emph{External harnesses} implement their own search and selection rules through the same authorized services. Their external knowledge, memory initialization, repair policy, and selection rule form part of the participant specification.
+The released benchmark exposes two interaction tracks in the reported campaign. \emph{One-shot} submits one complete strategy and freezes it without research-performance feedback or candidate search. Under the campaign's document-reading interaction, the model can first request platform documentation; these requests consume model tokens and calls but no research evaluation. Validity repairs may require additional replies; one-shot denotes a frozen strategy without research-performance feedback, rather than exactly one provider call or one raw proposal. \emph{Vanilla} uses a model--feedback conversation: the model may finish with a completed candidate, and the last eligible completed trial is the fallback when the budget ends. Completed evaluations and strategy failures consume an evaluation, whereas platform faults and cancellations do not; a blocked evaluation retains its reservation until resolved.
 
 \subsection{Temporal Access and Final Commitment}
 \label{sec:arena_contract}
 
-Training, research, and final accounting windows are registered chronologically. Authorized warmup supplies historical context without extending the accounting interval. For a signal date $d$, the executable strategy receives only observations in the authorized data release, instrument and field scope, and availability interval ending at $\kappa(d)$. In the current daily protocol, $\kappa(d)$ is the end of that trading day in exchange-local time, including its closing information. Data permissions are enforced by the execution service rather than inferred from dates supplied by participant code.
+Training, research, and final accounting windows are registered chronologically. Authorized warmup supplies historical context without extending the accounting interval. The executable strategy receives observations only within its authorized data release, instrument and field scope, and temporal access policy. Data permissions are enforced by the execution service. Exact data-availability cutoffs and execution times are retained privately by the evaluator.
 
-After research, each replicate commits one strategy. Its source, runtime, fitted artifact when present, and declared feature configuration are fixed before sealed assessment. The harness controls the selection; the platform validates and freezes the commitment and runs the final evaluator. Final-window outcomes are excluded from candidate revision within that replicate. Further evaluation under another contract produces a separate record and preserves the original result.
+After research, each replicate commits one strategy. Its source, runtime, fitted artifact when present, and declared feature configuration are fixed before sealed assessment. The registered interaction track controls the selection; the platform validates and freezes the commitment and runs the final evaluator. Final-window outcomes are excluded from candidate revision within that replicate. Further evaluation under another contract produces a separate record and preserves the original result.
 
-The daily protocol uses registered static Shenzhen A-share factor columns. Missing observations are retained, and no daily index-constituent mask is imposed. Population construction, delisted securities, and data-publication history must therefore be disclosed alongside the suite. Runtime authorization controls access during the experiment; historical knowledge in model pretraining or participant priors remains a separate source of possible contamination. Repeated public leaderboard access also requires a campaign-level disclosure policy, as discussed in Appendix~\ref{app:boundary}.
+The daily protocol uses registered static Shenzhen A-share factor columns. Missing observations are retained, and no daily index-constituent mask is imposed. Population construction, delisted securities, and data-publication history must therefore be disclosed alongside the suite. Runtime authorization controls access during the experiment; historical knowledge in model pretraining or prior resources remains a separate source of possible contamination. Repeated public leaderboard access also requires a campaign-level disclosure policy, as discussed in Appendix~\ref{app:boundary}.
 
-\subsection{Daily Financial Evaluation}
+\subsection{Financial Evaluation and Versioning}
 \label{sec:arena_returns}
 
-Index consecutive trading sessions by $t$. Scores $s_{i,t-1}$ are formed using information authorized through session $t-1$; a selected cohort enters at session $t$'s opening price and is scheduled to exit at session $t+1$'s closing price. Both entry and exit belong to the accounting window. An authorized predecessor signal can support the first entry day; an absent predecessor is not reconstructed from later data. The last accounting session introduces no new cohort.
+Each strategy assigns scores to the authorized stock universe. The primary portfolio selects the highest-scoring 75 stocks, retaining all boundary ties; Top200 and Top400 are diagnostic portfolios. Invalid signals and missing observations are recorded explicitly. The public protocol describes portfolio construction and evaluation dimensions without disclosing exact trade times, data-availability cutoffs, or price-alignment rules.
 
-\paragraph{Selection and observable labels.}
-Let $\mathcal{I}_t$ contain the registered instruments with finite scores for entry $t$, with score direction fixed so that larger values rank first. For a valid signal row, let $s_{[k],t-1}$ be its $k$-th largest score and define
-\begin{equation}
-    k_t=\min(K,|\mathcal{I}_t|),\qquad
-    \mathcal{S}^{K}_t=\{i\in\mathcal{I}_t:s_{i,t-1}\ge s_{[k_t],t-1}\}.
-    \label{eq:topk}
-\end{equation}
-This definition includes every boundary tie, so the selected count may exceed $K$. Empty or invalid signal rows have no evaluable cohort. The current validity check requires observed entry-universe scores with at least two distinct finite values. Selection precedes forward-price observation and does not replace securities whose labels later prove unavailable.
+\paragraph{Cash-account protocol.}
+The revised protocol uses a cash account with daily net asset values. Accounting respects available cash, 100-share lots, and transaction costs. Price limits and suspensions constrain execution: unavailable purchases are not replaced by other stocks, and blocked sales may be deferred. A session without a valid signal opens no new position; the account record retains cash and any outstanding holdings. Return-based evaluation uses this account series. Exact execution scheduling and cost parameters are not specified here.
 
-For raw opening and closing prices $O$ and $C$, the forward label is
-\begin{equation}
-    y_{i,t}=\frac{C_{i,t+1}}{O_{i,t}}-1,\qquad
-    \mathcal{L}_t=\{i:\text{the registered label-validity rules are satisfied}\}.
-    \label{eq:label}
-\end{equation}
-Label validity requires the relevant daily records, non-suspended observations, and finite positive prices; the implementation checks both open and close fields of each relevant bar. Let $\mathcal{A}^{K}_t=\mathcal{S}^{K}_t\cap\mathcal{L}_t$. For a valid nonempty observable cohort, the research return and label coverage are
-\begin{equation}
-    r^{K}_t=\frac{\eta}{|\mathcal{A}^{K}_t|}\sum_{i\in\mathcal{A}^{K}_t}y_{i,t}-c,
-    \qquad
-    \gamma^{K}_t=\frac{|\mathcal{A}^{K}_t|}{|\mathcal{S}^{K}_t|},
-    \quad \eta=\tfrac12,\quad c=0.0011.
-    \label{eq:cohort_return}
-\end{equation}
-An empty observable set yields an unavailable return. Partially observed cohorts retain their observed-only mean and coverage. The fixed cost is deducted once after the half-exposure scaling. The primary basket uses $K=75$, with $K\in\{200,400\}$ retained for diagnostics.
+Annualized return summarizes compounded account performance using 243 trading sessions per year. Long-only Sharpe measures absolute daily return relative to its variability, and maximum drawdown describes the largest decline from a prior account-value peak. A market equal-weight reference provides context for excess return. These financial statistics accompany signal quality and coverage; they do not by themselves establish live trading capacity.
 
-\paragraph{Aggregation and reference series.}
-Let $\mathcal{J}_K$ denote the entry sessions with available $r^K_t$. Research returns accumulate additively. The full-market reference $r^{\mathrm{mkt}}_t$ applies the same label, exposure, and cost convention to the Shenzhen A-share daily population available to the evaluator, independently of the submitted score coverage. With $\mathcal{J}^{\cap}_K$ denoting paired strategy--reference sessions,
-\begin{align}
-    R^K &= \sum_{t\in\mathcal{J}_K}r^K_t,
-    &\operatorname{ARR}^{K} &= \frac{243}{|\mathcal{J}_K|}\sum_{t\in\mathcal{J}_K}r^K_t,\label{eq:research_arr}\\
-    \Delta\operatorname{ARR}^{K} &= \frac{243}{|\mathcal{J}^{\cap}_K|}
-       \sum_{t\in\mathcal{J}^{\cap}_K}(r^K_t-r^{\mathrm{mkt}}_t).
-       \label{eq:excess_arr}
-\end{align}
-An empty required set leaves the corresponding statistic unavailable. In particular, paired excess ARR need not equal the difference of separately averaged strategy and reference ARRs when their available dates differ. An unavailable reference preserves valid strategy-only results.
+\paragraph{Result provenance.}
+The archive retains historical scorecards on an additive research basis and supplies offline re-evaluation on the cash-account basis. Section~\ref{sec:experiments} uses the latter for its main financial comparisons, independently checking account statistics against saved net asset values. Historical values remain separately labelled in the appendix. Offline score outputs are identified by their revision and are not presented as a confirmed online deployment.
 
-Let $P^K_j$ be the cumulative sum through the $j$-th available cohort, with $P^K_0=0$. Signed additive drawdown is
-\begin{equation}
-    \operatorname{DD}^{K}
-    =\min_{0\le j\le |\mathcal{J}_K|}
-       \left(P^K_j-\max_{0\le h\le j}P^K_h\right)\le0.
-    \label{eq:drawdown}
-\end{equation}
-It is measured in return points; $100|\operatorname{DD}^{K}|$ gives its magnitude in percentage points. Cohort Sharpe is $\sqrt{243}\,\overline{r^K}/\operatorname{sd}(r^K)$ when the sample standard deviation is positive. Because adjacent cohorts overlap, this ratio is descriptive. The current primary projection does not report a portfolio information ratio.
-
-\paragraph{Separate cash-account evidence.}
-The evaluator also maintains a funded account with an initial value of CNY~1,000,000. The default entry allocation is the smaller of available cash and half the previous session's equity, subject to 100-share lots. Commission is three basis points with no minimum; stamp charges, transfer charges, and slippage are set to zero in this experimental profile. Morning entries cannot spend proceeds from evening exits. Missing prices, suspensions, and price-limit conditions may prevent purchases or defer sales; stale valuations and residual holdings remain recorded. These account outcomes are reported separately from Equation~\eqref{eq:cohort_return}, whose observable cohort does not require every selected security to have been funded or filled. Raw-price accounting does not incorporate corporate-action total-return adjustment, and reference-price replay does not measure live fills or market-impact capacity.
-
-\subsection{Predictive, Efficiency, and Diversity Criteria}
+\subsection{Public Research Scoring and Private Final Assessment}
 \label{sec:arena_scoring}
 
-On each valid entry date, IC is the cross-sectional Pearson correlation between $s_{i,t-1}$ and $y_{i,t}$, and RankIC is the Pearson correlation of their average ranks. Both use paired finite observations with the registered sample requirements; the current daily calculation requires at least five pairs and nonconstant inputs. Reported IC and RankIC average their valid daily values. ICIR and RankICIR divide these means by the corresponding sample standard deviations, without an additional annualization factor.
+The revised protocol considers predictive ordering, signal stability, long-only and long--short performance, realized account return, turnover, resource efficiency, and diversity of qualified features. Coverage and missingness accompany these measurements. The research-window scoring rule is public. The final evaluator considers the same categories, but its transformations, weights, aggregation, and contribution to the published total are not disclosed. Final scoring is versioned; a later campaign may adopt a different private combination. No equality between the public research formula and the private final formula is asserted.
 
-The benchmark reports financial outcomes and resource usage directly. When positive calibration targets $a_0$ and $\rho_0$ are registered, the default quality and efficiency components are
+\paragraph{Public research-window formula.}
+The following equations apply only to the revised \emph{in-sample} protocol. Let $x^+=\max(0,x)$, let $A$ be annualized RankICIR, and let $\mathrm{SR}_{\mathrm{L}}$ and $\mathrm{SR}_{\mathrm{LS}}$ denote long-only and long--short Sharpe. RankIC measures cross-sectional rank agreement with subsequent returns, averaged across available dates; $A$ describes its temporal stability. Turnover measures replacement in the selected portfolio. Define
 \begin{align}
-    Q &= 0.7\,\operatorname{clip}_{[0,1]}\!\left(\frac{\Delta\operatorname{ARR}^{75}}{a_0}\right)
-       +0.3\,\operatorname{clip}_{[0,1]}\!\left(\frac{\overline{\operatorname{RankIC}}}{\rho_0}\right),
-       \label{eq:quality}\\
-    E &= Q\max\!\left(0,1-\frac{U_{\mathrm{tok}}}{B_{\mathrm{tok}}}\right),
-       \label{eq:efficiency}
+ z_{\mathrm{IC}}&=\sqrt{\overline{\operatorname{RankIC}}^+}, &
+ z_{\mathrm{ST}}&=\frac{A^+}{1+A^+},\\
+ z_{\mathrm{L}}&=\frac{\mathrm{SR}_{\mathrm{L}}^+}{1+\mathrm{SR}_{\mathrm{L}}^+}, &
+ z_{\mathrm{LS}}&=\frac{\mathrm{SR}_{\mathrm{LS}}^+}{1+\mathrm{SR}_{\mathrm{LS}}^+},\\
+ z_{\mathrm{TO}}&=\frac{1}{1+\operatorname{Turnover}}, &
+ z_{\mathrm{R}}&=\frac{r_{\mathrm{IS}}^+}{0.3+r_{\mathrm{IS}}^+}.
 \end{align}
-where $U_{\mathrm{tok}}$ is observed total model usage. Diversity $D\in[0,1]$ measures qualified feature groups and their novelty relative to a frozen reference bank; its exact construction appears in Appendix~\ref{app:diversity}. For eligible runs with all required components available, the default composite is
+Here $r_{\mathrm{IS}}$ is cash-account ARR minus the aligned gross equal-weight market reference ARR on the research window. Long-only Sharpe also uses the cash-account basis. The reference is gross of costs and is not a matched tradable baseline. The research quality terms are
 \begin{equation}
-    S=70Q+20E+10QD.
-    \label{eq:overall}
+ Q_{\mathrm{IS}}=(z_{\mathrm{IC}}z_{\mathrm{ST}}z_{\mathrm{L}}z_{\mathrm{LS}})^{0.225}z_{\mathrm{TO}}^{0.1},\qquad
+ Q'_{\mathrm{IS}}=0.7Q_{\mathrm{IS}}+0.3z_{\mathrm{R}}.
+ \label{eq:quality}
 \end{equation}
-The efficiency component already contains $Q$. Calibration targets, component weights, reference policies, and qualification thresholds are frozen with the suite.
+The additive excess-return term permits a positive research score even when a component of the geometric signal term is zero. With recorded token usage $U_{\mathrm{tok}}$, token allowance $B_{\mathrm{tok}}=500{,}000$, and $K_{\mathrm{IS}}$ qualified feature groups that contribute to the strategy,
+\begin{equation}
+ E_{\mathrm{IS}}=Q'_{\mathrm{IS}}\left(1-\frac{U_{\mathrm{tok}}}{B_{\mathrm{tok}}}\right),\qquad
+ D_{\mathrm{IS}}=Q'_{\mathrm{IS}}\frac{\min(K_{\mathrm{IS}},32)}{32}.
+ \label{eq:efficiency}
+\end{equation}
+For budget-eligible one-shot and vanilla runs, the revised research-window score is
+\begin{equation}
+ S_{\mathrm{IS}}=75Q'_{\mathrm{IS}}+15E_{\mathrm{IS}}+10D_{\mathrm{IS}}.
+ \label{eq:research_score}
+\end{equation}
+These public research coefficients are version-specific. They are not used to reconstruct the historical totals in Section~\ref{sec:experiments}, and they do not specify the final-window computation.
 
-Financial eligibility and composite-score eligibility are assessed separately. Arbitrary scoring programs may have valid financial results while their declared feature use remains unverified, leaving diversity and a diversity-weighted composite unavailable. Comparisons across all valid strategy programs therefore use common financial endpoints; composite comparisons state the additional eligibility conditions. Unavailable metrics retain reason codes and sample counts. A complete replicate aggregate requires all prescribed values; averaging only successful runs is reported explicitly as a conditional statistic. These rules preserve failures and missing evidence in the benchmark record.
+\paragraph{Availability and disclosure.}
+Execution completion, financial availability, and score availability are distinct. Missing metrics are reported without imputation. Incomplete token accounting or an unavailable required window assessment prevents publication of a total score, while available financial results remain reportable. For a strategy frozen without a research trial, the platform can assess the research window after commitment; that assessment is not feedback to the model. Detailed final-scoring traces remain private. Public records identify the evaluator version and reported outcomes, and independent recomputation of the private final score requires organizer access.

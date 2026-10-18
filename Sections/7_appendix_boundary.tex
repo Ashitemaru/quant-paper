@@ -3,43 +3,22 @@
 
 \subsection{Authorization and Final-Assessment Boundary}
 
-The research harness receives its public suite, authorized tools, research feedback, and remaining-resource state. Quantitative strategy execution receives a separately scoped market-data capability. The trusted supervisor holds that capability and mediates requests through the permitted version, dates, instruments, fields, and availability cutoff. Participant programs cannot expand the scope by supplying another date or forwarding their own internal authorization headers. Final evaluation uses the registered sealed release through the private data plane.
+The model interaction service receives the public suite, authorized tools, permitted research feedback, and remaining-resource state. Quantitative strategy execution receives a separately scoped market-data capability. The trusted supervisor holds that capability and mediates requests through the permitted version, dates, instruments, fields, and availability cutoff. Strategy programs cannot expand the scope by supplying another date or forwarding their own internal authorization headers. Final evaluation uses the registered sealed release through the private data plane.
 
 A final commitment ends candidate selection for that replicate. The same frozen strategy and trained artifact, when present, are used for sealed assessment. Recovery continues the recorded operation and accepted progress; it does not authorize a new candidate or new paid model response. A separate replay or changed evaluation contract creates a separate result and preserves the original commitment.
 
-This boundary addresses runtime access and evaluation ownership. It does not establish that historical information was absent from a model's training data or a participant's prior resources. Organizers must document population construction, earlier publication of data, development experiments, and the method freeze point. Public leaderboard feedback can also influence later submissions. Campaign registration therefore specifies the intended experiment set and disclosure policy, retaining all attempts used for the reported comparison. Periodically refreshed or separately retained final windows are possible governance extensions, rather than assumed properties of the current runtime.
+This boundary addresses runtime access and evaluation ownership. It does not establish that historical information was absent from a model's training data or prior resources. Organizers must document population construction, earlier publication of data, development experiments, and the freeze point. Public benchmark feedback can also influence later submissions. Campaign registration therefore specifies the intended experiment set and disclosure policy, retaining all attempts used for the reported comparison. Periodically refreshed or separately retained final windows are possible governance extensions, rather than assumed properties of the current runtime.
 
-\subsection{Exact Diversity Construction}
+\subsection{Feature Diversity as an Evaluation Dimension}
 \label{app:diversity}
 
-Diversity is computed only when actual feature use can be verified. Feature directions and the reference bank are frozen with the strategy and suite. A feature must satisfy registered observation and coverage requirements, exceed its predictive-quality threshold, and have a positive one-sided lower confidence bound under the registered moving-block bootstrap. The confidence calculation adjusts for the number of declared feature comparisons. Bootstrap block length, resamples, seed, quality basis, and thresholds are suite parameters. This gate provides statistical qualification under those parameters; it does not establish a distinct economic mechanism.
+The benchmark considers whether a strategy declares distinct, qualified features and actually uses them. Repeated copies of a feature do not constitute additional diversity. For the public research protocol, the feature count is capped at 32, with rank-based regression used to assess contribution and correlated features grouped before counting. These groups describe statistical redundancy; they do not establish independent economic mechanisms. The supplied campaign has no reference-bank novelty measurement.
 
-For two features $f$ and $g$, let $\mathcal{T}_{fg}$ be dates with sufficient paired observations and nonconstant ranks. Subject to the registered overlap and sample conditions, their similarity is
-\begin{equation}
-    \sigma(f,g)=\frac{1}{|\mathcal{T}_{fg}|}
-       \sum_{t\in\mathcal{T}_{fg}}
-       \left|\operatorname{Corr}\!\left(
-          \operatorname{rank}(f_t),\operatorname{rank}(g_t)\right)\right|.
-    \label{eq:feature_similarity}
-\end{equation}
-Ranks are computed on each date's paired observations with average ranks for ties. For the current daily profile, overlap coverage compares paired finite coordinates with the finite union inside the authorized universe; coordinates absent from both features do not count as disagreement. An insufficient comparison is unavailable, rather than zero similarity.
+The public research contribution enters Equation~\eqref{eq:efficiency}. Final-window feature qualification and its mapping into the final score are private. We disclose the evaluation dimension without publishing final qualification thresholds, component values, or an algorithm for reconstructing that score.
 
-Let $\mathcal{G}$ be the qualified, consumed feature set. Form an undirected graph with one vertex per feature and an edge when $\sigma(f,g)\ge\tau$, where $\tau$ is registered in advance. Let $C(\mathcal{G})$ be its number of connected components. For feature $f$, let $\mathcal{R}_f$ be the comparable members of the frozen reference bank. When the required pairwise and reference comparisons are available, define
-\begin{equation}
-    \nu_f=1-\max_{r\in\mathcal{R}_f}\sigma(f,r),\qquad
-    D=\frac{\min\{C(\mathcal{G}),C_{\max}\}}{C_{\max}}
-       \frac{1}{|\mathcal{G}|}\sum_{f\in\mathcal{G}}\nu_f.
-    \label{eq:diversity}
-\end{equation}
-Thus, diversity rewards qualified groups and novelty relative to the declared bank. Graph components are correlation-based groups, without a claim of probabilistic independence.
+\subsection{Metric Availability and Score Eligibility}
 
-The reference-comparison policy is frozen. The available-reference policy uses only comparisons that pass the unchanged sample conditions and reports the total reference count, comparable counts, and coverage. The historical all-required policy requires every registered reference to be comparable. Missing within-set comparisons or an empty required reference set leave $D$ unavailable. If the completed quality assessment finds no qualified feature, $D=0$; if quality cannot be assessed because the required evidence is missing, the result remains unavailable. Unverified feature use also leaves $D$ unavailable.
+Execution completion, strategy freezing, metric availability, and score eligibility are separate states. Eligibility does not establish full-window coverage or low risk. Table~\ref{tab:leaderboard} therefore retains coverage qualifications alongside financial results. Missing metrics are not filled with zeros, and financial records with unavailable totals remain in the relevant financial summaries.
 
-\subsection{Metric Availability and Ranking Eligibility}
-
-Execution completion, strategy freezing, metric availability, and leaderboard eligibility are separate states. A finite research return can coexist with insufficient observations for IC, an unavailable full-market reference, or unverified feature use. Each metric retains its value or unavailability reason, relevant sample count, and coverage. Absence of optional evidence does not discard completed financial results.
-
-Financial rankings apply their registered financial, resource, and risk requirements. They do not require unrelated IC or diversity evidence. The composite in Equation~\eqref{eq:overall} additionally requires its nonzero-weight components, calibration, and complete usage evidence. In particular, a default positive diversity weight makes unverified feature use incompatible with a complete composite, while financial results remain reportable. These qualification rules are fixed before observing final outcomes.
-
-\paragraph{Verification evidence.}
-Contract tests can check deterministic temporal alignment, denial of unauthorized observations, budget charging, final-commitment rules, and recovery behavior. Real-data agreement between research and Arena entry points additionally requires the same factor, dates, market release, parameters, runtime versions, and complete financial records. The existence of a shared evaluator or a passing synthetic test alone does not establish deployed agreement. Operational rates and runtime costs require actual campaign measurements.
+\paragraph{Verification and access.}
+Public campaign records support checks of submission identity, outcome counts, resource use, and reported results. Exact trade scheduling, data-availability cutoffs, and final-score construction are held by the organizer. Hosted re-evaluation uses the registered evaluator version; the public description alone does not support independent reconstruction of the private final score.

@@ -1,20 +1,19 @@
 \begin{table}[t]
     \centering
     \small
-    \caption{The current daily research profile. These values define an evaluation convention; campaign dates, dataset coverage, and resource ceilings are registered separately.}
+    \caption{Public financial protocol and result-version boundary. Exact execution timing and final-score construction are not disclosed.}
     \label{tab:daily_protocol}
     \begin{tabular}{@{}p{0.27\linewidth}p{0.67\linewidth}@{}}
         \toprule
-        Item & Convention \\
+        Item & Public description \\
         \midrule
-        Input population & Registered static Shenzhen A-share factor columns; actual missingness retained \\
-        Signal and label & End-of-day $t-1$ information; entry $O_t$ and scheduled exit $C_{t+1}$ \\
-        Selection & Top75 primary; Top200/400 diagnostics; all boundary ties included \\
-        Research return & Observable equal-weight raw-price return $\times\,0.5-0.0011$ per cohort \\
-        Aggregation & Additive cumulative return; annualization factor 243; signed additive drawdown \\
-        Reference & Full-market Shenzhen A-share equal-weight cohorts under the same return convention \\
-        Account assumptions & CNY 1 million; half-equity allocation capped by cash; 100-share lots \\
-        Account costs & Commission 3 bps, minimum 0; stamp/transfer charges and slippage 0 \\
+        Input population & Registered Shenzhen A-share stock universe; missing observations retained \\
+        Selection & Top75 primary; Top200/400 diagnostics; boundary ties retained \\
+        Revised accounting & Cash-account net asset value, available cash, 100-share lots, and transaction costs \\
+        Execution constraints & Price limits, suspensions, unfilled purchases, and deferred sales \\
+        Main financial results & Offline cash-account re-evaluation; historical additive metrics retained separately in the appendix \\
+        Research scoring & Public in-sample rule for the revised protocol \\
+        Final assessment & Predictive quality, stability, returns, risk-adjusted performance, turnover, efficiency, and feature diversity; private score combination \\
         \bottomrule
     \end{tabular}
 \end{table}
