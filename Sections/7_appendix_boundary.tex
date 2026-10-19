@@ -1,5 +1,6 @@
-\section{Information Boundary and Feature Diversity}
+\section{Information Boundary and Financial Evaluation Details}
 \label{app:boundary}
+\label{app:financial_details}
 
 \subsection{Information Boundary}
 
@@ -9,7 +10,25 @@ A commitment ends candidate selection. The same frozen strategy is used for the 
 
 This boundary controls access at run time. It cannot rule out that historical market information appears in a model's pretraining data. A fixed historical sealed window is therefore a known limitation; refreshed sealed windows are a planned extension.
 
+\subsection{Portfolio Diagnostics and Signal Metrics}
+
+The main financial evaluation uses the portfolio specified in Section~\ref{sec:financial}. Top-200 and Top-400 portfolios provide supplementary diagnostics of how results depend on the breadth of stock selection. A common trading calendar is used to align the strategy's cash-account returns and the gross full-market equal-weight reference. Return and signal statistics use the annualization factor $N_{\mathrm{ann}}$ defined in Section~\ref{sec:financial}.
+
+Daily RankIC is the cross-sectional rank correlation between stock scores and next-period returns. The reported RankIC is its mean over the evaluation window. Annualized RankICIR is the mean divided by the standard deviation of daily RankIC, multiplied by $\sqrt{N_{\mathrm{ann}}}$. Long--short Sharpe measures the return spread between the top and bottom score deciles. Turnover is the average daily replacement fraction of the main portfolio.
+
 \subsection{Feature Diversity}
 \label{app:diversity}
 
-Diversity rewards strategies that combine several distinct sources of signal. A strategy may declare up to 32 named features. Features that pass a quality screen are grouped into clusters of highly correlated features. A cluster counts as \emph{used} if regressing the strategy's daily score ranks on the cluster's feature ranks shows a material unique contribution (threshold 0.01). $K$ is the number of used clusters. Duplicating a feature therefore adds nothing, and declaring a feature that the score ignores adds nothing. Clusters describe statistical redundancy, not distinct economic mechanisms. $D$ enters the score through Equation~\eqref{eq:ed}.
+Diversity rewards strategies that combine several distinct sources of signal. A strategy may declare up to 300 named features. Features that pass a quality screen are grouped into clusters of highly correlated features. A cluster counts as \emph{used} if regressing the strategy's daily score ranks on the cluster's feature ranks shows a material unique contribution (threshold 0.01). $K$ is the number of used clusters. Duplicating a feature therefore adds nothing, and declaring a feature that the score ignores adds nothing. Clusters describe statistical redundancy, not distinct economic mechanisms. Equation~\eqref{eq:ed} normalizes $K$ by a fixed scale of 32 and caps $D$ at $Q$; this scale is independent of the declaration limit.
+
+\subsection{Entries Without a Token-Efficiency Term}
+
+Section~\ref{sec:scoring} gives the published in-sample scoring rule for one-shot and iterative research. Own-agent and self-hosted entries omit the efficiency term and use
+\begin{equation}
+S_{\mathrm{in}}=80\,Q+20\,D,
+\end{equation}
+with $Q$ and $D$ defined in Section~\ref{sec:scoring}. The out-of-sample combination rule remains unpublished and fixed for each benchmark version. The overall score retains the 30\% in-sample and 70\% out-of-sample weights.
+
+\subsection{Score Provenance}
+
+The financial metrics and scores reported in this paper are recomputed offline from the recorded evaluations.

@@ -1,31 +1,29 @@
 \section{Suite Specification}
 \label{app:registry}
 
-Table~\ref{tab:suite_registry} lists the public specification of the suite used in this paper.
+Table~\ref{tab:suite_registry} lists the benchmark specification. A strategy may declare up to 300 named features.
 
 \begin{table}[htbp]
 \centering\small
-\caption{Public specification of the Shenzhen A-share suite.}
+\caption{Public specification of the selected A-share suite.}
 \label{tab:suite_registry}
 \begin{tabular}{@{}p{0.24\linewidth}p{0.70\linewidth}@{}}
 \toprule
 Field & Specification \\
 \midrule
-Market and universe & Shenzhen A-shares; static universe of 3,042 stocks; missing and delisted stocks retained \\
+Market and universe & Selected A-shares; static universe of 3,042 stocks; missing and delisted stocks retained \\
 Input profile & Raw daily and Level-2 market data through a date-scoped data interface; Python strategies \\
-Windows & In-sample research 2022--2023 with authorized warmup history; sealed out-of-sample 2024; no training window \\
+Windows & In-sample research 2022--2023 with authorized warmup history; sealed out-of-sample 2024; participants may define training and validation splits within the research period \\
 Budget & 500,000 model tokens; at most 5 research evaluations \\
 Feedback (iterative track) & Aggregate return, signal, and coverage statistics on the research window, plus execution errors \\
-Portfolio & Top-75 equal-weight long portfolio, held for one trading day, boundary ties retained; Top-200/400 diagnostics \\
-Accounting & Cash account with 100-share lots; no buys at the upper price limit; deferred sales under suspension or the lower price limit; no replacement of unfilled buys; idle days earn zero; liquidation at window end \\
-Costs & Slippage computed from order-book limits and market impact rather than set to a fixed value \\
-Features & Up to 32 declared features; usage tested by score-rank regression on correlation clusters \\
+Portfolio & Top-75 equal-weight long portfolio, held for at least one trading day, boundary ties retained; Top-200/400 diagnostics \\
+Accounting & Cash account with 100-share lots; no buys at the upper price limit; deferred sales under suspension or the lower price limit; no replacement of unfilled buys; idle cash earns zero; liquidation at window end \\
+Costs & Order-dependent trading costs and market impact estimated from a simulated order book \\
+Features & Up to 300 declared features; usage tested by score-rank regression on correlation clusters; diversity normalized by a fixed scale of 32 \\
 Scoring & In-sample rule of Section~\ref{sec:scoring}; out-of-sample score uses the same metrics with an unpublished combination; total $0.3\,S_{\mathrm{in}}+0.7\,S_{\mathrm{out}}$ \\
 Runs & One run per submission; results published automatically and not withdrawable; daily submission limit per account \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\paragraph{Models.} All models are accessed through the platform gateway under their default provider settings, except in the reasoning-effort study. \ModelKimi\ results use the official provider API. \phtext{Confirm the final endpoint list for all six models.}
 
 \paragraph{Result records.} For every run, the platform records the model, track, harness, all model calls with token usage, every research evaluation, the committed strategy, and both window assessments. Failed and cancelled runs remain in the record. Each official leaderboard entry links to its run record.

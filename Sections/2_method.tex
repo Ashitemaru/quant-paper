@@ -1,162 +1,110 @@
 \section{The \BenchmarkName\ Benchmark}
 \label{sec:benchmark}
 
+\BenchmarkName{} evaluates the out-of-sample profitability of stock-selection strategies developed by models from historical market data.
+
 \begin{figure*}[t]
     \centering
     \figorph{Figures/fig_pipeline.pdf}{\linewidth}{Benchmark pipeline}
-    \caption{The \BenchmarkName\ pipeline. A model researches with feedback restricted to the in-sample window, freezes one strategy, and is replayed once on the sealed out-of-sample year. Both windows are booked on a cash account and scored on quality, efficiency, and diversity; the total weights the out-of-sample score at 70\%.}
+    \caption{A model constructs features and stock-scoring code from raw market observations, revises candidates using research-period feedback, and freezes one strategy for assessment on the sealed period under common portfolio and execution rules.}
     \label{fig:pipeline}
 \end{figure*}
 
 \subsection{Task Formulation}
 \label{sec:task}
 
-A \emph{suite} fixes everything a research run depends on:
-\begin{equation}
-    q = (\mathcal{D},\mathcal{U},\mathcal{W},\mathcal{E},\mathbf{B},\mathcal{F},\mathcal{V}),
-    \label{eq:suite}
-\end{equation}
-where
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item $\mathcal{D}$ is an immutable data release;
-    \item $\mathcal{U}$ is the stock universe;
-    \item $\mathcal{W}$ are the chronological research and final windows;
-    \item $\mathcal{E}$ is the execution environment;
-    \item $\mathbf{B}$ is the research budget;
-    \item $\mathcal{F}$ is the feedback policy;
-    \item $\mathcal{V}$ is the financial evaluator and scoring rule.
-\end{itemize}
-Any change to $q$ defines a new suite. Scores are compared only within a suite.
+A model receives a research objective, market-data access, and documentation for the data and evaluation interfaces. Within a fixed research budget, it writes a Python strategy that constructs features, combines them into predictive signals, and scores stocks. For each trading day $t$, the strategy computes
 
-A \emph{run} registers a model, a track, and a harness under $q$. The run proceeds in three steps.
-\begin{enumerate}[leftmargin=*,itemsep=1pt]
-    \item \textbf{Research.} The harness alternates model calls and research evaluations on the in-sample window, within budget $\mathbf{B}$, receiving only the feedback permitted by $\mathcal{F}$.
-    \item \textbf{Commitment.} The run commits exactly one strategy. Its source code, runtime, and declared features are frozen.
-    \item \textbf{Sealed assessment.} The platform evaluates the frozen strategy once on the out-of-sample window. Nothing from this window is returned to the model, and the run cannot revise its strategy afterwards.
-\end{enumerate}
-The committed strategy, not the best intermediate candidate, is what the leaderboard scores. This separates research skill from the luck of reporting a favorable trial.
+\[
+\mathbf{s}_t=f(\mathcal{H}_t),
+\]
 
-A strategy is a Python program. On each trading day it receives authorized market observations up to that day and returns a score for every stock in the universe. It may also declare up to 32 named features that it combines into its score.
+where $\mathcal{H}_t$ contains the authorized historical observations available at that time and $\mathbf{s}_t$ contains stock scores. The model determines the features and scoring function. A common financial evaluator converts these scores into portfolio positions and returns. The final submission is a frozen strategy program.
 
-\subsection{Market Environment}
+\subsection{Market Data and Benchmark Construction}
 \label{sec:data}
 
-The first public suite covers the Shenzhen A-share market:
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item \textbf{Universe:} a static universe of 3,042 Shenzhen-listed stocks. Missing observations and delisted stocks are retained rather than filtered.
-    \item \textbf{Data:} raw daily and Level-2 market data, served through a date-scoped data interface. Each day's strategy process can read only data available for that day. Access is enforced by the execution service, not by the strategy.
-    \item \textbf{Windows:} 2022--2023 is the in-sample research window, and 2024 is the sealed out-of-sample window. The research period was a falling market. 2024 contains a sharp market drawdown in February followed by a strong rally in the autumn, so the final year doubles as a stress test.
-    \item \textbf{Budget:} each run has 500,000 model tokens and at most five research evaluations.
-\end{itemize}
+We use real market observations from a fixed data release, stock universe, and trading calendar. Models construct features from the raw inputs without a predefined factor library. Missing observations and delisted stocks are retained without redefining daily universe membership.
 
-Each trading day runs in a fresh, isolated low-privilege process. State can cross days only through declared artifacts. Model credentials and market-data permissions are held by trusted platform services. Raw market matrices and evaluation internals never enter the model conversation. Appendix~\ref{app:platform} describes the execution platform.
+\begin{table}[htbp]
+\centering
+\small
+\caption{Market data and temporal split used by the benchmark.}
+\label{tab:benchmark_data}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.70\linewidth}@{}}
+\toprule
+Property & Specification \\
+\midrule
+Stock universe & Selected universe of 3,042 stocks \\
+Inputs & Daily market data and raw Level-2 quotes, orders, and trades \\
+Research period & 2022--2023 \\
+Out-of-sample period & Sealed year 2024 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\subsection{Tracks and Harnesses}
-\label{sec:tracks}
+The data interface restricts access by date, instrument, and field. At each decision date, the strategy can access authorized historical observations, including permitted warmup history. The same input definitions and access rules apply during research and assessment.
 
-The research loop is run by a \emph{harness}: a program that calls the model, submits strategies for evaluation, and decides when to stop. Participants enter in one of two ways.
+\subsection{Research and Assessment Protocol}
+\label{sec:protocol}
 
-\paragraph{Platform harnesses.} The platform provides two standard harnesses, which define the two tracks studied in this paper.
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item \textbf{One-shot.} The model reads the task and the platform documentation and submits one complete strategy. The strategy is frozen without any research-performance feedback. Invalid output may be repaired, but the model never sees how its strategy performs.
-    \item \textbf{Iterative research.} The model submits a strategy and receives in-sample research feedback: return, signal, and coverage statistics, plus execution errors. It may then revise, up to five evaluations and the token budget. It ends by selecting one completed candidate; if the budget runs out, the last eligible candidate is frozen.
-\end{itemize}
+Models may evaluate candidate strategies on the research period and revise their code using aggregate return, signal-quality and coverage statistics, and execution errors. The research budget is 500,000 model tokens and at most five candidate evaluations. Participants may define training and validation splits within the research period; the benchmark prescribes no separate training window.
 
-\paragraph{Own harness.} Participants may submit their own agent harness through the Arena SDK. It runs under the same data, budget, and evaluation contract. Such entries form a separate \emph{own-agent} track.
+At the end of research, one strategy's source code, execution environment, and declared features are frozen. The evaluator applies this strategy once to the sealed out-of-sample period. The strategy accesses the observations needed for execution through the authorized data interface. Neither these observations nor assessment feedback is returned to the model for further development.
 
-Model calls are routed through the platform gateway, which records token usage. Only calls to verified official model endpoints count toward the official tracks. Entries using unverified self-hosted endpoints are ranked separately as \emph{self-hosted}.
 
-\subsection{Financial Evaluation}
+\subsection{Financial Evaluation and Metrics}
 \label{sec:financial}
-
-Each day, the strategy's scores select the 75 highest-scoring stocks, with ties at the boundary retained, as an equal-weight long portfolio held for one trading day. Top-200 and Top-400 portfolios are reported as diagnostics.
-
-The portfolio is booked on a \emph{cash account}:
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item Trades respect available cash and 100-share lots.
-    \item A stock at its upper price limit cannot be bought. Unfilled purchases stay in cash and are not replaced by other stocks.
-    \item A suspended stock, or one at its lower price limit, cannot be sold. Its sale is deferred to the first day it can be sold.
-    \item Slippage is computed from order-book limits and market impact rather than set to a fixed value.
-    \item A day without a valid signal opens no position, and its return is zero.
-    \item Remaining positions are liquidated at the end of each window.
-\end{itemize}
-The account's daily net asset value (NAV) is compounded over the window.
-
-From each window we compute the following metrics, using 243 trading days per year:
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item \textbf{Account metrics:}
-    \begin{itemize}[leftmargin=*,itemsep=0pt]
-        \item annualized return (ARR);
-        \item excess ARR $r$ over a full-market equal-weight reference on the same days (the reference is gross of costs);
-        \item long-only Sharpe ratio $\mathrm{SR}_{\mathrm{L}}$;
-        \item maximum drawdown.
-    \end{itemize}
-    \item \textbf{Signal metrics:}
-    \begin{itemize}[leftmargin=*,itemsep=0pt]
-        \item mean daily cross-sectional RankIC between scores and next-period returns;
-        \item annualized RankICIR $A$ (mean over standard deviation of daily RankIC), which measures signal stability;
-        \item long--short Sharpe $\mathrm{SR}_{\mathrm{LS}}$ of the top-minus-bottom decile;
-        \item turnover of the Top-75 portfolio.
-    \end{itemize}
-    \item \textbf{Resource and diversity:}
-    \begin{itemize}[leftmargin=*,itemsep=0pt]
-        \item tokens used $U$;
-        \item number $K$ of independent feature clusters the strategy actually uses.
-    \end{itemize}
-\end{itemize}
-To compute $K$, we take the declared features that pass a quality screen, group correlated ones into clusters, and test each cluster's contribution by regressing the strategy's score ranks on the feature ranks. Copying a feature therefore does not count twice (Appendix~\ref{app:diversity}).
-
-\subsection{Scoring}
 \label{sec:scoring}
 
-Each window receives a score from 0 to 100. Let $x^+=\max(0,x)$. Every metric is mapped to $[0,1]$ with diminishing returns:
-\begin{gather}
- s_{\mathrm{IC}}=\sqrt{\mathrm{RankIC}^+},\quad
- s_{\mathrm{ST}}=\frac{A^+}{1+A^+},\quad
- s_{\mathrm{L}}=\frac{\mathrm{SR}_{\mathrm{L}}^+}{1+\mathrm{SR}_{\mathrm{L}}^+},\quad
- s_{\mathrm{LS}}=\frac{\mathrm{SR}_{\mathrm{LS}}^+}{1+\mathrm{SR}_{\mathrm{LS}}^+},\nonumber\\
- s_{\mathrm{TO}}=\frac{1}{1+\mathrm{Turnover}},\qquad
- s_{\mathrm{R}}=\frac{r^+}{0.3+r^+}.
- \label{eq:terms}
-\end{gather}
-For example, $s_{\mathrm{R}}=0.5$ at 30\% annualized excess return.
+The evaluator converts stock rankings into an equal-weight long portfolio targeting 75 stocks, subject to trading constraints, with a holding period of at least one trading day. The backtest maintains a cash account with order-dependent trading costs and market impact estimated from a simulated order book. Trades respect available cash, 100-share lots, suspensions, and price limits. Unfilled purchases remain in cash. Sales are scheduled after one trading day and deferred when blocked by suspension or a lower price limit. A day without a valid signal opens no new position. Idle cash earns zero return, and daily net asset value includes cash and outstanding positions. Account returns are compounded over each evaluation period.
 
-\paragraph{Quality.} Signal quality is the weighted geometric mean of the five signal terms. Quality adds the excess-return term:
-\begin{equation}
- Q_{\mathrm{sig}}=\left(s_{\mathrm{IC}}\,s_{\mathrm{ST}}\,s_{\mathrm{L}}\,s_{\mathrm{LS}}\right)^{0.225}s_{\mathrm{TO}}^{0.1},\qquad
- Q=0.7\,Q_{\mathrm{sig}}+0.3\,s_{\mathrm{R}}.
- \label{eq:quality}
-\end{equation}
-The geometric mean means a strategy must be good on every signal dimension. The excess-return term rewards beating the market rather than riding it: a strategy that simply follows the market earns $s_{\mathrm{R}}=0$.
+We report out-of-sample annualized return and excess return over a full-market equal-weight reference aligned to the same trading days. The reference is gross of costs. Long-only Sharpe ($\mathrm{SR}_{\mathrm{L}}$) measures risk-adjusted performance, and maximum drawdown measures downside risk. Signal metrics include mean daily RankIC, its annualized information ratio ($A$), long--short Sharpe ($\mathrm{SR}_{\mathrm{LS}}$) between the highest- and lowest-scored deciles, and turnover, the average daily replacement fraction of the portfolio. Daily RankIC is the rank correlation between stock scores and next-period returns; $A$ is its mean divided by its standard deviation, multiplied by $\sqrt{N_{\mathrm{ann}}}$, where $N_{\mathrm{ann}}$ denotes the number of trading days per year used for annualization.
 
-\paragraph{Efficiency and diversity.} With token budget $B=500{,}000$,
-\begin{equation}
- E=Q\left(1-\frac{U}{B}\right),\qquad
- D=Q\,\frac{\min(K,32)}{32}.
- \label{eq:ed}
-\end{equation}
-Both are scaled by $Q$, so spending no tokens or declaring many features earns nothing without a good strategy.
+The published in-sample score combines strategy quality, token efficiency, and feature diversity. Let $r$ be the strategy's annualized return minus the reference's annualized return, expressed as a decimal, and $x^+=\max(0,x)$. The component metrics are normalized as
 
-\paragraph{Window and total scores.} The in-sample window score is
 \begin{equation}
- S_{\mathrm{in}}=
- \begin{cases}
- 75\,Q+15\,E+10\,D & \text{one-shot and iterative research},\\
- 80\,Q+20\,D & \text{own-agent and self-hosted},
- \end{cases}
- \label{eq:window}
-\end{equation}
-where efficiency is dropped for harnesses whose token use the platform cannot attribute.
-
-The out-of-sample score $S_{\mathrm{out}}$ uses the same metrics on the sealed 2024 window. Its exact combination is not published and may change between versions, so that the sealed year cannot be optimized against a known formula. The total is
-\begin{equation}
- S=0.3\,S_{\mathrm{in}}+0.7\,S_{\mathrm{out}}.
- \label{eq:total}
+\begin{aligned}
+s_{\mathrm{IC}}&=\sqrt{\mathrm{RankIC}^+}, &
+s_{\mathrm{ST}}&=\frac{A^+}{1+A^+}, &
+s_{\mathrm{L}}&=\frac{\mathrm{SR}_{\mathrm{L}}^+}{1+\mathrm{SR}_{\mathrm{L}}^+},\\
+s_{\mathrm{LS}}&=\frac{\mathrm{SR}_{\mathrm{LS}}^+}{1+\mathrm{SR}_{\mathrm{LS}}^+}, &
+s_{\mathrm{TO}}&=\frac{1}{1+\mathrm{Turnover}}, &
+s_{\mathrm{R}}&=\frac{r^+}{0.3+r^+}.
+\end{aligned}
+\label{eq:terms}
 \end{equation}
 
-\paragraph{Leaderboard rules.}
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item Each submission runs once. Its result is published automatically and cannot be withdrawn by the participant.
-    \item Each account has a daily submission limit, which prevents repeated sampling of the sealed year.
-    \item A run whose token accounting is incomplete, or that fails its research evaluation, receives no total score. Its attempt is still counted.
-\end{itemize}
+Quality combines a weighted geometric mean of signal metrics with excess return:
+
+\begin{equation}
+Q_{\mathrm{sig}}=\left(s_{\mathrm{IC}}\,s_{\mathrm{ST}}\,s_{\mathrm{L}}\,s_{\mathrm{LS}}\right)^{0.225}s_{\mathrm{TO}}^{0.1},
+\qquad
+Q=0.7\,Q_{\mathrm{sig}}+0.3\,s_{\mathrm{R}}.
+\label{eq:quality}
+\end{equation}
+
+Let $U$ be the model tokens used during research and $B=500{,}000$ the budget. A strategy may declare up to 300 named features. Correlated features are grouped, and $K$ counts the qualifying clusters whose contribution to the strategy's scores is detected. Efficiency and diversity are
+
+\begin{equation}
+E=Q\left(1-\frac{U}{B}\right),
+\qquad
+D=Q\,\frac{\min(K,32)}{32}.
+\label{eq:ed}
+\end{equation}
+
+The fixed scale of 32 makes diversity grow linearly with $K$ up to saturation, independently of the 300-feature declaration limit. Both terms scale with quality, so resource savings and additional features earn no credit when $Q=0$. The standard in-sample score is
+
+\begin{equation}
+S_{\mathrm{in}}=75\,Q+15\,E+10\,D.
+\label{eq:window}
+\end{equation}
+
+The out-of-sample score $S_{\mathrm{out}}$ uses the same metric dimensions with an unpublished combination rule fixed for each benchmark version. The overall score is
+
+\begin{equation}
+S=0.3\,S_{\mathrm{in}}+0.7\,S_{\mathrm{out}}.
+\label{eq:total}
+\end{equation}
+
+We report individual metrics alongside the 0--100 scores. Appendix~\ref{app:financial_details} specifies supplementary portfolio diagnostics, the feature-diversity test, and scoring for entries without an efficiency term.

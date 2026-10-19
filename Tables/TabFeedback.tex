@@ -1,0 +1,18 @@
+\begin{table*}[t]
+\centering
+\footnotesize
+\caption{Full performance feedback versus errors-only feedback. Each row reports one selected iterative strategy. ARR, excess ARR, and RankIC refer to 2024. Tokens are total model tokens consumed during research, in thousands. The selected Astra control is one of three completed controls tied at an overall score of zero.}
+\label{tab:feedback}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Model & Feedback & Overall & ARR (\%) & Excess (pp) & RankIC & Tokens (k) \\
+\midrule
+\ModelAstra & Full & 30.3 & 16.4 & $-0.7$ & 0.0462 & 95.7 \\
+ & Errors only & 0.0 & $-6.5$ & $-23.5$ & 0.0018 & 50.3 \\
+\midrule
+\ModelDeepSeek & Full & 29.5 & 18.9 & +1.9 & 0.0494 & 418.2 \\
+ & Errors only & 0.0 & $-3.1$ & $-20.2$ & $-0.0044$ & 155.1 \\
+\bottomrule
+\end{tabular}
+\end{table*}

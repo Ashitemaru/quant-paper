@@ -1,62 +1,56 @@
 \section{Experiments}
 \label{sec:experiments}
 
-\subsection{Setup}
+\subsection{Experimental Setup}
 \label{sec:setup}
 
-\paragraph{Models.} We evaluate six frontier models:
-\ModelClaudeOpus, \ModelAstra, \ModelGemini, \ModelDeepSeek, \ModelGLM, and~\ModelKimi. All models run under default provider settings unless stated otherwise. Calls go through the platform gateway, which records token usage.
+We evaluate \ModelClaudeOpus, \ModelAstra, \ModelDeepSeek, \ModelGemini, \ModelGLM, and \ModelKimi\ using the platform's standard research harness. Models develop strategies on the 2022--2023 research period, and their frozen programs are assessed on the sealed year 2024. Each independent research attempt has a budget of 500,000 model tokens.
 
-\paragraph{Protocol.} Each model enters the one-shot and iterative-research tracks with the platform harnesses (Section~\ref{sec:tracks}), on the suite of Section~\ref{sec:data}. Following the leaderboard rule, each model has \emph{one official run per track}, and Table~\ref{tab:main} reports that run. Additional attempts and failures are reported separately in Section~\ref{sec:reliability}.
+We compare two research settings. \textbf{One-shot} asks the model to produce a complete strategy without research-performance feedback. The harness permits corrections to invalid proposals. \textbf{Iterative research} allows the model to revise candidates using return, signal-quality, coverage, and execution-error feedback, with at most five candidate evaluations. The model then commits one completed strategy for assessment. Both settings use the data access and financial evaluation defined in Section~\ref{sec:benchmark}.
 
-\paragraph{Reference.} As an upper reference we include \emph{Navers}, a professional cross-sectional strategy developed by our team. It is evaluated by the same platform, on the same universe, windows, cash account, and scoring rule, using own-agent weights and zero model tokens. Navers is not an LLM entry. It shows how far a strong human-built strategy gets under identical conditions.
+The main comparison follows the leaderboard selection: for each model and setting, we report the retained entry with the highest overall score among eligible submissions. Existing retained entries are used when scores tie. Each row contains the scores and financial metrics of that same strategy. Individual submissions remain available for the supplementary analysis. We include our closed-source strategy Kelper-1 as a professional reference and compare returns against the equal-weight market reference over the same assessment period. The market reference is gross of trading costs.
 
-\subsection{Main Results}
+We report the overall score, research-period and assessment-period scores, and the assessment-period annualized return (ARR), excess ARR, long-only Sharpe ratio, and maximum drawdown (MDD). Excess ARR is the difference from the market reference, expressed in percentage points. The errors-only control described in Section~\ref{sec:feedback_effect} uses the same research budget and evaluation rules while withholding performance feedback.
+
+\subsection{Overall Performance}
 \label{sec:main}
 
-\input{Tables/TabMain}
-
-\begin{figure*}[t]
-    \centering
-    \begin{subfigure}[t]{0.38\linewidth}
+% Keep the main results and their NAV curves together on the page.
+\begin{table*}[!t]
+    \begin{minipage}{\linewidth}
+        \input{Tables/TabMain}
+    \end{minipage}
+    \par\vspace{1em}
+    \begin{minipage}{\linewidth}
+        \captionsetup{type=figure}
         \centering
-        \figorph{Figures/fig_leaderboard.pdf}{\linewidth}{Leaderboard}
-        \caption{Total score, iterative research.}
-        \label{fig:leaderboard}
-    \end{subfigure}\hfill
-    \begin{subfigure}[t]{0.60\linewidth}
-        \centering
-        \figorph{Figures/fig_nav.pdf}{\linewidth}{Cash-account NAV}
-        \caption{Cash-account NAV, in-sample and out-of-sample.}
+        \includegraphics[width=\linewidth]{Figures/fig_nav.pdf}
+        \caption{Out-of-sample cash-account NAV in 2024 for the six selected iterative strategies in Table~\ref{tab:main}, our closed-source reference Kelper-1, and the equal-weight market reference. All series use initial capital of 1. The market reference is gross of trading costs.}
         \label{fig:nav}
-    \end{subfigure}
-    \caption{Iterative-research results. (a) Total scores with the in-sample and out-of-sample contributions; the dashed line marks the Navers reference. (b) Daily cash-account NAV of each model's official run, Navers, and the equal-weight market reference, normalized to 1 at the start of each window.}
-    \label{fig:main}
-\end{figure*}
+    \end{minipage}
+\end{table*}
 
-Table~\ref{tab:main} and Figure~\ref{fig:main} summarize the results.
+The highest-scoring model entry in Table~\ref{tab:main} is Opus with iterative research, at 31.9 points, followed by Astra at 30.3 and DeepSeek at 29.5. All remain below the professional reference, which scores 52.5. The separation is also visible in returns: Opus achieves 30.4\% ARR, compared with 88.3\% for Kelper-1.
 
-\paragraph{No model comes close to the reference.} Navers scores 51.57 and returns 70.9\% in 2024. The best model, \ModelClaudeOpus\ with iterative research, scores 31.94 and returns 30.4\%. The three strongest models (\ModelClaudeOpus, \ModelAstra, \ModelDeepSeek) lie within 2.4 points of each other, far below the reference. \ModelGemini\ and \ModelGLM\ trail at 10.22 and 4.05.
+Positive returns do not consistently translate into outperformance. Four of the six selected iterative strategies have positive ARR, but only Opus and DeepSeek exceed the market reference, by 13.3 and 1.9 percentage points, respectively. Astra earns 16.4\% and Kimi 9.8\%, both below the reference. Gemini and GLM lose money despite receiving research feedback. Among the five models with retained entries in both settings, all one-shot strategies underperform the market.
 
-\paragraph{Beating the market is rare.} The equal-weight market returned 17.1\% in 2024. Only two of ten official runs beat it: \ModelClaudeOpus\ (+13.3 pp) and \ModelDeepSeek\ (+1.9 pp), both with iterative research. \ModelAstra\ earns a positive 16.4\% but still trails the market. Because the score rewards excess rather than absolute return, \ModelAstra's in-sample lead (36.73, the highest of any model) does not carry over to 2024.
+Research-period scores and assessment-period outcomes also differ. Astra has the highest research-period score among models, at 36.7, but ranks behind Opus and DeepSeek on the sealed period. Gemini's score falls from 24.6 to 4.0, while GLM's falls from 13.5 to 0.0. Risk adds another distinction: DeepSeek's selected strategy has a Sharpe ratio of 1.16 and a maximum drawdown of 7.9\%, compared with 0.92 and 31.1\% for Opus. The higher-return strategy therefore does not dominate on risk.
 
-\paragraph{The sealed year reorders models.} In-sample and out-of-sample rankings disagree. \ModelAstra\ ranks first in-sample but third out-of-sample, while \ModelGemini\ and \ModelGLM\ hold respectable in-sample scores (24.63 and 13.51) that collapse in 2024 (4.04 and 0.00). This is the gap the sealed window is designed to expose: research-window performance is an unreliable proxy for generalization.
+Figure~\ref{fig:nav} shows the corresponding cash-account NAV paths throughout 2024.
 
-\paragraph{Risk profiles differ.} \ModelDeepSeek's 2024 strategy has the highest Sharpe ratio (1.16) and by far the smallest drawdown ($-7.9\%$). It trades rarely and stays in cash on many days. In particular, it held cash through the February crash. \ModelClaudeOpus\ earns more but with a drawdown of $-31.1\%$. Figure~\ref{fig:nav} shows that for every model, most of the 2024 gain arrives in the market rally of late September. Before the rally, all model strategies except \ModelDeepSeek's were below their starting value, whereas Navers was already ahead of the market.
-
-\subsection{Does Iterative Research Help?}
+\subsection{Effects of Research Feedback}
 \label{sec:feedback_effect}
+\label{sec:e2}
 
-\begin{figure}[t]
-    \centering
-    \figorph{Figures/fig_oneshot_vs_vanilla.pdf}{\linewidth}{One-shot vs iterative}
-    \caption{One-shot versus iterative research for each model: 2024 excess return over the market (left) and total score (right).}
-    \label{fig:oneshot_vs_vanilla}
-\end{figure}
+Iterative research improves the selected overall score for all five models with results in both settings. Excess ARR improves for four, with gains ranging from 7.5 percentage points for GLM to 39.0 for DeepSeek. Gemini is the exception: its score rises from 0.0 to 10.2, but its excess ARR falls by 4.3 percentage points.
 
-Every model scores higher with iterative research than with one-shot generation (Figure~\ref{fig:oneshot_vs_vanilla}). In the one-shot track, every strategy loses to the market in 2024, with excess returns between $-11.5$ and $-37.1$ percentage points. Four of five one-shot strategies score zero. Their signals carry essentially no predictive information out of sample: 2024 RankIC is between $-0.015$ and $0.022$. Only \ModelClaudeOpus\ scores at all (4.41), from its in-sample window.
+To examine the role of performance feedback, we compare full feedback with an \textbf{errors-only} control for Astra and DeepSeek. Both conditions use the same research budget and evaluation rules. The control withholds performance metrics and score-derived labels while retaining execution status, errors, candidate identifiers, and remaining-budget information. Models can still repair their code, revise strategies, and select a completed candidate. Table~\ref{tab:feedback} compares the retained control entries with the full-feedback entries in Section~\ref{sec:main}.
 
-With feedback, 2024 RankIC rises to 0.029--0.049 for every model, and every total score increases. Excess return improves for four models, by 7.5 (\ModelGLM) to 39.0 (\ModelDeepSeek) percentage points. \ModelGemini\ is the exception: its signal improves, but its 2024 excess return falls from $-15.6$ to $-19.9$ percentage points, an instance of the signal--portfolio gap discussed next. Iteration is also where tokens go: one-shot runs use 16--96k tokens, iterative runs 96--418k. Without feedback, current models do not produce usable quantitative strategies; with five rounds of feedback, they produce strategies with real but modest predictive power.
+\input{Tables/TabFeedback}
+
+Both selected errors-only strategies score zero. Full-feedback entries achieve higher excess ARR by 22.9 percentage points for Astra and 22.0 for DeepSeek, alongside RankIC values of 0.0462 and 0.0494 rather than values near zero. The other two completed Astra controls also have negative excess returns.
+
+The selected full-feedback attempts also use more of the available research budget. Astra evaluates four candidates instead of one, and DeepSeek five instead of three, with higher token consumption in both cases. These comparisons measure feedback-driven research under a common budget, including the additional computation used during revision.
 
 \subsection{Predictive Signal versus Portfolio Outcome}
 \label{sec:signal_vs_portfolio}
@@ -78,13 +72,6 @@ RankIC measures how well a strategy orders the whole market. The portfolio depen
 Reasoning effort is the main inference-time setting that participants control. For each model whose provider exposes a working control, we run both tracks at a low and a high setting, in addition to the default, under the same suite and budget. Providers control reasoning in different ways: discrete effort levels, explicit thinking budgets, or an on/off switch. Some models cannot vary it at all. We use each provider's native control and report the reasoning tokens actually consumed.
 
 \phtext{Results pending: per-model findings on whether more reasoning improves the committed strategy, how it changes token use and therefore $E$, and whether it helps one-shot more than iterative research.}
-
-\subsection{Granularity of Research Feedback}
-\label{sec:e2}
-
-The iterative track returns aggregate return, signal, and coverage statistics along with execution errors. To test how much this information matters, we ran a control suite that is identical except that feedback contains \emph{only execution errors}: the model learns whether its strategy ran, but not how it performed.
-
-Under errors-only feedback, both tested models score zero. \ModelAstra's 2024 excess return falls from $-0.7$ to $-23.5$ percentage points, and \ModelDeepSeek's from $+1.9$ to $-20.2$. The behavior changes as well: without performance information, \ModelAstra\ stops after a single evaluation and uses 50k tokens instead of 96k. The value of iteration comes from performance feedback, not from the opportunity to fix bugs. \phtext{Additional models under errors-only feedback pending.}
 
 \subsection{What Happens During Research}
 \label{sec:process}
