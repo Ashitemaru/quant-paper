@@ -135,32 +135,32 @@ Across three completed runs per setting, Gemini's mean RankIC increases from $-0
 \noindent\textbf{Similar RankIC values conceal large differences in portfolio quality.}
 Among the retained iterative entries, Gemini and GLM have RankIC values of 0.0447 and 0.0455 but ARR of $-2.9\%$ and $-7.8\%$. Opus has a lower RankIC of 0.0290 and a higher ARR of $30.4\%$. Their long--short Sharpe ratios further separate the signals: approximately 0.00 for Gemini, $-0.20$ for GLM, and 1.51 for Opus. Rank correlation measures ordering, whereas a long--short portfolio also depends on the return spread between the ranking's extremes. The long account further incorporates head selection, position sizes, trading constraints, and costs. These different mappings from scores to returns explain why the metrics provide complementary evidence about a strategy.
 
-\subsection{Reasoning Effort and Resource Use}
-\label{sec:effort}
+% \subsection{Reasoning Effort and Resource Use}
+% \label{sec:effort}
 
-To evaluate how requested reasoning settings relate to research outcomes, we conduct a descriptive comparison of completed non-default iterative runs within the Arena evaluator. Table~\ref{tab:effort_results} lists each requested setting, provider-reported token usage, and final financial and signal metrics; each row is one completed attempt.
+% To evaluate how requested reasoning settings relate to research outcomes, we conduct a descriptive comparison of completed non-default iterative runs within the Arena evaluator. Table~\ref{tab:effort_results} lists each requested setting, provider-reported token usage, and final financial and signal metrics; each row is one completed attempt.
 
-\begin{table}[htbp]
-\centering\footnotesize
-\caption{Completed non-default reasoning-setting runs in the 19 October export. Settings are provider-native request values. Tokens are total provider-reported research usage, in thousands; ARR and RankIC refer to 2024.}
-\label{tab:effort_results}
-\setlength{\tabcolsep}{7pt}
-\begin{tabular}{@{}llrrr@{}}
-\toprule
-Model & Requested setting & Tokens (k) & ARR (\%) & RankIC \\
-\midrule
-\ModelAstra & low & 105.5 & $2.3$ & $0.0560$ \\
- & medium & 106.1 & $-4.8$ & $0.0522$ \\
-\ModelGemini & low & 251.1 & $-6.2$ & $0.0367$ \\
- & high & 308.3 & $12.5$ & $0.0282$ \\
-\ModelDeepSeek & none & 155.5 & $-24.1$ & $-0.0218$ \\
- & low & 244.9 & $-5.7$ & $-0.0085$ \\
- & max & 488.1 & $-11.0$ & $0.0370$ \\
-\ModelGLM & high & 379.0 & $-8.6$ & $0.0177$ \\
-\ModelKimi\ (official API) & low & 246.0 & $-8.5$ & $0.0266$ \\
-\bottomrule
-\end{tabular}
-\end{table}
+% \begin{table}[htbp]
+% \centering\footnotesize
+% \caption{Completed non-default reasoning-setting runs in the 19 October export. Settings are provider-native request values. Tokens are total provider-reported research usage, in thousands; ARR and RankIC refer to 2024.}
+% \label{tab:effort_results}
+% \setlength{\tabcolsep}{7pt}
+% \begin{tabular}{@{}llrrr@{}}
+% \toprule
+% Model & Requested setting & Tokens (k) & ARR (\%) & RankIC \\
+% \midrule
+% \ModelAstra & low & 105.5 & $2.3$ & $0.0560$ \\
+%  & medium & 106.1 & $-4.8$ & $0.0522$ \\
+% \ModelGemini & low & 251.1 & $-6.2$ & $0.0367$ \\
+%  & high & 308.3 & $12.5$ & $0.0282$ \\
+% \ModelDeepSeek & none & 155.5 & $-24.1$ & $-0.0218$ \\
+%  & low & 244.9 & $-5.7$ & $-0.0085$ \\
+%  & max & 488.1 & $-11.0$ & $0.0370$ \\
+% \ModelGLM & high & 379.0 & $-8.6$ & $0.0177$ \\
+% \ModelKimi\ (official API) & low & 246.0 & $-8.5$ & $0.0266$ \\
+% \bottomrule
+% \end{tabular}
+% \end{table}
 
 \noindent\textbf{Higher requested effort does not order returns consistently.}
 Gemini's high-setting run reaches $12.5\%$ ARR versus $-6.2\%$ at low, using 308.3k rather than 251.1k tokens. DeepSeek's max-setting run instead earns $-11.0\%$, below the low-setting run's $-5.7\%$, despite consuming 488.1k rather than 244.9k tokens. Reasoning settings govern generation behavior, while the financial outcome is determined by the strategy produced and selected through that behavior. Additional token consumption alone therefore does not order the observed investment results.
