@@ -5,8 +5,8 @@ We introduced \BenchmarkName, a benchmark and open leaderboard that evaluates LL
 
 Our first evaluation of six frontier models gives three findings.
 \begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item Performance feedback is what makes LLM research work. Without it, no model beats the market; with it, the best model earns 13.3 percentage points of excess return.
-    \item In-sample progress and predictive correlation are poor proxies for out-of-sample portfolio value. Models with the strongest research-window signals produced some of the weakest 2024 portfolios.
-    \item All models remain far below a professional reference strategy.
+    \item Iterative research improves selected-strategy returns for five of six models. The best iterative strategy earns 13.3 percentage points of excess return, while no selected one-shot strategy beats the market. A two-model ablation also finds higher mean returns with performance feedback than with execution errors alone.
+    \item Predictive correlation is a poor proxy for portfolio value. The selected Gemini and GLM strategies reach RankIC above 0.044 yet lose money in 2024, while Opus earns the highest return with RankIC 0.029.
+    \item All evaluated models trail Kepler-1, our closed-source professional strategy.
 \end{itemize}
-\BenchmarkName\ is open to submissions from any model or agent harness. We plan to add markets, input profiles such as order-book data and anonymized features, and fresh sealed windows.
+\BenchmarkName\ is open to submissions from any model or agent harness. We plan to add markets, input profiles such as anonymized features, and fresh sealed windows.

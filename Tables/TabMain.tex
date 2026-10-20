@@ -1,28 +1,30 @@
 \centering
 \footnotesize
-\caption{Selected strategy results. Each row reports one retained strategy. Scores are on a 0--100 scale; $S$, $S_{\mathrm{in}}$, and $S_{\mathrm{out}}$ denote overall, research-period, and assessment-period scores. ARR, excess ARR, long-only Sharpe, and MDD refer to 2024. The equal-weight market reference has an ARR of 17.1\%. Bold marks the best model value within each setting. Kelper-1 is our closed-source reference strategy.}
+\caption{Leaderboard of selected strategies, reported separately for iterative research (top) and one-shot generation (bottom), each ranked by overall score $S$. Scores are on a 0--100 scale; $S$, $S_{\mathrm{in}}$, and $S_{\mathrm{out}}$ denote overall, research-period, and assessment-period scores. ARR, excess ARR, long-only Sharpe, and MDD refer to 2024. The equal-weight market has an ARR of 17.1\%. Bold marks the best model value within each setting. Kepler-1 is our closed-source professional strategy, listed without a rank.}
 \label{tab:main}
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}llrrrrrrr@{}}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}rlrrrrrrr@{}}
 \toprule
-Setting & Model & $S$ & $S_{\mathrm{in}}$ & $S_{\mathrm{out}}$ & ARR (\%) & Excess (pp) & Sharpe & MDD (\%) \\
+\# & Model & $S$ & $S_{\mathrm{in}}$ & $S_{\mathrm{out}}$ & ARR (\%) & Excess (pp) & Sharpe & MDD (\%) \\
 \midrule
-\multirow{6}{*}{Iterative}
- & \modellogo{claude}\ModelClaudeOpus & \textbf{31.9} & 30.5 & \textbf{32.6} & \textbf{30.4} & \textbf{+13.3} & 0.92 & $-31.1$ \\
- & \modellogo{openai}\ModelAstra & 30.3 & \textbf{36.7} & 27.5 & 16.4 & $-0.7$ & 0.64 & $-29.4$ \\
- & \modellogo{deepseek}\ModelDeepSeek & 29.5 & 28.1 & 30.2 & 18.9 & +1.9 & \textbf{1.16} & \textbf{$-7.9$} \\
- & \modellogo{gemini}\ModelGemini & 10.2 & 24.6 & 4.0 & $-2.9$ & $-19.9$ & 0.06 & $-33.8$ \\
- & \modellogo{kimi}\ModelKimi & 8.9 & 0.0 & 12.8 & 9.8 & $-7.3$ & 0.54 & $-14.7$ \\
- & \modellogo{glm}\ModelGLM & 4.1 & 13.5 & 0.0 & $-7.8$ & $-24.9$ & $-0.18$ & $-27.8$ \\
+ -- & \modellogo{kepler}Kepler-1 & 69.2 & 68.9 & 69.4 & 94.0 & +76.9 & 2.98 & $-15.9$ \\
 \midrule
-\multirow{6}{*}{One-shot}
- & \modellogo{claude}\ModelClaudeOpus & \textbf{4.4} & \textbf{14.7} & 0.0 & \textbf{5.6} & \textbf{$-11.5$} & \textbf{0.34} & \textbf{$-21.0$} \\
- & \modellogo{openai}\ModelAstra & 0.0 & 0.0 & 0.0 & $-9.9$ & $-26.9$ & $-0.22$ & $-30.3$ \\
- & \modellogo{deepseek}\ModelDeepSeek & 0.0 & 0.0 & 0.0 & $-20.0$ & $-37.1$ & $-0.63$ & $-35.9$ \\
- & \modellogo{gemini}\ModelGemini & 0.0 & 0.0 & 0.0 & 1.5 & $-15.6$ & 0.20 & $-27.4$ \\
- & \modellogo{kimi}\ModelKimi & 0.0 & 0.0 & 0.0 & 3.8 & $-13.2$ & 0.27 & $-29.0$ \\
- & \modellogo{glm}\ModelGLM & 0.0 & 0.0 & 0.0 & $-15.4$ & $-32.4$ & $-0.51$ & $-32.1$ \\
+\multicolumn{9}{@{}l}{\textit{Iterative research}}\\
 \midrule
-Reference & Kelper-1 & 52.5 & 53.3 & 52.1 & 88.3 & +71.2 & 1.65 & $-44.1$ \\
+ 1 & \modellogo{openai}\ModelAstra & \textbf{46.7} & 47.6 & \textbf{46.3} & \textbf{9.8} & \textbf{$-7.2$} & 0.53 & $-17.9$ \\
+ 2 & \modellogo{claude}\ModelClaudeOpus & 42.8 & \textbf{54.9} & 37.6 & 4.4 & $-12.7$ & 0.29 & $-32.7$ \\
+ 3 & \modellogo{gemini}\ModelGemini & 41.3 & 51.4 & 36.9 & $-2.9$ & $-19.9$ & 0.06 & $-33.8$ \\
+ 4 & \modellogo{kimi}\ModelKimi & 40.2 & 30.7 & 44.2 & 9.8 & $-7.3$ & \textbf{0.54} & \textbf{$-14.7$} \\
+ 5 & \modellogo{glm}\ModelGLM & 37.3 & 46.0 & 33.6 & $-7.8$ & $-24.9$ & $-0.18$ & $-27.8$ \\
+ 6 & \modellogo{deepseek}\ModelDeepSeek & 34.5 & 44.1 & 30.3 & $-11.3$ & $-28.4$ & $-0.25$ & $-34.0$ \\
+\midrule
+\multicolumn{9}{@{}l}{\textit{One-shot generation}}\\
+\midrule
+ 1 & \modellogo{claude}\ModelClaudeOpus & \textbf{42.3} & \textbf{46.9} & \textbf{40.4} & \textbf{5.6} & \textbf{$-11.5$} & \textbf{0.34} & \textbf{$-21.0$} \\
+ 2 & \modellogo{kimi}\ModelKimi & 41.2 & 43.6 & 40.2 & 3.8 & $-13.2$ & 0.27 & $-29.0$ \\
+ 3 & \modellogo{gemini}\ModelGemini & 35.6 & 35.3 & 35.7 & 1.6 & $-15.4$ & 0.19 & $-23.8$ \\
+ 4 & \modellogo{glm}\ModelGLM & 31.2 & 34.5 & 29.9 & $-15.4$ & $-32.4$ & $-0.51$ & $-32.1$ \\
+ 5 & \modellogo{openai}\ModelAstra & 31.0 & 36.7 & 28.5 & $-9.7$ & $-26.7$ & $-0.20$ & $-30.3$ \\
+ 6 & \modellogo{deepseek}\ModelDeepSeek & 29.4 & 37.2 & 26.0 & $-25.4$ & $-42.4$ & $-0.92$ & $-39.5$ \\
 \bottomrule
 \end{tabular}
