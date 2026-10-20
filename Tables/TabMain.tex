@@ -1,6 +1,6 @@
 \centering
 \footnotesize
-\caption{Selected leaderboard results. Each row reports one retained strategy. Scores are on a 0--100 scale; $S$, $S_{\mathrm{in}}$, and $S_{\mathrm{out}}$ denote overall, research-period, and assessment-period scores. ARR, excess ARR, long-only Sharpe, and MDD refer to 2024. The equal-weight market reference has an ARR of 17.1\%. Bold marks the best model value within each setting. Kelper-1 is our closed-source reference strategy.}
+\caption{Selected strategy results. Each row reports one retained strategy. Scores are on a 0--100 scale; $S$, $S_{\mathrm{in}}$, and $S_{\mathrm{out}}$ denote overall, research-period, and assessment-period scores. ARR, excess ARR, long-only Sharpe, and MDD refer to 2024. The equal-weight market reference has an ARR of 17.1\%. Bold marks the best model value within each setting. Kelper-1 is our closed-source reference strategy.}
 \label{tab:main}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}llrrrrrrr@{}}
@@ -20,7 +20,7 @@ Setting & Model & $S$ & $S_{\mathrm{in}}$ & $S_{\mathrm{out}}$ & ARR (\%) & Exce
  & \modellogo{openai}\ModelAstra & 0.0 & 0.0 & 0.0 & $-9.9$ & $-26.9$ & $-0.22$ & $-30.3$ \\
  & \modellogo{deepseek}\ModelDeepSeek & 0.0 & 0.0 & 0.0 & $-20.0$ & $-37.1$ & $-0.63$ & $-35.9$ \\
  & \modellogo{gemini}\ModelGemini & 0.0 & 0.0 & 0.0 & 1.5 & $-15.6$ & 0.20 & $-27.4$ \\
- & \modellogo{kimi}\ModelKimi & -- & -- & -- & -- & -- & -- & -- \\
+ & \modellogo{kimi}\ModelKimi & 0.0 & 0.0 & 0.0 & 3.8 & $-13.2$ & 0.27 & $-29.0$ \\
  & \modellogo{glm}\ModelGLM & 0.0 & 0.0 & 0.0 & $-15.4$ & $-32.4$ & $-0.51$ & $-32.1$ \\
 \midrule
 Reference & Kelper-1 & 52.5 & 53.3 & 52.1 & 88.3 & +71.2 & 1.65 & $-44.1$ \\

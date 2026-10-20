@@ -4,16 +4,16 @@
 \subsection{Experimental Setup}
 \label{sec:setup}
 
-To evaluate how models turn market data and research feedback into investment strategies, we conduct experiments on the 2022--2023 research period and assess frozen strategies on the sealed year 2024. We evaluate \ModelClaudeOpus, \ModelAstra, \ModelDeepSeek, \ModelGemini, \ModelGLM, and \ModelKimi\ under the data access and financial rules in Section~\ref{sec:benchmark}. Each research attempt has a budget of 500,000 model tokens.
+To evaluate how models develop investment strategies from market data and research feedback, we conduct experiments over the 2022--2023 research period and assess the frozen strategies on the sealed 2024 period. We evaluate \ModelClaudeOpus, \ModelAstra, \ModelDeepSeek, \ModelGemini, \ModelGLM, and \ModelKimi\ under the data-access and financial rules in Section~\ref{sec:benchmark}. Each research attempt receives a budget of 500,000 model tokens.
 
 We compare two settings. \textbf{One-shot} produces a complete strategy without research-performance feedback, with corrections permitted for invalid proposals. \textbf{Iterative research} revises and selects candidates using financial, signal-quality, coverage, and execution-error feedback, with at most five candidate evaluations. An \textbf{errors-only} control retains execution status, errors, candidate identifiers, and remaining-budget information while withholding performance metrics and score-derived labels.
 
-Table~\ref{tab:main} retains the leaderboard selection: the highest-scoring eligible entry for each model and setting, preserving the existing entry when scores tie. Each row reports one strategy's scores and financial metrics. The accompanying analyses use the 19 October export and distinguish default-setting runs, errors-only controls, and reasoning-effort settings. Financial summaries use completed runs with available cash-account metrics; completion counts include terminated, non-cancelled attempts. We compare annualized return (ARR), long-only Sharpe, maximum drawdown (MDD), and signal statistics. The leaderboard additionally reports excess ARR against the gross equal-weight market reference and includes the closed-source professional reference Kelper-1. Candidate trajectories retain the research metrics returned at the time of each evaluation.
+Table~\ref{tab:main} reports the highest-scoring eligible strategy for each model and setting, breaking ties in favor of the earlier entry. Kimi one-shot uses the official API and the same scoring protocol. The main comparison uses the maximum reasoning-effort setting supported by each model. We report annualized return (ARR), long-only Sharpe, maximum drawdown (MDD), and signal statistics, alongside research-token consumption. The leaderboard also includes excess ARR relative to the gross equal-weight market reference and the closed-source professional reference Kelper-1. Financial analyses use completed runs. The feedback ablation compares full feedback with the errors-only control, while candidate-level analyses use the research-period feedback available during strategy development.
 
 \subsection{Overall Performance}
 \label{sec:main}
 
-To evaluate the financial performance achieved by model-developed strategies, we conduct a leaderboard comparison of the retained one-shot and iterative entries on the sealed period.
+To evaluate whether iterative research improves investment performance, we conduct experiments on six models under one-shot and iterative settings and compare their selected strategies on the sealed assessment period (Table~\ref{tab:main}).
 
 \begin{table}[htbp]
 \input{Tables/TabMain}
@@ -22,21 +22,32 @@ To evaluate the financial performance achieved by model-developed strategies, we
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{Figures/fig_nav.pdf}
-\caption{Cash-account NAV during 2024 for the six retained iterative strategies in Table~\ref{tab:main}, Kelper-1, and the gross equal-weight market reference. Initial capital is normalized to 1. The paths complement terminal returns with the strategies' drawdown behavior.}
+\caption{Cash-account NAV during 2024 for the six model-developed iterative strategies in Table~\ref{tab:main}, Kelper-1, and the gross equal-weight market reference. Initial capital is normalized to 1. The paths complement terminal returns with the strategies' drawdown behavior.}
 \label{fig:nav}
 \end{figure}
 
-\noindent\textbf{Iterative research raises the best achieved return for four of five comparable models.}
-In Table~\ref{tab:main}, retained iterative entries improve ARR over one-shot by 24.8 percentage points for Opus, 26.3 for Astra, 38.9 for DeepSeek, and 7.6 for GLM. Gemini moves in the opposite direction, from $1.5\%$ to $-2.9\%$. Iteration adds opportunities to evaluate, revise, and select a strategy, making the final result depend on both initial strategy construction and the model's use of research evidence. The Gemini comparison shows that this additional search need not improve the committed portfolio.
+\noindent\textbf{Iteration improves returns for five of six models.}
+Iterative entries in Table~\ref{tab:main} improve ARR over one-shot by 24.8 percentage points for Opus, 26.3 for Astra, 38.9 for DeepSeek, 7.6 for GLM, and 6.0 for Kimi. Gemini's ARR falls from $1.5\%$ to $-2.9\%$. The iterative setting adds a feedback-driven search over candidate strategies: models can test an initial hypothesis, revise its implementation, and select a final portfolio rule. The resulting gains depend on how this process translates research-period evidence into a strategy for the sealed period.
 
-\noindent\textbf{The highest-return strategy is not the strongest on every risk measure.}
-Opus achieves the highest model ARR at $30.4\%$, compared with DeepSeek's $18.9\%$. DeepSeek instead has a higher Sharpe ratio, 1.16 versus 0.92, and a smaller drawdown magnitude, $7.9\%$ versus $31.1\%$ (Table~\ref{tab:main} and Figure~\ref{fig:nav}). ARR measures growth over the entire assessment, whereas Sharpe and drawdown capture the variability and downside of the path that produces that growth. The distinction makes risk an essential part of the comparison between profitable strategies.
+\noindent\textbf{Return and risk-adjusted performance favor different models.}
+Opus achieves the highest model ARR at $30.4\%$, compared with DeepSeek's $18.9\%$. DeepSeek has a higher Sharpe ratio, 1.16 versus 0.92, and a smaller maximum drawdown, $7.9\%$ versus $31.1\%$ (Table~\ref{tab:main} and Figure~\ref{fig:nav}). ARR measures cumulative growth on an annualized scale, whereas Sharpe normalizes returns by their variability and maximum drawdown captures the largest peak-to-trough loss. The portfolio path therefore distinguishes strategies that appear attractive by return alone.
+
+\subsection{Predictive Signal versus Portfolio Outcome}
+\label{sec:signal_vs_portfolio}
+
+To evaluate how signal quality relates to realized returns, we conduct comparative analyses on RankIC, long--short performance, and cash-account outcomes across research settings and the iterative strategies in Table~\ref{tab:main}.
+
+\noindent\textbf{Higher RankIC accompanies lower returns for Gemini.}
+Across three completed runs per setting, Gemini's mean RankIC rises from $-0.0009$ in one-shot to 0.0409 in iterative research, while mean ARR falls from $0.3\%$ to $-4.6\%$. RankIC aggregates ordering across the full stock cross-section. A cash account instead converts the highest scores into positions subject to allocation rules, trading constraints, and costs. Improvements in aggregate ordering can therefore differ from improvements in realized portfolio returns.
+
+\noindent\textbf{Portfolio performance separates strategies with similar RankIC.}
+Gemini and GLM have RankIC values of 0.0447 and 0.0455 but ARR of $-2.9\%$ and $-7.8\%$ in Table~\ref{tab:main}. Opus achieves $30.4\%$ ARR with a lower RankIC of 0.0290. Long--short Sharpe further distinguishes the signals: approximately 0.00 for Gemini, $-0.20$ for GLM, and 1.51 for Opus. RankIC measures ordering, while long--short performance depends on the return spread between the ranking's extremes. Cash-account returns additionally reflect stock selection, position sizes, trading constraints, and costs. Each metric evaluates a different step in translating predictions into investment outcomes.
 
 \subsection{Effects of Research Feedback}
 \label{sec:feedback_effect}
 \label{sec:e2}
 
-To evaluate how financial feedback changes research behavior and final performance, we conduct comparisons of all completed default-setting full-feedback and errors-only runs for Astra and DeepSeek. Figure~\ref{fig:feedback_runs} compares mean cash-account outcomes and evaluation counts in each condition.
+To evaluate how financial feedback affects research and investment outcomes, we conduct feedback-ablation experiments on Astra and DeepSeek, comparing all completed default-setting runs with full feedback and errors-only feedback.
 
 \begin{figure}[htbp]
 \centering
@@ -45,104 +56,100 @@ To evaluate how financial feedback changes research behavior and final performan
 \label{fig:feedback_runs}
 \end{figure}
 
-\noindent\textbf{Full feedback accompanies stronger signals and higher average returns.}
-Astra's full-feedback runs achieve $8.5\%$ mean ARR and 0.0472 RankIC, compared with $-12.3\%$ and $-0.0081$ under errors-only feedback. DeepSeek's corresponding means are $3.8\%$ versus $-3.1\%$ ARR and 0.0321 versus $-0.0044$ RankIC. Execution errors identify whether a program can run; financial feedback additionally distinguishes candidates by their predictive and investment behavior. This supplies a basis for revising strategy content after execution has succeeded.
+\noindent\textbf{Full-feedback runs achieve higher returns and RankIC.}
+With full feedback, Astra achieves $8.5\%$ mean ARR and 0.0472 RankIC, compared with $-12.3\%$ and $-0.0081$ under errors-only feedback (Figure~\ref{fig:feedback_runs}, left). DeepSeek's corresponding means are $3.8\%$ versus $-3.1\%$ ARR and 0.0321 versus $-0.0044$ RankIC. Execution feedback identifies invalid proposals, while financial feedback distinguishes executable candidates by predictive ordering and portfolio performance. This additional information supplies a criterion for revising the strategy's investment logic.
 
-\noindent\textbf{Financial feedback also accompanies longer candidate search.}
-Astra uses four evaluations and 80.0k tokens on average with full feedback, while each errors-only run stops after one evaluation, averaging 40.2k tokens. DeepSeek uses five evaluations under full feedback and three under errors-only feedback. The observed comparison therefore includes the search and stopping behavior induced by each feedback policy: numerical performance provides a reason to continue revising an already executable strategy, while an execution-only response supplies no financial criterion for that next revision.
+\noindent\textbf{Full feedback accompanies deeper candidate search.}
+Astra uses four evaluations and 80.0k tokens on average with full feedback, whereas each errors-only run stops after one evaluation, averaging 40.2k tokens. DeepSeek uses five evaluations under full feedback and three under errors-only feedback (Figure~\ref{fig:feedback_runs}, right). Once a candidate executes successfully, performance metrics provide a further target for improvement. The observed search depth is consistent with models using that target to continue revising executable strategies.
 
 \subsection{Research Trajectories and Strategy Selection}
 \label{sec:process}
 
-To evaluate how strategies evolve during research, we conduct within-run comparisons of the first valid and final selected candidates in the eleven completed default iterative runs of the four main models. We use the historical research-feedback metrics recorded at each trial and examine where the selected candidate lies in the trajectory. We inspect all 49 candidate source artifacts and classify their 38 adjacent revisions by changes to factor definitions or sets, score combination, eligibility or participation rules, and data inputs or observation scope. Labels are assigned from executable calculations and may overlap.
+To evaluate how candidate performance and final selection evolve during research, we conduct trajectory analyses on the eleven completed default iterative runs of the four main models. We compare the first valid and final selected candidates using research-period feedback and identify whether the final selection is the latest valid candidate or the candidate with the highest research-period excess ARR.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{Figures/fig_research_trajectory_20261019.pdf}
-\caption{Candidate development in eleven completed default iterative runs. Left: first-valid and selected-candidate research excess ARR, with per-run gains annotated in percentage points. Values retain the historical feedback basis. Run numbers are identifiers within each model. Right: selection frequencies; the last-valid and best-research candidates can coincide.}
+\caption{Research-period improvement and final candidate selection across eleven completed default iterative runs. Left: first-valid and selected-candidate research excess ARR, with per-run gains annotated in percentage points. Returns are measured on the research period. Run numbers are identifiers within each model. Right: selection frequencies; the last-valid and best-research candidates can coincide.}
 \label{fig:research_trajectory}
 \end{figure}
 
-\noindent\textbf{Candidate revision usually improves the research-period objective.}
-Figure~\ref{fig:research_trajectory} shows that ten of eleven runs increase research-period excess ARR from the first valid candidate to the selected candidate, with a mean gain of 10.6 percentage points across all eleven. None selects its first valid candidate. These trajectories show that the research phase extends beyond obtaining an executable program: subsequent candidates change the measured financial behavior, and the committed strategy usually improves on the initial valid proposal within the research window.
+\noindent\textbf{Revision improves research-period returns in ten of eleven runs.}
+Ten of eleven runs increase research-period excess ARR from the first valid candidate to the selected candidate, with a mean gain of 10.6 percentage points across all eleven (Figure~\ref{fig:research_trajectory}, left). None selects its first valid candidate. Repeated evaluation exposes differences in the financial behavior of executable proposals, allowing subsequent revisions to refine the initial investment hypothesis within the research period.
 
-\noindent\textbf{Final selections concentrate at the end of the research trajectory.}
-Ten of eleven selected candidates are the last valid candidate, while seven maximize the recorded research-period excess ARR. Final commitment is therefore more consistently associated with the latest valid revision than with the maximum of this single research metric. The selection interface supports multiple financial and signal criteria as well as a terminal fallback, so the selected candidate reflects both candidate development and the rule that resolves the final commitment.
+\noindent\textbf{Ten of eleven selections are the latest valid candidate.}
+Ten of eleven selected candidates are the last valid revision, while seven maximize recorded research-period excess ARR (Figure~\ref{fig:research_trajectory}, right). These selection patterns reflect a procedure that supports multiple financial and signal criteria and includes a terminal fallback. The final candidate can therefore differ from the maximum of a single research metric.
+
+\subsection{Candidate Revision Mechanisms}
+\label{sec:candidate_revisions}
+
+To evaluate which strategy components models modify, we conduct source-code analyses on all 49 candidates from the same eleven runs. We classify the 38 adjacent revisions into changes to factor definitions or sets, score combination, eligibility or participation rules, and data inputs or observation scope. Categories reflect executable calculations and may overlap.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{Figures/fig_candidate_revisions_20261019.pdf}
-\caption{Source-verified candidate revisions. Left: modification types across 38 adjacent transitions in eleven research runs; one transition may have multiple labels. Right: combination weights in Astra~2's final three candidates, which retain the same factor definitions while changing weights and screening thresholds.}
+\caption{Strategy revision through component changes and factor reweighting. Left: modification types across 38 adjacent transitions in eleven research runs; one transition may have multiple labels. Right: combination weights in Astra~2's final three candidates, which retain the same factor definitions while changing weights and screening thresholds.}
 \label{fig:candidate_revisions}
 \end{figure}
 
-\noindent\textbf{Research revises the decision rule as well as the factor set.}
-Of the 38 revisions, 33 ($86.8\%$) change factor definitions or membership, 31 ($81.6\%$) change score combination, 24 ($63.2\%$) change eligibility or participation rules, and 21 ($55.3\%$) change data inputs or observation scope (Figure~\ref{fig:candidate_revisions}). Astra revises combination and eligibility rules in all nine transitions; Gemini revises combination in all ten. These operations act at different stages of strategy construction: inputs determine the evidence available, factors transform that evidence, and combination and eligibility rules determine the resulting stock preferences. Candidate development therefore involves jointly revising a financial hypothesis and its use in selection.
+\noindent\textbf{Models revise both factors and decision rules.}
+Of the 38 revisions, 33 ($86.8\%$) change factor definitions or membership, 31 ($81.6\%$) change score combination, 24 ($63.2\%$) change eligibility or participation rules, and 21 ($55.3\%$) change data inputs or observation scope (Figure~\ref{fig:candidate_revisions}). Astra revises combination and eligibility rules in all nine transitions; Gemini revises combination in all ten. These changes span the construction of a strategy: inputs define the available evidence, factors encode predictive hypotheses, and combination and eligibility rules translate them into stock preferences. The research loop refines both the signals and the decisions built from them.
 
-\noindent\textbf{Fixed factor definitions still permit substantial strategy changes.}
-Five revisions retain the factor set and its calculations while changing combination or participation rules. In Astra~2, the weights on low activity, narrow range, and low price change from $(65,25,10)\%$ to $(20,20,60)\%$ and then $(15,75,10)\%$ across trials 3--5, alongside screening thresholds (Figure~\ref{fig:candidate_revisions}). The dominant component moves from activity to price and then to range. In DeepSeek~2, another revision retains all seven factors and adds a market-trend participation gate. Factor counts alone miss both changes: one reallocates influence within the ranking, while the other determines whether the ranking is issued.
+\noindent\textbf{Reweighting and participation rules change strategy behavior.}
+Five revisions retain the factor set and its calculations while changing combination or participation rules. In Astra~2, weights on low activity, narrow range, and low price shift from $(65,25,10)\%$ to $(20,20,60)\%$ and then $(15,75,10)\%$ across trials 3--5, together with changes to screening thresholds (Figure~\ref{fig:candidate_revisions}). The dominant component moves from activity to price and then to range. DeepSeek~2 retains its factor definitions in another revision but adds a market-trend participation gate. These revisions change how signals influence ranking or when a ranking is issued, even though the underlying factors remain fixed.
 
-\subsection{Factor Construction and Selection Behavior}
+\subsection{Investment Styles of Model-Developed Portfolios}
 \label{sec:strategy_style}
 
-To evaluate whether models construct different investment strategies from the same market information, we conduct a source-code analysis of the eleven selected default iterative strategies and compare their factor composition, combination rules, and selection turnover. We assign each of the 76 implemented feature instances to one primary family according to its calculation and inspect how its output enters the stock score. Selection turnover measures replacement in successive selected stock sets.
+To evaluate whether models develop distinct investment styles, we conduct holdings-based analyses on the thirteen completed default iterative strategies across all six models. Following the style dimensions of MSCI FaCS~\citep{Bonne2018FaCS}, we construct five proxies: log market capitalization, book-to-price, 12--1 month momentum, 60-session return volatility, and 20-session mean turnover. These describe size, valuation, momentum, volatility, and trading activity, respectively.
+
+We compute descriptors using observations available before each holding day. Momentum accumulates daily log price returns over 231 sessions, skipping the most recent 21; momentum, volatility, and turnover require at least 200, 50, and 15 valid observations, respectively. Each descriptor is winsorized at the first and 99th percentiles and standardized against the equal-weight distribution of non-ST, non-suspended Shenzhen stocks with valid observations. We weight standardized descriptors by actual holding market values, normalized over invested equity, and retain portfolio-days with at least $90\%$ descriptor coverage. We average over valid invested days within each strategy and then equally across strategies within each model. The analysis uses three strategies each for Astra, Opus, and Gemini, two for DeepSeek, and one each for GLM and Kimi.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{Figures/fig_factor_profiles_20261019.pdf}
-\caption{Factor composition of the eleven selected strategies. Left: feature counts by primary family, verified against source calculations and score construction. A dot denotes zero. Families group related calculations rather than statistically independent signals. Run numbers identify strategies within each model. Right: individual feature counts and model means.}
-\label{fig:factor_profiles}
+\includegraphics[width=\linewidth]{Figures/fig_investment_styles.pdf}
+\caption{Capitalization, valuation, momentum, volatility, and turnover exposures of the thirteen selected iterative strategies. Bars report mean holdings-weighted standardized descriptors; zero denotes the reference-universe mean. Positive values indicate larger capitalization, higher book-to-price, stronger past momentum, higher volatility, or higher turnover. Axis ranges vary by panel. These are self-computed proxies aligned with FaCS dimensions.}
+\label{fig:investment_styles}
 \end{figure}
 
-\noindent\textbf{Models construct different factor combinations from shared inputs.}
-Astra and Opus each use 3--4 factors per selected strategy, averaging 3.7; Gemini uses 8--14, averaging 12.0; DeepSeek uses 7--11, averaging 9.0 (Figure~\ref{fig:factor_profiles}). All three Astra strategies combine low nominal price, low trading activity, and narrow price ranges. Each Gemini strategy combines return, price-location, range, spread, and order-book measures. Opus varies across runs: one strategy concentrates on quoted spreads and price location, another combines three reversal-related measures, and a third blends price, range, return, and activity. These differences arise in the choice and combination of transformations applied to the same permitted market data.
+\noindent\textbf{Kimi favors larger stocks than the other models.}
+Kimi has a size exposure of $+1.55$, compared with $-0.40$ for Astra, $-0.40$ for Opus, and $-0.44$ for Gemini (Figure~\ref{fig:investment_styles}). DeepSeek and GLM lie closer to the reference mean at $+0.17$ and $-0.15$. Kimi's strategy combines higher traded amounts and lower price impact with multi-session return signals. Its large-cap exposure is consistent with these liquidity preferences, showing how a capitalization tilt can emerge from strategy construction without an explicit market-cap feature.
 
-\noindent\textbf{Models differ in the persistence of their selected stocks.}
-Mean selection turnover is $52.7\%$ for Astra, $76.1\%$ for Opus, $85.1\%$ for Gemini, and $91.8\%$ for DeepSeek. Astra retains a larger fraction of the previous selected set, while Gemini and DeepSeek replace more of that set. Factor transformations and their combination determine how stock scores move relative to the selection boundary. The resulting basket replacement provides a behavioral description of a strategy beyond the names of its input factors.
+\noindent\textbf{Astra, GLM, and Gemini favor low volatility and low turnover.}
+Astra, GLM, and Gemini have volatility exposures of $-0.70$, $-0.63$, and $-0.48$, alongside turnover exposures of $-0.63$, $-0.47$, and $-0.49$ (Figure~\ref{fig:investment_styles}). Their strategies incorporate narrow-range or low-activity components, connecting these stock-level preferences to the characteristics of the resulting portfolios. Kimi combines lower volatility ($-0.37$) with positive momentum ($+0.39$). Thus, a common low-volatility tilt can accompany different preferences for trading activity and past returns.
 
-\noindent\textbf{Strategy logic also controls when a stock ranking is produced.}
-DeepSeek~2 includes a market-trend gate and produces nonempty signals on 92 of the 241 assessment days; the other twelve selected default strategies produce signals on all 241 days. When the gate fails, the strategy suppresses every stock score. This rule controls participation separately from cross-sectional preference, adding a strategy-level decision under the common portfolio and execution rules.
+\noindent\textbf{Valuation tilts differ between book equity and earnings.}
+Astra and Gemini have book-to-price exposures of $+0.80$ and $+0.58$. Using earnings-to-price on the same valid portfolio-days yields exposures of $-0.41$ and $-0.14$, respectively. Book-to-price relates accounting equity to market price, while earnings-to-price relates profits to price. The opposite exposure signs show that a portfolio's valuation tilt depends on the underlying accounting measure.
 
-\subsection{Signal Similarity across Selected Strategies}
+\subsection{Signal Similarity across Leaderboard Strategies}
 \label{sec:signal_similarity}
 
-To evaluate whether different implementations produce similar stock preferences, we conduct a pairwise analysis of the thirteen selected default iterative strategies from the six models in the 19 October snapshot. We use 3,133 saved daily signal artifacts covering 241 assessment days. For each strategy pair, we average daily Spearman correlations over jointly scored stocks, requiring at least 100 common stocks, and daily Jaccard overlap between their respective top-75 stock sets, including boundary ties. Overlap is measured on days when both sets are nonempty.
+To evaluate whether models select similar stocks, we conduct pairwise signal analyses on the six iterative strategies in Table~\ref{tab:main}, using one strategy per model. We compute mean daily Spearman correlation over jointly scored stocks, requiring at least 100 common stocks, and mean daily Jaccard overlap between each strategy's top-75 stock set, including boundary ties. Both measures use valid paired observations in the sealed assessment period.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\linewidth]{Figures/fig_signal_similarity_20261019.pdf}
-\caption{Similarity of the thirteen selected strategies. Left: mean daily rank correlation. Right: mean top-75 Jaccard overlap, calculated as intersection divided by union. Numbering matches Figure~\ref{fig:factor_profiles}; GLM and Kimi each contribute one strategy. Correlations use 240--241 paired days, or 91--92 for pairs involving the gated DeepSeek~2 strategy. Overlaps use 241 paired days, or 92 with DeepSeek~2. Boxed pairs are discussed in the text; diagonal cells are omitted.}
+\caption{Broad ranking agreement and top-stock overlap among the six iterative strategies in Table~\ref{tab:main}. Left: mean daily Spearman rank correlation. Right: mean daily top-75 Jaccard overlap (intersection divided by union), in percent. Each model is represented by its leaderboard strategy. Pairs use 241 valid days, except those involving DeepSeek, which use its 92 active days. Diagonal cells are omitted.}
 \label{fig:signal_similarity}
 \end{figure}
 
-\noindent\textbf{Different models can converge on similar stock rankings.}
-Opus~1 and GLM~1 have a mean daily rank correlation of 0.900, while Astra~2 and Opus~1 reach 0.875 (Figure~\ref{fig:signal_similarity}). Their source implementations share preferences for low activity and narrow price ranges, despite different factor inventories and weighting rules. Opus~3 and DeepSeek~2 instead align at 0.792 through reversal and price-location measures. These correspondences connect the implemented financial ideas to the rankings they produce: model identity alone does not determine the strategy's signal family.
+\noindent\textbf{Several model pairs produce strongly aligned rankings.}
+Gemini and GLM reach a mean daily rank correlation of 0.800, while Astra and Opus reach 0.776 (Figure~\ref{fig:signal_similarity}, left). Gemini and GLM both favor low trading activity and narrow price ranges, with different additional features and combination rules. Shared stock characteristics can align the broad ordering of signals produced by distinct implementations.
 
-\noindent\textbf{Similar broad rankings can produce different preferred stock sets.}
-The top-75 Jaccard overlap is $9.0\%$ for Opus~1 and GLM~1 despite their 0.900 rank correlation, and $5.5\%$ for Opus~3 and DeepSeek~2 despite a correlation of 0.792. Astra~2 and Opus~1 have a higher overlap of $27.5\%$. Rank correlation summarizes ordering across thousands of jointly scored stocks, while top-set overlap depends on membership at the upper tail of each strategy's eligible universe. Different weights and screening rules can preserve broad ordering while changing which stocks cross the selection boundary.
+\noindent\textbf{Broad ranking agreement coexists with low top-stock overlap.}
+Gemini and GLM have a top-75 Jaccard overlap of $7.1\%$ despite their 0.800 rank correlation. Astra and Opus reach $10.3\%$, the highest overlap among the fifteen model pairs (Figure~\ref{fig:signal_similarity}, right). Rank correlation measures ordering across the common stock universe, while top-set overlap measures membership near the selection boundary. Feature weights and eligibility rules can change which stocks cross that boundary even when the broader rankings agree.
 
-\noindent\textbf{Kimi develops a distinct signal profile.}
-Kimi~1's absolute pairwise correlations average 0.156 across the other twelve strategies, with a maximum of 0.350. Its source combines 20-session momentum and volatility, five-session reversal, and liquidity measures that favor higher traded amounts and lower price impact. These choices differ from the shared low-activity preference of the Astra--Opus--GLM examples. The implementation changes both the return horizon and the direction of the liquidity preference, consistent with its distinct ranking profile.
-
-\subsection{Predictive Signal versus Portfolio Outcome}
-\label{sec:signal_vs_portfolio}
-
-To evaluate how predictive ordering translates into investment returns, we conduct comparisons of RankIC, long--short performance, and cash-account outcomes across research settings and retained iterative strategies.
-
-\noindent\textbf{Improved predictive ordering can coexist with lower portfolio returns.}
-Across three completed runs per setting, Gemini's mean RankIC increases from $-0.0009$ in one-shot to 0.0409 in iterative research, while mean ARR falls from $0.3\%$ to $-4.6\%$. RankIC aggregates ordering over the full stock cross-section; the account holds a constrained portfolio drawn from its highest scores. A change in whole-universe ordering can therefore have a different effect on the selected stocks and their realized account returns.
-
-\noindent\textbf{Similar RankIC values conceal large differences in portfolio quality.}
-Among the retained iterative entries, Gemini and GLM have RankIC values of 0.0447 and 0.0455 but ARR of $-2.9\%$ and $-7.8\%$. Opus has a lower RankIC of 0.0290 and a higher ARR of $30.4\%$. Their long--short Sharpe ratios further separate the signals: approximately 0.00 for Gemini, $-0.20$ for GLM, and 1.51 for Opus. Rank correlation measures ordering, whereas a long--short portfolio also depends on the return spread between the ranking's extremes. The long account further incorporates head selection, position sizes, trading constraints, and costs. These different mappings from scores to returns explain why the metrics provide complementary evidence about a strategy.
+\noindent\textbf{Kimi produces distinct stock rankings.}
+Kimi's correlations with the other five strategies range from $-0.213$ to 0.183, with a mean absolute correlation of 0.167. Its top-75 overlaps range from $0.04\%$ to $2.7\%$ (Figure~\ref{fig:signal_similarity}). Kimi combines 20-session momentum and volatility, five-session reversal, and liquidity measures favoring higher traded amounts and lower price impact. These choices differ in both return horizon and liquidity preference from the low-activity components of Gemini and GLM, consistent with Kimi's distinct stock rankings.
 
 % \subsection{Reasoning Effort and Resource Use}
 % \label{sec:effort}
 
-% To evaluate how requested reasoning settings relate to research outcomes, we conduct a descriptive comparison of completed non-default iterative runs within the Arena evaluator. Table~\ref{tab:effort_results} lists each requested setting, provider-reported token usage, and final financial and signal metrics; each row is one completed attempt.
+% To evaluate how requested reasoning settings relate to research outcomes, we conduct a descriptive comparison of iterative runs under alternative reasoning-effort settings. Table~\ref{tab:effort_results} lists each requested setting, provider-reported token usage, and final financial and signal metrics; each row is one completed attempt.
 
 % \begin{table}[htbp]
 % \centering\footnotesize
-% \caption{Completed non-default reasoning-setting runs in the 19 October export. Settings are provider-native request values. Tokens are total provider-reported research usage, in thousands; ARR and RankIC refer to 2024.}
+% \caption{Results under alternative reasoning-effort settings. Each row is one completed run; settings follow each provider's API. Tokens are total provider-reported research usage, in thousands; ARR and RankIC refer to 2024.}
 % \label{tab:effort_results}
 % \setlength{\tabcolsep}{7pt}
 % \begin{tabular}{@{}llrrr@{}}
@@ -162,33 +169,26 @@ Among the retained iterative entries, Gemini and GLM have RankIC values of 0.044
 % \end{tabular}
 % \end{table}
 
-\noindent\textbf{Higher requested effort does not order returns consistently.}
-Gemini's high-setting run reaches $12.5\%$ ARR versus $-6.2\%$ at low, using 308.3k rather than 251.1k tokens. DeepSeek's max-setting run instead earns $-11.0\%$, below the low-setting run's $-5.7\%$, despite consuming 488.1k rather than 244.9k tokens. Reasoning settings govern generation behavior, while the financial outcome is determined by the strategy produced and selected through that behavior. Additional token consumption alone therefore does not order the observed investment results.
+% \noindent\textbf{Higher requested effort does not order returns consistently.}
+% Gemini's high-setting run reaches $12.5\%$ ARR versus $-6.2\%$ at low, using 308.3k rather than 251.1k tokens. DeepSeek's max-setting run instead earns $-11.0\%$, below the low-setting run's $-5.7\%$, despite consuming 488.1k rather than 244.9k tokens. Reasoning settings govern generation behavior, while the financial outcome is determined by the strategy produced and selected through that behavior. Additional token consumption alone therefore does not order the observed investment results.
 
-\noindent\textbf{Similar token expenditure can produce different strategies.}
-Astra's low and medium attempts consume 105.5k and 106.1k tokens, respectively, but yield $2.3\%$ and $-4.8\%$ ARR. Conversely, DeepSeek's max attempt improves RankIC over low while reducing ARR. Token usage measures the volume of model interaction; it does not measure the usefulness of the hypotheses, revisions, or portfolio decisions within that interaction. Financial and signal outcomes identify what the research produced; token usage records the resources consumed to produce it.
+% \noindent\textbf{Similar token expenditure can produce different strategies.}
+% Astra's low and medium attempts consume 105.5k and 106.1k tokens, respectively, but yield $2.3\%$ and $-4.8\%$ ARR. Conversely, DeepSeek's max attempt improves RankIC over low while reducing ARR. Token usage measures the volume of model interaction; it does not measure the usefulness of the hypotheses, revisions, or portfolio decisions within that interaction. Financial and signal outcomes identify what the research produced; token usage records the resources consumed to produce it.
 
-\subsection{Research Completion}
-\label{sec:reliability}
+\subsection{Research Token Consumption}
+\label{sec:token_consumption}
 
-To evaluate whether models complete the research workflow, we conduct a completion analysis of terminated, non-cancelled default-setting attempts for the four main models. Table~\ref{tab:repeatability} reports completed attempts in the one-shot and iterative settings.
+To evaluate the resource cost of iterative research, we conduct token-consumption analyses on the one-shot and iterative strategies in Table~\ref{tab:main}. Each value covers the complete run that produced the selected strategy, including candidate generation, revision, and selection.
 
-\begin{table}[htbp]
-\centering\small
-\caption{Completion counts in the default main-model campaign, 19 October export. Entries are completed/terminated non-cancelled attempts.}
-\label{tab:repeatability}
-\setlength{\tabcolsep}{12pt}
-\begin{tabular}{@{}lrr@{}}
-\toprule
-Model & One-shot & Iterative \\
-\midrule
-\ModelAstra & 3/3 & 3/3 \\
-\ModelClaudeOpus & 3/10 & 3/4 \\
-\ModelGemini & 3/4 & 3/3 \\
-\ModelDeepSeek & 3/3 & 2/2 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{Figures/fig_token_consumption.pdf}
+\caption{Research-token consumption across models and research settings for the strategies in Table~\ref{tab:main}. Light and dark bars denote one-shot and iterative research, respectively. Values are shown in thousands of tokens and correspond to individual selected runs.}
+\label{fig:token_consumption}
+\end{figure}
 
-\noindent\textbf{Research completion distinguishes model behavior.}
-Astra completes all three attempts in each setting. Opus completes three of ten one-shot attempts and three of four iterative attempts; Gemini completes three of four one-shot attempts and all three iterative attempts. Producing an evaluable strategy requires the model to satisfy the data and execution interfaces as well as construct a financial hypothesis. Iterative research additionally exposes errors and permits revisions, making completion a measure of the model's ability to carry that hypothesis through an executable research workflow.
+\noindent\textbf{Iteration uses 3.6--5.8 times as many tokens.}
+Across all six models, iterative entries consume 3.6--5.8 times as many tokens as their one-shot counterparts (Figure~\ref{fig:token_consumption}). Astra's consumption rises from 16.5k to 95.7k tokens, Opus's from 63.6k to 320.3k, and Kimi's from 61.6k to 218.8k. Repeated feedback interpretation, candidate revision, and selection expand the model interactions needed to produce a final strategy.
+
+\noindent\textbf{Token use differs substantially under a shared budget.}
+Among the iterative entries, Astra uses 95.7k tokens, Kimi 218.8k, and Opus 320.3k, compared with 368.9k for GLM, 370.3k for Gemini, and 418.2k for DeepSeek (Figure~\ref{fig:token_consumption}). These runs consume 19.1--83.6\% of the 500k-token allowance. The common budget limits total consumption, while each model's number and length of interactions determine realized usage. Equal allowances thus support different amounts of candidate generation, feedback interpretation, and revision.
