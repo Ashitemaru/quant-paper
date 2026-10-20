@@ -7,16 +7,16 @@
 \subsection{Experimental Setup}
 \label{sec:setup}
 
-Models research on 2022--2023, and their frozen strategies are assessed on the sealed year 2024. We evaluate \ModelClaudeOpus, \ModelAstra, \ModelDeepSeek, \ModelGemini, \ModelGLM, and \ModelKimi\ under the data-access and financial rules in Section~\ref{sec:benchmark}. Each research attempt receives a budget of 500,000 model tokens.
+Models research on 2022--2023, and their frozen strategies are assessed on the sealed year 2024. We evaluate \ModelClaudeOpus, \ModelAstra, \ModelDeepSeek, \ModelGemini, \ModelGLM, and \ModelKimi\ under the data-access and financial rules in Section~\ref{sec:benchmark}. Each research attempt receives a budget of 500,000 model tokens. The runs reported here were collected with a declaration limit of 32 features, and all scores are recomputed from the recorded evaluations with the rule of Section~\ref{sec:scoring}.
 
 We compare two settings. \textbf{One-shot} produces a complete strategy without research-performance feedback, with corrections permitted for invalid proposals. \textbf{Iterative research} revises and selects candidates using financial, signal-quality, coverage, and execution-error feedback, with at most five candidate evaluations. An \textbf{errors-only} control retains execution status, errors, candidate identifiers, and remaining-budget information while withholding performance metrics and score-derived labels.
 
-Table~\ref{tab:main} reports the highest-scoring eligible strategy for each model and setting, breaking ties in favor of the earlier entry. We report annualized return (ARR), excess ARR relative to the gross equal-weight market, long-only Sharpe, maximum drawdown (MDD), signal statistics, and research-token consumption. The leaderboard includes Kepler-1, our closed-source professional strategy. Financial analyses use completed runs. The feedback ablation compares full feedback with the errors-only control, while candidate-level analyses use the research-period feedback available during strategy development.
+Table~\ref{tab:main} reports one representative completed run for each model and setting; the released dataset contains every completed run. We report annualized return (ARR), excess ARR relative to the gross equal-weight market, long-only Sharpe, maximum drawdown (MDD), signal statistics, and research-token consumption. The leaderboard includes Kepler-1, our closed-source professional strategy. Financial analyses use completed runs. The feedback ablation compares full feedback with the errors-only control, while candidate-level analyses use the research-period feedback available during strategy development.
 
 \subsection{Overall Performance}
 \label{sec:main}
 
-Table~\ref{tab:main} ranks the selected one-shot and iterative strategies of all six models by overall score.
+Table~\ref{tab:main} ranks the iterative and one-shot strategies of all six models separately by overall score.
 
 \begin{table}[htbp]
 \input{Tables/TabMain}
@@ -29,38 +29,42 @@ Table~\ref{tab:main} ranks the selected one-shot and iterative strategies of all
 \label{fig:nav}
 \end{figure}
 
-\noindent\textbf{Iteration improves returns for five of six models.}
-Iterative entries in Table~\ref{tab:main} improve ARR over one-shot by 24.8 percentage points for Opus, 26.3 for Astra, 38.9 for DeepSeek, 7.6 for GLM, and 6.0 for Kimi. Gemini's ARR falls from $1.5\%$ to $-2.9\%$. The iterative setting lets a model test an initial hypothesis, revise its implementation, and choose among candidates. Section~\ref{sec:process} traces how these steps unfold.
+\noindent\textbf{Iteration raises the overall score for five of six models.}
+Iterative strategies score higher than their one-shot counterparts by 15.7 points for Astra, 6.1 for GLM, 5.7 for Gemini, 5.1 for DeepSeek, and 0.5 for Opus; Kimi is the exception, at 40.2 versus 41.2 (Table~\ref{tab:main}). 2024 ARR rises for four models, by 19.5 percentage points for Astra, 14.0 for DeepSeek, 7.5 for GLM, and 6.0 for Kimi, and falls slightly for Opus ($5.6\%$ to $4.4\%$) and Gemini ($1.6\%$ to $-2.9\%$). The iterative setting lets a model test an initial hypothesis, revise its implementation, and choose among candidates. Section~\ref{sec:process} traces how these steps unfold.
 
-\noindent\textbf{Return and risk-adjusted performance favor different models.}
-Opus achieves the highest model ARR at $30.4\%$, compared with DeepSeek's $18.9\%$. DeepSeek has a higher Sharpe ratio, 1.16 versus 0.92, and a smaller maximum drawdown, $7.9\%$ versus $31.1\%$ (Table~\ref{tab:main} and Figure~\ref{fig:nav}). Opus's higher return comes with a drawdown about four times as deep, visible in its 2024 path.
+\noindent\textbf{No model strategy in Table~\ref{tab:main} beats the market, while Kepler-1 does by a wide margin.}
+The best excess returns among the reported strategies are $-7.2$ percentage points for Astra and $-7.3$ for Kimi, compared with $+76.9$ for Kepler-1, whose overall score of 69.2 exceeds the best model score of 46.7. Across all 27 completed runs with full feedback, two iterative runs beat the equal-weight market in 2024, by 13.3 and 1.9 percentage points, and no one-shot run does. Astra and Kimi also have the shallowest drawdowns among the iterative strategies, $-17.9\%$ and $-14.7\%$, and both end the year near 1.10 (Figure~\ref{fig:nav}).
 
 \subsection{Predictive Signal versus Portfolio Outcome}
 \label{sec:signal_vs_portfolio}
 
-To evaluate how predictive ordering translates into investment returns, we conduct signal-decile analyses on the six iterative strategies in Table~\ref{tab:main} and compare their RankIC and cash-account outcomes. We average observed stock returns within each daily signal decile and then equally across days with valid observations in all ten deciles.
+We relate the RankIC of the six iterative strategies in Table~\ref{tab:main} to their cash-account outcomes and to the returns of their signal deciles. We average observed stock returns within each daily signal decile and then equally across days with valid observations in all ten deciles.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\linewidth]{Figures/fig_signal_quantiles.pdf}
-\caption{Mean observed stock returns by signal decile for the six iterative leaderboard strategies. Deciles run from low to high signal scores, preserving tied-score groups. H--L denotes the highest-minus-lowest decile return spread in basis points. All deciles within a strategy use the same days: 92 active signal days for DeepSeek and 241 for each other model. Missing return labels are excluded; pooled label coverage is at least $96.9\%$ in every decile. Bars report stock-return diagnostics on a common scale.}
+\caption{Mean observed stock returns by signal decile for the six iterative leaderboard strategies. Deciles run from low to high signal scores, preserving tied-score groups. H--L denotes the highest-minus-lowest decile return spread in basis points. All deciles within a strategy use the same days: 240 for Astra and 241 for each other model. Missing return labels are excluded; pooled label coverage is at least $96.9\%$ in every decile. Bars report stock-return diagnostics on a common scale.}
 \label{fig:signal_quantiles}
 \end{figure}
 
 \noindent\textbf{Higher RankIC accompanies lower returns for Gemini.}
 Across three completed runs per setting, Gemini's mean RankIC rises from $-0.0009$ in one-shot to 0.0409 in iterative research, while mean ARR falls from $0.3\%$ to $-4.6\%$. RankIC rewards ordering across the full cross-section, whereas the cash account holds only the top-ranked stocks under trading constraints and costs, so better aggregate ordering need not raise realized returns.
 
+\noindent\textbf{The strategies with the highest RankIC are not the most profitable.}
+GLM, Gemini, and Astra have the highest RankIC values, 0.0455, 0.0447, and 0.0435, but 2024 ARR of $-7.8\%$, $-2.9\%$, and $9.8\%$. Kimi reaches $9.8\%$ with a RankIC of 0.0074, and Opus $4.4\%$ with $-0.0024$ (Table~\ref{tab:main}).
+
 \noindent\textbf{Positive RankIC can coexist with weak separation at the ranking extremes.}
-Gemini and GLM have RankIC values of 0.0447 and 0.0455, but their highest-minus-lowest decile return spreads are only $+0.02$ and $-2.81$ basis points, respectively (Figure~\ref{fig:signal_quantiles}). Opus achieves a $+23.41$ bp spread with a lower RankIC of 0.0290. Its highest decile averages $22.73$ bp, compared with $-0.67$ bp in the lowest decile. RankIC measures ordering across the full cross-section, whereas the extreme-decile spread measures the return magnitudes associated with the highest and lowest scores. These quantities capture different properties of a signal.
+Gemini and GLM have highest-minus-lowest decile return spreads of only $+0.0$ and $-2.8$ basis points, and Astra's spread is negative at $-5.9$ bp despite its high RankIC (Figure~\ref{fig:signal_quantiles}). Opus and Kimi, whose RankIC is close to zero, have positive spreads of $+4.7$ and $+2.5$ bp, while DeepSeek's is the most negative at $-11.1$ bp.
+RankIC measures ordering across the full cross-section, whereas the extreme-decile spread measures the return magnitudes associated with the highest and lowest scores. These quantities capture different properties of a signal.
 
 \noindent\textbf{Gemini and GLM concentrate higher returns below the top-ranked stocks.}
-For Gemini, the third decile from the low-score end averages $26.56$ bp, compared with $6.94$ bp in the highest decile; GLM's corresponding returns are $27.78$ and $4.00$ bp (Figure~\ref{fig:signal_quantiles}). Their selected portfolios have ARR of $-2.9\%$ and $-7.8\%$, respectively, compared with Opus's $30.4\%$ (Table~\ref{tab:main}). Top-ranked portfolios depend on returns near the selection boundary. RankIC averages ordering across the full cross-section, so a positive value can coexist with weak returns among the stocks the portfolio buys.
+For Gemini, the third decile from the low-score end averages $26.56$ bp, compared with $6.94$ bp in the highest decile; GLM's corresponding returns are $27.78$ and $4.00$ bp (Figure~\ref{fig:signal_quantiles}). Their portfolios have ARR of $-2.9\%$ and $-7.8\%$, respectively (Table~\ref{tab:main}). Top-ranked portfolios depend on returns near the selection boundary. RankIC averages ordering across the full cross-section, so a positive value can coexist with weak returns among the stocks the portfolio buys.
 
 \begin{samepage}
 \subsection{Market Participation and Capital Allocation}
 \label{sec:market_participation}
 
-To evaluate how models differ in market participation, we conduct signal-activity and capital-allocation analyses on the six iterative strategies in Table~\ref{tab:main}. We measure the frequency of nonempty signals, the frequency of holding stocks, and mean stock market value as a share of account equity, including uninvested days.\par
+We measure market participation for the six iterative strategies in Table~\ref{tab:main}. We measure the frequency of nonempty signals, the frequency of holding stocks, and mean stock market value as a share of account equity, including uninvested days.\par
 \end{samepage}
 
 \begin{figure}[htbp]
@@ -70,18 +74,15 @@ To evaluate how models differ in market participation, we conduct signal-activit
 \label{fig:market_participation}
 \end{figure}
 
-\noindent\textbf{DeepSeek participates selectively and maintains lower stock exposure.}
-DeepSeek issues nonempty signals on $38.2\%$ of decision sessions and has a mean stock allocation of $17.1\%$ (Figure~\ref{fig:market_participation}). The other five strategies issue signals on every decision session and allocate $39.9\%$--$48.3\%$ of account equity to stocks on average. DeepSeek's market-trend gate conditions whether its stock ranking is issued, linking market participation to the strategy's investment logic. The resulting capital exposure reflects this participation rule together with the shared allocation, eligibility, and execution rules.
-
-\noindent\textbf{Stock holdings persist beyond active signal sessions.}
-DeepSeek produces signals on 92 of 241 decision sessions but holds stocks in 120 of 242 account observations, corresponding to participation rates of $38.2\%$ and $49.6\%$ (Figure~\ref{fig:market_participation}, right). Holding and exit rules can carry existing positions across sessions without fresh signals. Signal availability therefore differs from the capital exposure maintained through time.
+\noindent\textbf{All six strategies stay in the market but invest less than half of equity on average.}
+Every strategy issues nonempty signals on all 241 decision sessions and holds stocks in at least 241 of 242 account observations (Figure~\ref{fig:market_participation}, right). Mean stock allocation ranges from $39.9\%$ for Kimi to $47.1\%$ for Astra (left). Because every strategy is active on nearly every day, these allocation levels reflect the shared portfolio, lot-size, and execution rules more than model-specific participation decisions.
 
 \begin{samepage}
 \subsection{Effects of Research Feedback}
 \label{sec:feedback_effect}
 \label{sec:e2}
 
-We run the feedback ablation on Astra and DeepSeek and compare all completed default-setting runs under full and errors-only feedback.\par
+We run the feedback ablation on Astra and DeepSeek and compare all completed runs under full and errors-only feedback.\par
 \end{samepage}
 
 \begin{figure}[htbp]
@@ -100,7 +101,7 @@ Astra uses four evaluations and 80.0k tokens on average with full feedback, wher
 \subsection{Research Progress across Revisions}
 \label{sec:process}
 
-To evaluate when iterative research produces performance gains, we conduct trajectory analyses on 44 valid candidates from eleven completed default iterative runs of Astra, Opus, Gemini, and DeepSeek. Within each run, we track the best research-period excess ARR relative to the first valid candidate, indexed by candidate order and token progress.
+To locate when iterative research produces its gains, we analyze the trajectories of on 44 valid candidates from eleven completed iterative runs of Astra, Opus, Gemini, and DeepSeek. Within each run, we track the best research-period excess ARR relative to the first valid candidate, indexed by candidate order and token progress.
 
 \begin{figure}[htbp]
 \centering
@@ -123,7 +124,7 @@ To see what models change between candidates, we analyze the source code of all 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{Figures/fig_candidate_revisions_20261019.pdf}
-\caption{Strategy revision through component changes and factor reweighting. Left: modification types across 38 adjacent transitions in eleven research runs; one transition may have multiple labels. Right: combination weights in Astra~2's final three candidates, which retain the same factor definitions while changing weights and screening thresholds.}
+\caption{Strategy revision through component changes and factor reweighting. Left: modification types across 38 adjacent transitions in eleven research runs; one transition may have multiple labels. Right: combination weights in the final three candidates of the Astra run in Table~\ref{tab:main}, which retain the same factor definitions while changing weights and screening thresholds.}
 \label{fig:candidate_revisions}
 \end{figure}
 
@@ -131,12 +132,12 @@ To see what models change between candidates, we analyze the source code of all 
 Of the 38 revisions, 33 ($86.8\%$) change factor definitions or membership, 31 ($81.6\%$) change score combination, 24 ($63.2\%$) change eligibility or participation rules, and 21 ($55.3\%$) change data inputs or observation scope (Figure~\ref{fig:candidate_revisions}). Astra revises combination and eligibility rules in all nine transitions; Gemini revises combination in all ten. Revisions therefore reach beyond the factors to the rules that turn them into stock preferences.
 
 \noindent\textbf{Reweighting and participation rules change strategy behavior.}
-Five revisions retain the factor set and its calculations while changing combination or participation rules. In Astra~2, weights on low activity, narrow range, and low price shift from $(65,25,10)\%$ to $(20,20,60)\%$ and then $(15,75,10)\%$ across trials 3--5, together with changes to screening thresholds (Figure~\ref{fig:candidate_revisions}). The dominant component moves from activity to price and then to range. DeepSeek~2 retains its factor definitions in another revision but adds a market-trend participation gate.
+Five revisions retain the factor set and its calculations while changing combination or participation rules. In the Astra run of Table~\ref{tab:main}, weights on low activity, narrow range, and low price shift from $(65,25,10)\%$ to $(20,20,60)\%$ and then $(15,75,10)\%$ across trials 3--5, together with changes to screening thresholds (Figure~\ref{fig:candidate_revisions}). The dominant component moves from activity to price and then to range. One DeepSeek run retains its factor definitions in another revision but adds a market-trend participation gate.
 
 \subsection{Investment Styles of Model-Developed Portfolios}
 \label{sec:strategy_style}
 
-We characterize the holdings of the thirteen completed default iterative strategies across all six models. Following the style dimensions of MSCI FaCS~\citep{Bonne2018FaCS}, we construct five proxies: log market capitalization, book-to-price, 12--1 month momentum, 60-session return volatility, and 20-session mean turnover. These describe size, valuation, momentum, volatility, and trading activity, respectively.
+We characterize the holdings of all thirteen completed iterative strategies with full feedback across the six models. Following the style dimensions of MSCI FaCS~\citep{Bonne2018FaCS}, we construct five proxies: log market capitalization, book-to-price, 12--1 month momentum, 60-session return volatility, and 20-session mean turnover. These describe size, valuation, momentum, volatility, and trading activity, respectively.
 
 We compute descriptors using observations available before each holding day. Momentum accumulates daily log price returns over 231 sessions, skipping the most recent 21; momentum, volatility, and turnover require at least 200, 50, and 15 valid observations, respectively. Each descriptor is winsorized at the first and 99th percentiles and standardized against the equal-weight distribution of non-ST, non-suspended stocks in the benchmark universe with valid observations. We weight standardized descriptors by actual holding market values, normalized over invested equity, and retain portfolio-days with at least $90\%$ descriptor coverage. We average over valid invested days within each strategy and then equally across strategies within each model. The analysis uses three strategies each for Astra, Opus, and Gemini, two for DeepSeek, and one each for GLM and Kimi.
 
@@ -164,51 +165,18 @@ We compare the six iterative strategies in Table~\ref{tab:main} pairwise, one pe
 \begin{figure}[!t]
 \centering
 \includegraphics[width=.86\linewidth]{Figures/fig_signal_similarity_20261019.pdf}
-\caption{Broad ranking agreement and top-stock overlap among the six iterative strategies in Table~\ref{tab:main}. Left: mean daily Spearman rank correlation. Right: mean daily top-75 Jaccard overlap (intersection divided by union), in percent. Each model is represented by its leaderboard strategy. Pairs use 241 valid days, except those involving DeepSeek, which use its 92 active days. Diagonal cells are omitted.}
+\caption{Broad ranking agreement and top-stock overlap among the six iterative strategies in Table~\ref{tab:main}. Left: mean daily Spearman rank correlation. Right: mean daily top-75 Jaccard overlap (intersection divided by union), in percent. Each model is represented by its leaderboard strategy. Rank correlations use 240 valid days per pair (239 for pairs involving Astra), and overlaps use 240 days. Diagonal cells are omitted.}
 \label{fig:signal_similarity}
 \end{figure}
 
 \noindent\textbf{Several model pairs produce strongly aligned rankings.}
-Gemini and GLM reach a mean daily rank correlation of 0.800, while Astra and Opus reach 0.776 (Figure~\ref{fig:signal_similarity}, left). Gemini and GLM both favor low trading activity and narrow price ranges, with different additional features and combination rules. Shared stock characteristics can align the broad ordering of signals produced by distinct implementations.
+Gemini and GLM reach a mean daily rank correlation of 0.80, followed by Opus and DeepSeek at 0.76 and Astra and GLM at 0.75 (Figure~\ref{fig:signal_similarity}, left). Gemini and GLM both favor low trading activity and narrow price ranges, with different additional features and combination rules. Shared stock characteristics can align the broad ordering of signals produced by distinct implementations.
 
 \noindent\textbf{Broad ranking agreement coexists with low top-stock overlap.}
-Gemini and GLM have a top-75 Jaccard overlap of $7.1\%$ despite their 0.800 rank correlation. Astra and Opus reach $10.3\%$, the highest overlap among the fifteen model pairs (Figure~\ref{fig:signal_similarity}, right). Feature weights and eligibility rules decide which stocks cross the top-75 boundary, so they can separate portfolios whose broader rankings agree.
+Gemini and GLM share only $7.1\%$ of their top-75 stocks despite their 0.80 rank correlation, and the largest overlap among the fifteen pairs is $11.5\%$, for Astra and Gemini (Figure~\ref{fig:signal_similarity}, right). Across all pairs, the mean rank correlation is 0.35 and the mean overlap $3.5\%$. Feature weights and eligibility rules decide which stocks cross the top-75 boundary, so they can separate portfolios whose broader rankings agree.
 
 \noindent\textbf{Kimi produces distinct stock rankings.}
-Kimi's correlations with the other five strategies range from $-0.213$ to 0.183, with a mean absolute correlation of 0.167. Its top-75 overlaps range from $0.04\%$ to $2.7\%$ (Figure~\ref{fig:signal_similarity}). Kimi combines 20-session momentum and volatility, five-session reversal, and liquidity measures favoring higher traded amounts and lower price impact. These choices differ in both return horizon and liquidity preference from the low-activity components of Gemini and GLM, consistent with Kimi's distinct stock rankings.
-
-% \subsection{Reasoning Effort and Resource Use}
-% \label{sec:effort}
-
-% To evaluate how requested reasoning settings relate to research outcomes, we conduct a descriptive comparison of iterative runs under alternative reasoning-effort settings. Table~\ref{tab:effort_results} lists each requested setting, provider-reported token usage, and final financial and signal metrics; each row is one completed attempt.
-
-% \begin{table}[htbp]
-% \centering\footnotesize
-% \caption{Results under alternative reasoning-effort settings. Each row is one completed run; settings follow each provider's API. Tokens are total provider-reported research usage, in thousands; ARR and RankIC refer to 2024.}
-% \label{tab:effort_results}
-% \setlength{\tabcolsep}{7pt}
-% \begin{tabular}{@{}llrrr@{}}
-% \toprule
-% Model & Requested setting & Tokens (k) & ARR (\%) & RankIC \\
-% \midrule
-% \ModelAstra & low & 105.5 & $2.3$ & $0.0560$ \\
-%  & medium & 106.1 & $-4.8$ & $0.0522$ \\
-% \ModelGemini & low & 251.1 & $-6.2$ & $0.0367$ \\
-%  & high & 308.3 & $12.5$ & $0.0282$ \\
-% \ModelDeepSeek & none & 155.5 & $-24.1$ & $-0.0218$ \\
-%  & low & 244.9 & $-5.7$ & $-0.0085$ \\
-%  & max & 488.1 & $-11.0$ & $0.0370$ \\
-% \ModelGLM & high & 379.0 & $-8.6$ & $0.0177$ \\
-% \ModelKimi\ (official API) & low & 246.0 & $-8.5$ & $0.0266$ \\
-% \bottomrule
-% \end{tabular}
-% \end{table}
-
-% \noindent\textbf{Higher requested effort does not order returns consistently.}
-% Gemini's high-setting run reaches $12.5\%$ ARR versus $-6.2\%$ at low, using 308.3k rather than 251.1k tokens. DeepSeek's max-setting run instead earns $-11.0\%$, below the low-setting run's $-5.7\%$, despite consuming 488.1k rather than 244.9k tokens. Reasoning settings govern generation behavior, while the financial outcome is determined by the strategy produced and selected through that behavior. Additional token consumption alone therefore does not order the observed investment results.
-
-% \noindent\textbf{Similar token expenditure can produce different strategies.}
-% Astra's low and medium attempts consume 105.5k and 106.1k tokens, respectively, but yield $2.3\%$ and $-4.8\%$ ARR. Conversely, DeepSeek's max attempt improves RankIC over low while reducing ARR. Token usage measures the volume of model interaction; it does not measure the usefulness of the hypotheses, revisions, or portfolio decisions within that interaction. Financial and signal outcomes identify what the research produced; token usage records the resources consumed to produce it.
+Kimi's correlations with the other five strategies range from $-0.21$ to 0.35, with a mean absolute value of 0.16, and its top-75 overlaps range from $0.1\%$ to $5.6\%$ (Figure~\ref{fig:signal_similarity}). Kimi combines 20-session momentum and volatility, five-session reversal, and liquidity measures favoring higher traded amounts and lower price impact. These choices differ in both return horizon and liquidity preference from the low-activity components of Gemini and GLM.
 
 \subsection{Research Token Consumption}
 \label{sec:token_consumption}
@@ -222,11 +190,10 @@ We measure the research tokens behind each strategy in Table~\ref{tab:main}. Eac
 \label{fig:token_consumption}
 \end{figure}
 
-\noindent\textbf{Iteration uses 3.6--5.8 times as many tokens.}
-Across all six models, iterative entries consume 3.6--5.8 times as many tokens as their one-shot counterparts (Figure~\ref{fig:token_consumption}). Astra's consumption rises from 16.5k to 95.7k tokens, Opus's from 63.6k to 320.3k, and Kimi's from 61.6k to 218.8k.
+\noindent\textbf{Iteration uses 3.6--7.4 times as many tokens.}
+Across all six models, iterative strategies consume 3.6--7.4 times as many tokens as their one-shot counterparts (Figure~\ref{fig:token_consumption}). Astra's consumption rises from 11.9k to 87.5k tokens, Opus's from 63.6k to 293.5k, and Kimi's from 61.6k to 218.8k.
 
 \noindent\textbf{Token use differs substantially under a shared budget.}
-Among the iterative entries, Astra uses 95.7k tokens, Kimi 218.8k, and Opus 320.3k, compared with 368.9k for GLM, 370.3k for Gemini, and 418.2k for DeepSeek (Figure~\ref{fig:token_consumption}). These runs consume 19.1--83.6\% of the 500k-token allowance. The shared budget caps consumption but does not equalize it.
-
+Among the iterative strategies, Astra uses 87.5k tokens, Kimi 218.8k, and Opus 293.5k, compared with 368.9k for GLM, 370.3k for Gemini, and 380.6k for DeepSeek (Figure~\ref{fig:token_consumption}). These runs consume 17.5--76.1\% of the 500k-token allowance. The shared budget caps consumption but does not equalize it. Astra, the highest-scoring iterative strategy, is also the least expensive.
 \par
 \endgroup

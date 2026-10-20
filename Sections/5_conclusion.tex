@@ -1,12 +1,13 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We introduced \BenchmarkName, a benchmark and open leaderboard that evaluates LLMs on complete quantitative research runs. A model researches with bounded feedback on 2022--2023 data, commits one strategy, and is assessed once on a sealed 2024 window. The assessment uses a cash account with realistic execution constraints, and the score covers signal quality, excess return, efficiency, and feature diversity.
+We introduced \BenchmarkName, a benchmark and open leaderboard that evaluates LLMs on complete quantitative research runs. A model researches with bounded feedback on 2022--2023 data, commits one strategy, and is assessed once on a sealed 2024 window. The assessment uses a cash account with realistic execution constraints, and the score emphasizes realized excess return while also covering signal quality, efficiency, and feature diversity.
 
-Our first evaluation of six frontier models gives three findings.
+Our first evaluation of six frontier models gives four findings.
 \begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item Iterative research improves selected-strategy returns for five of six models. The best iterative strategy earns 13.3 percentage points of excess return, while no selected one-shot strategy beats the market. A two-model ablation also finds higher mean returns with performance feedback than with execution errors alone.
-    \item Predictive correlation is a poor proxy for portfolio value. The selected Gemini and GLM strategies reach RankIC above 0.044 yet lose money in 2024, while Opus earns the highest return with RankIC 0.029.
-    \item All evaluated models trail Kepler-1, our closed-source professional strategy.
+    \item Iterative research raises the overall score over one-shot generation for five of six models, and a two-model ablation finds higher mean returns with performance feedback than with execution errors alone.
+    \item Out-of-sample profitability is rare. Only two of 27 completed runs beat the equal-weight market in 2024, and none of the strategies reported in Table~\ref{tab:main} does.
+    \item Predictive correlation is a poor proxy for portfolio value. GLM and Gemini, the iterative strategies with the highest RankIC, lose money in 2024, while Kimi matches Astra's $9.8\%$ ARR with a RankIC of only 0.007.
+    \item All evaluated models trail Kepler-1, our closed-source professional strategy, by more than 20 score points.
 \end{itemize}
 \BenchmarkName\ is open to submissions from any model or agent harness. We plan to add markets, input profiles such as anonymized features, and fresh sealed windows.

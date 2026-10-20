@@ -61,28 +61,32 @@ The evaluator converts stock rankings into an equal-weight long portfolio target
 
 We report out-of-sample annualized return and excess return over a full-market equal-weight reference aligned to the same trading days. The reference is gross of costs. Long-only Sharpe ($\mathrm{SR}_{\mathrm{L}}$) measures risk-adjusted performance, and maximum drawdown measures downside risk. Signal metrics include mean daily RankIC, its annualized information ratio ($A$), long--short Sharpe ($\mathrm{SR}_{\mathrm{LS}}$) between the highest- and lowest-scored deciles, and turnover, the average daily replacement fraction of the portfolio. Daily RankIC is the rank correlation between stock scores and next-period returns; $A$ is its mean divided by its standard deviation, multiplied by $\sqrt{N_{\mathrm{ann}}}$, where $N_{\mathrm{ann}}$ denotes the number of trading days per year used for annualization.
 
-The published in-sample score combines strategy quality, token efficiency, and feature diversity. Let $r$ be the strategy's annualized return minus the reference's annualized return, expressed as a decimal, and $x^+=\max(0,x)$. The component metrics are normalized as
+The published in-sample score combines strategy quality, token efficiency, and feature diversity. Let $r$ be the strategy's annualized return minus the reference's annualized return, expressed as a decimal. Each metric is mapped to $(0,1)$ by a smooth, monotone transform,
+\[
+g_c(x)=\tfrac12\left(1+\frac{x}{c+|x|}\right),
+\]
+which equals $0.5$ at $x=0$, rewards gains with diminishing returns, and penalizes losses without truncating them to zero. The component scores are
 
 \begin{equation}
 \begin{aligned}
-s_{\mathrm{IC}}&=\sqrt{\mathrm{RankIC}^+}, &
-s_{\mathrm{ST}}&=\frac{A^+}{1+A^+}, &
-s_{\mathrm{L}}&=\frac{\mathrm{SR}_{\mathrm{L}}^+}{1+\mathrm{SR}_{\mathrm{L}}^+},\\
-s_{\mathrm{LS}}&=\frac{\mathrm{SR}_{\mathrm{LS}}^+}{1+\mathrm{SR}_{\mathrm{LS}}^+}, &
-s_{\mathrm{TO}}&=\frac{1}{1+\mathrm{Turnover}}, &
-s_{\mathrm{R}}&=\frac{r^+}{0.3+r^+}.
+s_{\mathrm{R}}&=g_{0.3}(r), &
+s_{\mathrm{L}}&=g_{1}(\mathrm{SR}_{\mathrm{L}}), &
+s_{\mathrm{LS}}&=g_{3}(\mathrm{SR}_{\mathrm{LS}}),\\
+s_{\mathrm{IC}}&=\tfrac12\left(1+\tanh\frac{\mathrm{RankIC}}{0.03}\right), &
+s_{\mathrm{ST}}&=g_{2}(A), &
+s_{\mathrm{TO}}&=\frac{1}{1+\mathrm{Turnover}}.
 \end{aligned}
 \label{eq:terms}
 \end{equation}
 
-Quality combines a weighted geometric mean of signal metrics with excess return:
+Quality is a weighted sum that places most of its weight on realized excess return:
 
 \begin{equation}
-Q_{\mathrm{sig}}=\left(s_{\mathrm{IC}}\,s_{\mathrm{ST}}\,s_{\mathrm{L}}\,s_{\mathrm{LS}}\right)^{0.225}s_{\mathrm{TO}}^{0.1},
-\qquad
-Q=0.7\,Q_{\mathrm{sig}}+0.3\,s_{\mathrm{R}}.
+Q=0.6\,s_{\mathrm{R}}+0.2\,s_{\mathrm{L}}+0.05\left(s_{\mathrm{LS}}+s_{\mathrm{IC}}+s_{\mathrm{ST}}+s_{\mathrm{TO}}\right).
 \label{eq:quality}
 \end{equation}
+
+Excess return and long-only Sharpe measure what the portfolio earned; the four signal terms carry small weights because they vary less across runs and do not by themselves determine portfolio value. A strategy that tracks the market with no excess return and zero Sharpe has $s_{\mathrm{R}}=s_{\mathrm{L}}=0.5$.
 
 Let $U$ be the model tokens used during research and $B=500{,}000$ the budget. A strategy may declare up to 300 named features. Correlated features are grouped, and $K$ counts the qualifying clusters whose contribution to the strategy's scores is detected. Efficiency and diversity are
 
@@ -93,10 +97,10 @@ D=Q\,\frac{\min(K,32)}{32}.
 \label{eq:ed}
 \end{equation}
 
-The fixed scale of 32 makes diversity grow linearly with $K$ up to saturation, independently of the 300-feature declaration limit. Both terms scale with quality, so resource savings and additional features earn no credit when $Q=0$. The standard in-sample score is
+The fixed scale of 32 makes diversity grow linearly with $K$ up to saturation, independently of the 300-feature declaration limit. Both terms scale with quality, so resource savings and additional features add little to a weak strategy. The standard in-sample score is
 
 \begin{equation}
-S_{\mathrm{in}}=75\,Q+15\,E+10\,D.
+S_{\mathrm{in}}=85\,Q+5\,E+10\,D.
 \label{eq:window}
 \end{equation}
 
