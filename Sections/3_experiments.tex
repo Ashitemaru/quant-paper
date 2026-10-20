@@ -1,3 +1,6 @@
+\begingroup
+\clubpenalty=10000
+\widowpenalty=10000
 \section{Experiments}
 \label{sec:experiments}
 
@@ -35,19 +38,51 @@ Opus achieves the highest model ARR at $30.4\%$, compared with DeepSeek's $18.9\
 \subsection{Predictive Signal versus Portfolio Outcome}
 \label{sec:signal_vs_portfolio}
 
-To evaluate how signal quality relates to realized returns, we conduct comparative analyses on RankIC, long--short performance, and cash-account outcomes across research settings and the iterative strategies in Table~\ref{tab:main}.
+To evaluate how predictive ordering translates into investment returns, we conduct signal-decile analyses on the six iterative strategies in Table~\ref{tab:main} and compare their RankIC and cash-account outcomes. We average observed stock returns within each daily signal decile and then equally across days with valid observations in all ten deciles.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{Figures/fig_signal_quantiles.pdf}
+\caption{Mean observed stock returns by signal decile for the six iterative leaderboard strategies. Deciles run from low to high signal scores, preserving tied-score groups. H--L denotes the highest-minus-lowest decile return spread in basis points. All deciles within a strategy use the same days: 92 active signal days for DeepSeek and 241 for each other model. Missing return labels are excluded; pooled label coverage is at least $96.9\%$ in every decile. Bars report stock-return diagnostics on a common scale.}
+\label{fig:signal_quantiles}
+\end{figure}
 
 \noindent\textbf{Higher RankIC accompanies lower returns for Gemini.}
 Across three completed runs per setting, Gemini's mean RankIC rises from $-0.0009$ in one-shot to 0.0409 in iterative research, while mean ARR falls from $0.3\%$ to $-4.6\%$. RankIC aggregates ordering across the full stock cross-section. A cash account instead converts the highest scores into positions subject to allocation rules, trading constraints, and costs. Improvements in aggregate ordering can therefore differ from improvements in realized portfolio returns.
 
-\noindent\textbf{Portfolio performance separates strategies with similar RankIC.}
-Gemini and GLM have RankIC values of 0.0447 and 0.0455 but ARR of $-2.9\%$ and $-7.8\%$ in Table~\ref{tab:main}. Opus achieves $30.4\%$ ARR with a lower RankIC of 0.0290. Long--short Sharpe further distinguishes the signals: approximately 0.00 for Gemini, $-0.20$ for GLM, and 1.51 for Opus. RankIC measures ordering, while long--short performance depends on the return spread between the ranking's extremes. Cash-account returns additionally reflect stock selection, position sizes, trading constraints, and costs. Each metric evaluates a different step in translating predictions into investment outcomes.
+\noindent\textbf{Positive RankIC can coexist with weak separation at the ranking extremes.}
+Gemini and GLM have RankIC values of 0.0447 and 0.0455, but their highest-minus-lowest decile return spreads are only $+0.02$ and $-2.81$ basis points, respectively (Figure~\ref{fig:signal_quantiles}). Opus achieves a $+23.41$ bp spread with a lower RankIC of 0.0290. Its highest decile averages $22.73$ bp, compared with $-0.67$ bp in the lowest decile. RankIC measures ordering across the full cross-section, whereas the extreme-decile spread measures the return magnitudes associated with the highest and lowest scores. These quantities capture different properties of a signal.
 
+\noindent\textbf{Gemini and GLM concentrate higher returns below the top-ranked stocks.}
+For Gemini, the third decile from the low-score end averages $26.56$ bp, compared with $6.94$ bp in the highest decile; GLM's corresponding returns are $27.78$ and $4.00$ bp (Figure~\ref{fig:signal_quantiles}). Their selected portfolios have ARR of $-2.9\%$ and $-7.8\%$, respectively, compared with Opus's $30.4\%$ (Table~\ref{tab:main}). Top-ranked portfolios depend on returns near the selection boundary. RankIC averages ordering across the full cross-section, so a positive value can coexist with weak returns among the stocks the portfolio buys.
+
+\begin{samepage}
+\subsection{Market Participation and Capital Allocation}
+\label{sec:market_participation}
+
+To evaluate how models differ in market participation, we conduct signal-activity and capital-allocation analyses on the six iterative strategies in Table~\ref{tab:main}. We measure the frequency of nonempty signals, the frequency of holding stocks, and mean stock market value as a share of account equity, including uninvested days.\par
+\end{samepage}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{Figures/fig_market_participation.pdf}
+\caption{Market participation of the six iterative leaderboard strategies. Left: mean stock market value divided by account equity, including uninvested days. Right: the share of observations with nonempty signals (dark) or positive stock holdings (light). Signal activity uses 241 decision sessions; holdings and allocation use 242 account observations. All values are percentages.}
+\label{fig:market_participation}
+\end{figure}
+
+\noindent\textbf{DeepSeek participates selectively and maintains lower stock exposure.}
+DeepSeek issues nonempty signals on $38.2\%$ of decision sessions and has a mean stock allocation of $17.1\%$ (Figure~\ref{fig:market_participation}). The other five strategies issue signals on every decision session and allocate $39.9\%$--$48.3\%$ of account equity to stocks on average. DeepSeek's market-trend gate conditions whether its stock ranking is issued, linking market participation to the strategy's investment logic. The resulting capital exposure reflects this participation rule together with the shared allocation, eligibility, and execution rules.
+
+\noindent\textbf{Stock holdings persist beyond active signal sessions.}
+DeepSeek produces signals on 92 of 241 decision sessions but holds stocks in 120 of 242 account observations, corresponding to participation rates of $38.2\%$ and $49.6\%$ (Figure~\ref{fig:market_participation}, right). Holding and exit rules can carry existing positions across sessions without fresh signals. Signal availability therefore differs from the capital exposure maintained through time.
+
+\begin{samepage}
 \subsection{Effects of Research Feedback}
 \label{sec:feedback_effect}
 \label{sec:e2}
 
-To evaluate how financial feedback affects research and investment outcomes, we conduct feedback-ablation experiments on Astra and DeepSeek, comparing all completed default-setting runs with full feedback and errors-only feedback.
+To evaluate how financial feedback affects research and investment outcomes, we conduct feedback-ablation experiments on Astra and DeepSeek, comparing all completed default-setting runs with full feedback and errors-only feedback.\par
+\end{samepage}
 
 \begin{figure}[htbp]
 \centering
@@ -62,23 +97,23 @@ With full feedback, Astra achieves $8.5\%$ mean ARR and 0.0472 RankIC, compared 
 \noindent\textbf{Full feedback accompanies deeper candidate search.}
 Astra uses four evaluations and 80.0k tokens on average with full feedback, whereas each errors-only run stops after one evaluation, averaging 40.2k tokens. DeepSeek uses five evaluations under full feedback and three under errors-only feedback (Figure~\ref{fig:feedback_runs}, right). Once a candidate executes successfully, performance metrics provide a further target for improvement. The observed search depth is consistent with models using that target to continue revising executable strategies.
 
-\subsection{Research Trajectories and Strategy Selection}
+\subsection{Research Progress across Revisions}
 \label{sec:process}
 
-To evaluate how candidate performance and final selection evolve during research, we conduct trajectory analyses on the eleven completed default iterative runs of the four main models. We compare the first valid and final selected candidates using research-period feedback and identify whether the final selection is the latest valid candidate or the candidate with the highest research-period excess ARR.
+To evaluate when iterative research produces performance gains, we conduct trajectory analyses on 44 valid candidates from eleven completed default iterative runs of Astra, Opus, Gemini, and DeepSeek. Within each run, we track the best research-period excess ARR relative to the first valid candidate, indexed by candidate order and token progress.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{Figures/fig_research_trajectory_20261019.pdf}
-\caption{Research-period improvement and final candidate selection across eleven completed default iterative runs. Left: first-valid and selected-candidate research excess ARR, with per-run gains annotated in percentage points. Returns are measured on the research period. Run numbers are identifiers within each model. Right: selection frequencies; the last-valid and best-research candidates can coincide.}
+\includegraphics[width=\linewidth]{Figures/fig_research_progress.pdf}
+\caption{Best-so-far research-period excess ARR gains relative to the first valid candidate. Left: individual runs (colored lines) and means over available runs (dark line); sample counts are shown at each valid-candidate index. Right: the mean over the same eleven runs at each token fraction. Token progress normalizes cumulative usage from the first to the last valid evaluation within each run, including intervening failed attempts and excluding subsequent final-selection interactions. Gains update when a valid evaluation completes and remain fixed between evaluations.}
 \label{fig:research_trajectory}
 \end{figure}
 
-\noindent\textbf{Revision improves research-period returns in ten of eleven runs.}
-Ten of eleven runs increase research-period excess ARR from the first valid candidate to the selected candidate, with a mean gain of 10.6 percentage points across all eleven (Figure~\ref{fig:research_trajectory}, left). None selects its first valid candidate. Repeated evaluation exposes differences in the financial behavior of executable proposals, allowing subsequent revisions to refine the initial investment hypothesis within the research period.
+\noindent\textbf{Research gains extend beyond the first revision.}
+Seven of eleven runs reach their highest research-period excess ARR at the third or a later valid candidate; the remaining four reach it at the second. The best candidate improves on the first valid candidate by $12.87$ percentage points on average (Figure~\ref{fig:research_trajectory}, left). Repeated evaluation gives models further opportunities to revise the factors, combinations, and participation rules of an executable strategy. The timing of these gains shows that useful refinements continue after the initial response to feedback.
 
-\noindent\textbf{Ten of eleven selections are the latest valid candidate.}
-Ten of eleven selected candidates are the last valid revision, while seven maximize recorded research-period excess ARR (Figure~\ref{fig:research_trajectory}, right). These selection patterns reflect a procedure that supports multiple financial and signal criteria and includes a terminal fallback. The final candidate can therefore differ from the maximum of a single research metric.
+\noindent\textbf{Later research contributes substantially to the observed gains.}
+At $50\%$ of the token span between the first and last valid evaluations, the mean best-so-far improvement is $7.85$ percentage points, or $61.0\%$ of the final $12.87$-point gain (Figure~\ref{fig:research_trajectory}, right). The remaining research yields a further $5.02$ points, accounting for $39.0\%$ of the total gain. Candidate evaluations provide successive evidence for revising investment decisions, so improvements arrive at discrete stages of the research process. The observed trajectories show that later revisions remain productive within the research period.
 
 \subsection{Candidate Revision Mechanisms}
 \label{sec:candidate_revisions}
@@ -128,7 +163,7 @@ To evaluate whether models select similar stocks, we conduct pairwise signal ana
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\linewidth]{Figures/fig_signal_similarity_20261019.pdf}
+\includegraphics[width=.86\linewidth]{Figures/fig_signal_similarity_20261019.pdf}
 \caption{Broad ranking agreement and top-stock overlap among the six iterative strategies in Table~\ref{tab:main}. Left: mean daily Spearman rank correlation. Right: mean daily top-75 Jaccard overlap (intersection divided by union), in percent. Each model is represented by its leaderboard strategy. Pairs use 241 valid days, except those involving DeepSeek, which use its 92 active days. Diagonal cells are omitted.}
 \label{fig:signal_similarity}
 \end{figure}
@@ -182,7 +217,7 @@ To evaluate the resource cost of iterative research, we conduct token-consumptio
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\linewidth]{Figures/fig_token_consumption.pdf}
+\includegraphics[width=.86\linewidth]{Figures/fig_token_consumption.pdf}
 \caption{Research-token consumption across models and research settings for the strategies in Table~\ref{tab:main}. Light and dark bars denote one-shot and iterative research, respectively. Values are shown in thousands of tokens and correspond to individual selected runs.}
 \label{fig:token_consumption}
 \end{figure}
@@ -192,3 +227,6 @@ Across all six models, iterative entries consume 3.6--5.8 times as many tokens a
 
 \noindent\textbf{Token use differs substantially under a shared budget.}
 Among the iterative entries, Astra uses 95.7k tokens, Kimi 218.8k, and Opus 320.3k, compared with 368.9k for GLM, 370.3k for Gemini, and 418.2k for DeepSeek (Figure~\ref{fig:token_consumption}). These runs consume 19.1--83.6\% of the 500k-token allowance. The common budget limits total consumption, while each model's number and length of interactions determine realized usage. Equal allowances thus support different amounts of candidate generation, feedback interpretation, and revision.
+
+\par
+\endgroup
