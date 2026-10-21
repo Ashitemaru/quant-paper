@@ -1,55 +1,18 @@
-\section{Arena Platform}
+\section{Arena Platform and Execution Records}
 \label{app:platform}
 
-The Arena platform implements the released benchmark contract across model interaction, market-data access, strategy execution, and final scoring. Its control plane records suites, submissions, replicates, operations, resource usage, and results. Registration is distinct from public disclosure: exact execution times, data cutoffs, and final-scoring details remain organizer-held. Quantitative workers and data services execute the authorized computation. A batch campaign interface uses these services to compare registered models, interaction tracks, budgets, and suites.
+The Arena separates model interaction, strategy computation, and trusted evaluation. The model-facing service exposes the objective, documentation, budget, and track-permitted feedback. A separate execution service runs the submitted program against authorized market history. The evaluator consumes daily scores and applies the common portfolio, accounting, and scoring rules. This separation allows data-intensive research without sending market-data matrices or sealed evaluation artifacts into the model conversation.
 
-\subsection*{Separation of Model Interaction and Quantitative Execution}
-\label{sec:arena_execution}
+\subsection{Scoped Execution and Immutable Data}
 
-The model interaction service exposes only the tools and feedback allowed by the registered track, while computational strategies execute under a separate identity with scoped market-data access. A trusted evaluator consumes the resulting scores and applies the frozen financial rules. This division allows data-intensive strategy evaluation without forwarding raw market matrices or private evaluation artifacts into the model conversation. Table~\ref{tab:arena_roles} summarizes the responsibilities.
+A trusted supervisor controls data access and advances the strategy through authorized decision dates. Strategy processes receive date-, instrument-, and field-scoped capabilities and cannot expand that scope themselves. Research and sealed assessment use separately authorized executions. Accepted daily outputs and declared fitted artifacts provide the recorded state needed to continue an execution; the commitment fixes the program, environment, and declared features used in final assessment.
 
-\begin{table}[t]
-    \centering
-    \small
-    \caption{Responsibilities within the Arena. Model interaction proposes and selects a strategy; execution permissions, accounting, and assessment belong to the platform.}
-    \label{tab:arena_roles}
-    \begin{tabular}{@{}p{0.20\linewidth}p{0.35\linewidth}p{0.36\linewidth}@{}}
-        \toprule
-        Component & Controlled decisions & Recorded or returned evidence \\
-        \midrule
-        Model interaction & Prompts, permitted feedback, candidate revisions, stopping, final selection & Model operations, research actions, selected strategy \\
-        Strategy execution & Computation within the authorized input and runtime contract & Daily scores, declared features, optional fitted artifact \\
-        Model gateway & Model access, operation identity, usage settlement & Provider response, observed usage, unresolved-operation state \\
-        Data and execution services & Version binding, date and field scope, process lifecycle & Authorized execution records, resource observations \\
-        Trusted evaluator & Labels, trading rules, metrics, qualification & Core results, coverage, private detailed evidence \\
-        Campaign interface & Registered comparison matrix and collection & Scorecards, complete replicate and failure registry \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+Market observations are bound to immutable publications with a fixed calendar and coverage specification. Queries resolve the publication authorized for the run. Updating a platform default does not redirect an active run to another data version. Consequently, a run's financial result must be interpreted together with its bound data release, temporal split, and evaluation conventions.
 
-Model-provider credentials and data-access capabilities are held by trusted services. In the reusable execution environment, a supervisor advances the frozen sequence of signal dates. Each date starts a fresh low-privilege strategy process, working directory, and date-scoped data gateway. Before advancing, the supervisor closes the day's processes and connections and persists its accepted output. Reusing the virtual machine therefore preserves controlled execution infrastructure; state crosses stages only through declared artifacts such as a frozen fitted model.
+\subsection{Accounting and Recovery}
 
-Training, research, and final assessment use separately bound executions. The final evaluator accepts registered sealed releases through a private data plane, while research credentials retain their authorized research scope. The resulting boundary combines service authorization with process isolation. Claims about a hosted benchmark additionally depend on the deployed runtime, network configuration, and boundary checks recorded for that campaign.
+Model calls, research evaluations, and final commitments have persistent operation identities. Budget reservations are recorded separately from observed token consumption. Completed operations and accepted strategy outputs can be recovered after an interruption, preserving the original candidate history and remaining budget. An interruption does not authorize another candidate or reopen selection after commitment. If the outcome of a model operation is unresolved, recovery must reconcile that operation rather than silently replace it with another generation.
 
-\subsection*{Immutable Data and Shared Financial Evaluation}
-\label{sec:arena_data}
+\subsection{Run Provenance}
 
-Market observations are served from immutable publications. Offline preparation establishes the data layout, indexes, calendar, and declared coverage. Online access resolves the authorized release and reads bounded dates, instruments, and fields. Daily data use published queryable stores; indexed intraday data support column and time-range selection. Exact price and quantity semantics, exchange-local timestamps, and source missingness are retained through the query interface. A change to the default publication does not redirect an active suite away from its registered version.
-
-The three input profiles are bound to actual releases before use. Raw-event processing, fifteen-second observations, and anonymous features introduce different preprocessing and information conditions; platform support alone does not establish that a dataset has been publicly released or used in a completed campaign. Publication receipts and coverage summaries identify the data underlying each leaderboard setting.
-
-\subsection*{Durable Accounting and Recoverable Progress}
-\label{sec:arena_recovery}
-
-Model calls, strategy registration, research evaluations, and final commitments carry persistent operation identities. The platform records budget reservations separately from observed consumption. Provider-reported counters settle model usage, and trusted execution measurements settle CPU usage when available. Unreported usage remains unknown. This separation keeps conservative admission estimates from appearing as measured costs.
-
-A benchmark run can checkpoint and yield while an evaluation runs, then resume from its saved state. Strategy execution persists accepted daily outputs so that recoverable interruptions can continue the remaining dates. Completed model operations are recovered under their original identities. When a request's provider outcome or charge cannot be established, the operation remains unresolved pending reconciliation; it is not automatically replaced by another generation. Recovery thus preserves the candidate history and resource boundary of the original replicate.
-
-The evaluator persists core financial and signal results before optional reference comparisons, reports, and detailed artifact publication. A failure in an optional step affects that evidence and any dependent component, while preserving the core result. Model errors, infrastructure blockage, cancellation, and statistical unavailability remain distinct outcomes. These are properties of the execution design; campaign completion rates, recovery success, and runtime overhead are empirical quantities to be reported separately.
-
-\subsection*{Campaigns and Reproducibility Records}
-\label{sec:arena_campaigns}
-
-The campaign interface snapshots the registered model, interaction track, source program, and public suite contract, persists submission intent, and submits through the shared Arena services. It collects evaluator-produced scorecards without recomputing financial results. Direct comparisons bind the service origin, suite, selected runtime, budget definition, and protocol. Different input scopes or financial conventions define separate groups.
-
-A reproducibility record links the data publication, suite, model identity, interaction track, model operations, admitted trials, usage observations, final commitment, and final scorecard. All prescribed replicates remain visible in the campaign record, including failed, cancelled, blocked, and incomplete runs. Stored model replies support reconstruction of an observed trajectory; new calls to an external provider need not reproduce that trajectory exactly. The suite specification appears in Appendix~\ref{app:registry}.
+A leaderboard record links the model and harness configuration, model calls, token observations, research evaluations, final commitment, and resulting scorecards. Failed and cancelled runs remain part of the platform record. The experimental snapshot in this paper reports one representative for each model--setting--effort configuration; its cross-model counts are not estimates of repeated-run uncertainty. Appendix~\ref{app:artifacts} links the main-table representatives to the accompanying archive, and Section~\ref{sec:scoring} specifies the public research-score calibration. Archive identifiers alone do not establish how representatives were selected from all historical attempts. A recorded trajectory supports inspection of what happened in that run, while new calls to an external model need not reproduce the same trajectory.

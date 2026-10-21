@@ -1,0 +1,23 @@
+\centering\footnotesize
+\caption{Paired iterative and one-shot results, each at the supported effort with the highest total score within its setting (efforts listed as iterative / one-shot). $\Delta$ is iterative minus one-shot. $S_{\mathrm{in}}$ and $S_{\mathrm{out}}$ are the research-period and sealed-period scores, and ARR differences are in percentage points. The gross equal-weight market ARR is 17.1\%.}
+\label{tab:paired}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrrrrrrrr@{}}
+\toprule
+Model & Efforts & \multicolumn{3}{c}{$S$} & \multicolumn{2}{c}{Window $\Delta$} & \multicolumn{3}{c}{ARR (\%)} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-7}\cmidrule(lr){8-10}
+ & & Iter. & One-shot & $\Delta$ & $\Delta S_{\mathrm{in}}$ & $\Delta S_{\mathrm{out}}$ & Iter. & One-shot & $\Delta$ \\
+\midrule
+\ModelAstra & xhigh / high & 51.29 & 35.22 & 16.07 & 15.67 & 16.24 & 10.7 & $-4.8$ & 15.5 \\
+\ModelSol & xhigh / low & 51.14 & 32.15 & 18.99 & 17.21 & 19.74 & 8.6 & $-7.6$ & 16.2 \\
+\ModelTerra & max / none & 47.58 & 42.14 & 5.44 & 3.81 & 6.14 & 8.4 & 9.5 & $-1.1$ \\
+\ModelClaudeOpus & medium / medium & 44.28 & 42.61 & 1.67 & 9.59 & $-1.73$ & 4.4 & 5.6 & $-1.2$ \\
+\ModelGemini & medium / medium & 43.04 & 35.91 & 7.13 & 17.96 & 2.48 & $-2.9$ & 1.6 & $-4.5$ \\
+\ModelClaudeSonnet & max / high & 40.93 & 40.24 & 0.69 & 13.05 & $-4.60$ & $-12.2$ & 1.4 & $-13.6$ \\
+\ModelGLM & max / high & 38.91 & 38.02 & 0.89 & $-4.58$ & 3.24 & $-7.8$ & $-4.2$ & $-3.6$ \\
+\ModelKimi & low / high & 38.31 & 32.01 & 6.30 & 7.98 & 5.59 & $-8.5$ & $-20.5$ & 12.0 \\
+\ModelDeepSeek & low / max & 36.45 & 29.92 & 6.53 & 12.51 & 3.96 & $-5.7$ & $-11.9$ & 6.2 \\
+\midrule
+Mean & & 43.55 & 36.47 & 7.08 & 10.36 & 5.67 & $-0.6$ & $-3.4$ & 2.9 \\
+\bottomrule
+\end{tabular}

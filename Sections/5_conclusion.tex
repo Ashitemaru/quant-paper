@@ -1,13 +1,5 @@
 \section{Conclusion}
-\label{sec:conclusion}
 
-We introduced \BenchmarkName, a benchmark and open leaderboard that evaluates LLMs on complete quantitative research runs. A model researches with bounded feedback on 2022--2023 data, commits one strategy, and is assessed once on a sealed 2024 window. The assessment uses a cash account with realistic execution constraints, and the score emphasizes realized excess return while also covering signal quality, efficiency, and feature diversity.
+\BenchmarkName{} evaluates a complete quantitative research run, from constructing features on raw market observations to revising candidates and committing one strategy for sealed financial assessment. A shared stock-scoring interface, portfolio rule, and cash-account evaluator connect model-authored research to comparable simulated outcomes.
 
-Our first evaluation of six frontier models gives four findings.
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-    \item Iterative research raises the overall score over one-shot generation for five of six models, and a two-model ablation finds higher mean returns with performance feedback than with execution errors alone.
-    \item Out-of-sample profitability is rare. Only two of 27 completed runs beat the equal-weight market in 2024, and none of the strategies reported in Table~\ref{tab:main} does.
-    \item Predictive correlation is a poor proxy for portfolio value. GLM and Gemini, the iterative strategies with the highest RankIC, lose money in 2024, while Kimi matches Astra's $9.8\%$ ARR with a RankIC of only 0.007.
-    \item All evaluated models trail Kepler-1, our closed-source professional strategy, by more than 20 score points.
-\end{itemize}
-\BenchmarkName\ is open to submissions from any model or agent harness. We plan to add markets, input profiles such as anonymized features, and fresh sealed windows.
+Across 38 iterative configurations, the best model scores 51.3 against 77.6 for our in-house Kepler-1 agent, and only one configuration, Sol at medium effort, beats the equal-weight market. Pairing each model's best iterative and one-shot configurations, iteration raises the overall score for all nine models but sealed-period ARR for only four. Decile returns show why: most models rank stocks with some skill, yet the top-ranked names that the portfolio buys earn less than middle-ranked ones, so an average predictive correlation is insufficient to judge an investable strategy. The best-performing Astra configuration profits mainly by staying in cash during the early-2024 decline, which lowers drawdown without beating the market. Candidate trajectories show that research progress comes early and plateaus, and the effort sweep shows that a higher reasoning setting does not consistently improve the result. Together, these findings support evaluating quantitative research through both its development process and the financial outcome of its committed strategy. Repeated runs and refreshed market windows are needed to establish how reliably these outcomes generalize.

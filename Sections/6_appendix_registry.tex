@@ -14,16 +14,18 @@ Field & Specification \\
 Market and universe & Selected A-shares; static universe of 3,042 stocks; missing and delisted stocks retained \\
 Input profile & Raw daily and Level-2 market data through a date-scoped data interface; Python strategies \\
 Windows & In-sample research 2022--2023 with authorized warmup history; sealed out-of-sample 2024; participants may define training and validation splits within the research period \\
-Budget & 500,000 model tokens; at most 5 research evaluations \\
+Budget & Nominal 500,000 model tokens; at most 5 research evaluations \\
 Feedback (iterative track) & Aggregate return, signal, and coverage statistics on the research window, plus execution errors \\
 Portfolio & Top-75 equal-weight long portfolio, held for at least one trading day, boundary ties retained; Top-200/400 diagnostics \\
 Accounting & Cash account with 100-share lots; no buys at the upper price limit; deferred sales under suspension or the lower price limit; no replacement of unfilled buys; idle cash earns zero; liquidation at window end \\
 Costs & Order-dependent trading costs and market impact estimated from a simulated order book \\
 Features & Up to 300 declared features; usage tested by score-rank regression on correlation clusters; diversity normalized by a fixed scale of 32 \\
-Scoring & In-sample rule of Section~\ref{sec:scoring}; out-of-sample score uses the same metrics with an unpublished combination; total $0.3\,S_{\mathrm{in}}+0.7\,S_{\mathrm{out}}$ \\
+Scoring & $S_{\mathrm{in}}=90Q+10D$; token usage is descriptive only; total $0.3\,S_{\mathrm{in}}+0.7\,S_{\mathrm{out}}$ \\
 Runs & One run per submission; results published automatically and not withdrawable; daily submission limit per account \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\paragraph{Boards.} One-shot and Iterative use the standard model harness. System entries use participant-controlled agents; Custom entries support self-hosted models or unsupported endpoints with self-reported configurations.
 
 \paragraph{Result records.} For every run, the platform records the model, track, harness, all model calls with token usage, every research evaluation, the committed strategy, and both window assessments. Failed and cancelled runs remain in the record. Each official leaderboard entry links to its run record.
