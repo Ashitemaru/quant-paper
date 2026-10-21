@@ -18,7 +18,7 @@ Our contributions are:
 \begin{itemize}[leftmargin=*,itemsep=2pt]
     \item \textbf{An end-to-end quantitative research benchmark.} \BenchmarkName{} connects feature and signal construction from real market events to the out-of-sample performance of an executable strategy, making the complete research run the unit of evaluation.
     \item \textbf{A common research and financial evaluation protocol.} A bounded research process, frozen strategy submission, and sealed assessment under shared portfolio and trading rules support comparisons of profitability, risk, signal quality, resource use, and feature diversity.
-    \item \textbf{An empirical analysis of LLM quantitative research.} We evaluate nine frontier models in one-shot and iterative settings. Iterative research raises the overall score for all nine, yet no model beats the equal-weight market in 2024. The stocks a model ranks highest typically underperform the market average, so a positive rank correlation does not become a profitable portfolio. One model learns to stay out of the market in downtrends and avoids the February 2024 crash, but still trails the market over the year, and higher reasoning effort does not reliably raise scores.
+    \item \textbf{An empirical analysis of LLM quantitative research.} We evaluate nine frontier models. No model beats the equal-weight market in 2024: the stocks a model ranks highest typically underperform the market average. The strongest model gains mainly by learning when to stay out of the market rather than by selecting better stocks.
     \item \textbf{A public evaluation platform.} \BenchmarkName{} is released as a public arena that accepts submissions from any model or agent harness under the same protocol and sealed assessment.
 \end{itemize}
 
