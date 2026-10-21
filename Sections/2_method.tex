@@ -13,13 +13,13 @@
 \subsection{Task Formulation}
 \label{sec:task}
 
-A model receives a research objective, market-data access, and documentation for the data and evaluation interfaces. Within a fixed research budget, it writes a Python strategy that constructs features, combines them into predictive signals, and scores stocks. For each trading day $t$, the strategy computes
+A model receives a research objective, market-data access, and documentation for the data and evaluation interfaces. Within a fixed research budget, it writes a Python strategy $f$ that constructs features, combines them into predictive signals, and scores stocks. For each trading day $t$, the strategy computes
 
 \[
 \mathbf{s}_t=f(\mathcal{H}_t),
 \]
 
-where $\mathcal{H}_t$ contains the authorized historical observations available at that time and $\mathbf{s}_t$ contains stock scores. The model determines the features and scoring function. A common financial evaluator converts these scores into portfolio positions and returns. The final submission is a frozen strategy program.
+where $\mathcal{H}_t$ contains the authorized historical observations available at that time and $\mathbf{s}_t$ contains stock scores. The model determines the features and scoring function. A common financial evaluator converts these scores into portfolio positions and returns. The final submission is the frozen strategy program $f$.
 
 \subsection{Market Data and Benchmark Construction}
 \label{sec:data}
