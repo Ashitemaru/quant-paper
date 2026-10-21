@@ -48,7 +48,7 @@ The data interface restricts access by date, instrument, and field. At each deci
 \subsection{Research and Assessment Protocol}
 \label{sec:protocol}
 
-Models may evaluate candidate strategies on the research period and revise their code using aggregate return, signal-quality and coverage statistics, and execution errors. The research budget is 500,000 model tokens and at most five candidate evaluations. Participants may define training and validation splits within the research period; the benchmark prescribes no separate training window.
+Models may evaluate candidate strategies on the research period and revise their code using aggregate return, signal-quality and coverage statistics, and execution errors. Each run may evaluate at most five candidates on the research period. Participants may define training and validation splits within the research period; the benchmark prescribes no separate training window.
 
 At the end of research, one strategy's source code, execution environment, and declared features are frozen. The evaluator applies this strategy once to the sealed out-of-sample period. The strategy accesses the observations needed for execution through the authorized data interface. Neither these observations nor assessment feedback is returned to the model for further development.
 
@@ -57,7 +57,7 @@ At the end of research, one strategy's source code, execution environment, and d
 \label{sec:financial}
 \label{sec:scoring}
 
-The evaluator converts stock rankings into an equal-weight long portfolio targeting 75 stocks, subject to trading constraints, with a holding period of at least one trading day. The backtest maintains a cash account with order-dependent trading costs and market impact estimated from a simulated order book. Trades respect available cash, 100-share lots, suspensions, and price limits. Unfilled purchases remain in cash. Sales are scheduled after one trading day and deferred when blocked by suspension or a lower price limit. A day without a valid signal opens no new position. Idle cash earns zero return, and daily net asset value includes cash and outstanding positions. Account returns are compounded over each evaluation period.
+The evaluator converts stock rankings into an equal-weight long portfolio targeting 75 stocks. The backtest maintains a cash account with 100-share lots, order-dependent trading costs, and market impact estimated from a simulated order book. Idle cash earns zero return, and daily net asset value includes cash and outstanding positions. Account returns are compounded over each evaluation period.
 
 We report out-of-sample annualized return and excess return over a full-market equal-weight reference aligned to the same trading days. The reference is gross of costs. Long-only Sharpe ($\mathrm{SR}_{\mathrm{L}}$) measures risk-adjusted performance, and maximum drawdown measures downside risk. Signal metrics include mean daily RankIC, its annualized information ratio ($A$), long--short Sharpe ($\mathrm{SR}_{\mathrm{LS}}$) between the highest- and lowest-scored deciles, and turnover, the average daily replacement fraction of the portfolio. Daily RankIC is the rank correlation between stock scores and next-period returns; $A$ is its mean divided by its standard deviation, multiplied by $\sqrt{N_{\mathrm{ann}}}$, where $N_{\mathrm{ann}}$ denotes the number of trading days per year used for annualization.
 
