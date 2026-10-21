@@ -95,7 +95,7 @@ D=Q\,\frac{\min(K,32)}{32}.
 \label{eq:ed}
 \end{equation}
 
-The fixed scale of 32 makes diversity grow linearly with $K$ up to saturation, independently of the 300-feature declaration limit. Diversity scales with quality, so additional features add little to a weak strategy. The in-sample score, identical for every track and entry type, is
+The fixed scale of 32 makes diversity grow linearly with $K$ up to saturation, independently of the 300-feature declaration limit. Diversity scales with quality, so additional features add little to a weak strategy. The in-sample score is
 
 \begin{equation}
 S_{\mathrm{in}}=90\,Q+10\,D.
@@ -109,4 +109,4 @@ S=0.3\,S_{\mathrm{in}}+0.7\,S_{\mathrm{out}}.
 \label{eq:total}
 \end{equation}
 
-Token usage is reported descriptively for every run but is not scored. We report individual metrics alongside the 0--100 scores. Appendix~\ref{app:financial_details} specifies supplementary portfolio diagnostics and the feature-diversity test.
+We report individual metrics alongside the 0--100 scores.

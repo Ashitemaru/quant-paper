@@ -7,16 +7,9 @@
 \input{Tables/TabOneShot}
 \end{table}
 
-Table~\ref{tab:oneshot} reports the 38 one-shot runs in the layout of Table~\ref{tab:main}. The median configuration scores 31.61, and 4 of the 38 exceed 40 points, against 21 in the iterative setting. Six configurations have positive sealed-period ARR, and none exceeds the 17.1\% market. Sixteen evaluations originate in the Arena, 16 in the standalone harness, and six are frozen Arena strategies evaluated by the standalone harness (Appendix~\ref{app:artifacts}).
+Table~\ref{tab:oneshot} reports the 38 one-shot runs in the layout of Table~\ref{tab:main}. The median configuration scores 31.61, and 4 of the 38 exceed 40 points, against 21 in the iterative setting. Six configurations have positive sealed-period ARR, and none exceeds the 17.1\% market.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{Figures/fig_effort_oneshot_r598.png}
-\caption{Total scores of the one-shot runs across supported effort levels. Bold labels give each model's highest score.}
-\label{fig:effort_oneshot}
-\end{figure}
-
-\noindent\textbf{Without feedback, reasoning effort is just as inconsistent as with it.} For eight of the nine models the best effort is not the highest one supported (Figure~\ref{fig:effort_oneshot}). Terra scores 42.14 with no reasoning and 20.98 at max, a 21.16-point range that exceeds every iterative range, and Sol is best at low (32.15) and lowest at max (22.31). Only DeepSeek rises with effort, from 20.48 with no reasoning to 29.92 at max. With no feedback loop to correct a poor draft, each cell reflects a single draft, so the scores swing more with effort.
+\noindent\textbf{Without feedback, reasoning effort is just as inconsistent as with it.} For eight of the nine models the best effort is not the highest one supported (Table~\ref{tab:oneshot}). Terra scores 42.14 with no reasoning and 20.98 at max, a 21.16-point range that exceeds every iterative range, and Sol is best at low (32.15) and lowest at max (22.31). Only DeepSeek rises with effort, from 20.48 with no reasoning to 29.92 at max. With no feedback loop to correct a poor draft, each cell reflects a single draft, so the scores swing more with effort.
 
 \subsection{Matched-Effort Comparison}
 
